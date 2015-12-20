@@ -18,6 +18,7 @@ typedef struct {
 void audio_SourceCommon_init(audio_SourceCommon *source);
 void audio_SourceCommon_play(audio_SourceCommon *source);
 void audio_SourceCommon_stop(audio_SourceCommon *source);
+void audio_SourceCommon_free(audio_SourceCommon *source);
 void audio_SourceCommon_pause(audio_SourceCommon *source);
 void audio_SourceCommon_resume(audio_SourceCommon *source);
 audio_SourceState audio_SourceCommon_getState(audio_SourceCommon const *source);
@@ -28,3 +29,6 @@ void audio_SourceCommon_setVolume(audio_SourceCommon const* source, float gain);
 float audio_SourceCommon_getVolume(audio_SourceCommon const* source);
 float audio_SourceCommon_getPitch(audio_SourceCommon const* source);
 void audio_SourceCommon_setPitch(audio_SourceCommon const* source, float gain);
+void audio_SourceCommon_setPosition(audio_SourceCommon const* source, float x, float y, float z);
+void audio_SourceCommon_setVelocity(audio_SourceCommon const* source, float x, float y, float z);
+void audio_SourceCommon_setLooping(audio_SourceCommon const* source, int value);

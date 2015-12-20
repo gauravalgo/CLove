@@ -13,10 +13,11 @@ int audio_vorbis_load(ALuint buffer, char const *filename) {
     return 0;
   }
 
-  alBufferData(buffer, channels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, data, len * sizeof(short) * channels, samplingrate);
+  alBufferData(buffer, channels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, data,
+               len * sizeof(short) * channels, samplingrate);
 
+  stb_vorbis_close(vorbis);
   free(data);
-
   return 1;
 }
 

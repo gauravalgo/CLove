@@ -25,7 +25,10 @@ static int l_audio_newSource(lua_State *state) {
   }
 
   lua_rawgeti(state, LUA_REGISTRYINDEX, moduleData.audioDataMT);
-  lua_setmetatable(state, -2);
+
+  if (succesfuly_loaded == 1)
+    lua_setmetatable(state, -2);
+
   return 1;
 }
 
@@ -107,9 +110,43 @@ static int l_audio_SourceCommon_getPitch(lua_State *state) {
   return 1;
 }
 
+static int l_audio_SourceCommon_setPosition(lua_State* state){
+  audio_SourceCommon* source = (audio_SourceCommon*)lua_touserdata(state, 1);
+  float x = lua_tonumber(state, 2);
+  float y = lua_tonumber(state, 3);
+  float z = lua_tonumber(state, 4);
+  audio_SourceCommon_setPosition(source, x, y, z);
+  return 1;
+}
+
+static int l_audio_SourceCommon_setVelocity(lua_State* state){
+  audio_SourceCommon* source = (audio_SourceCommon*)lua_touserdata(state, 1);
+  float x = lua_tonumber(state, 2);
+  float y = lua_tonumber(state, 3);
+  float z = lua_tonumber(state, 4);
+  audio_SourceCommon_setVelocity(source, x, y, z);
+  return 1;
+}
+
+static int l_audio_SourceCommon_setLooping(lua_State* state){
+  audio_SourceCommon* source = (audio_SourceCommon*)lua_touserdata(state, 1);
+  audio_SourceCommon_setLooping(source, lua_toboolean(state, 2));
+  return 1;
+}
+
+static int l_audio_SourceCommon_free(lua_State* state){
+  audio_SourceCommon* source = (audio_SourceCommon*)lua_touserdata(state, 1);
+  audio_SourceCommon_free(source);
+  return 1;
+}
+
 static luaL_Reg const SourceMetatableFuncs[] = {
+  {"__gc", l_audio_SourceCommon_free},
+  {"setLooping", l_audio_SourceCommon_setLooping},
+  {"setVelocity", l_audio_SourceCommon_setVelocity},
   {"setPitch",   l_audio_SourceCommon_setPitch},
   {"getPitch",   l_audio_SourceCommon_getPitch},
+  {"setPosition",   l_audio_SourceCommon_setPosition},
   {"play",       l_audio_SourceCommon_play},
   {"setVolume",  l_audio_SourceCommon_setVolume},
   {"getVolume",  l_audio_SourceCommon_getVolume},

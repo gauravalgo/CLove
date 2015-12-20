@@ -3,23 +3,35 @@
 void audio_SourceCommon_init(audio_SourceCommon *source) {
   alGenSources(1, &source->source);
 
+  source->state = audio_SourceState_stopped;
+
   alSourcef(source->source, AL_PITCH, 1);
   alSourcef(source->source, AL_GAIN, 1);
-  alSource3f(source->source, AL_POSITION, 0, 0, 0);
-  alSource3f(source->source, AL_VELOCITY, 0, 0, 0);
+  alSource3f(source->source, AL_POSITION, 0.0f, 0.0f, 0.0f);
+  alSource3f(source->source, AL_VELOCITY, 0.0f, 0.0f, 0.0f);
   alSourcei(source->source, AL_LOOPING, AL_FALSE);
+}
 
-  source->state = audio_SourceState_stopped;
+void audio_SourceCommon_setLooping(audio_SourceCommon const* source, int value){
+  if (value == 0)
+    alSourcei(source->source, AL_LOOPING, AL_FALSE);
+  else
+    alSourcei(source->source, AL_LOOPING, AL_TRUE);
 }
 
 void audio_SourceCommon_play(audio_SourceCommon *source) {
-  alSourcePlay(source->source);
   source->state = audio_SourceState_playing;
+  alSourcePlay(source->source);
 }
 
 void audio_SourceCommon_stop(audio_SourceCommon *source) {
-  alSourceStop(source->source);
   source->state = audio_SourceState_stopped;
+  alSourceStop(source->source);
+}
+
+void audio_SourceCommon_free(audio_SourceCommon *source) {
+  audio_SourceCommon_stop(source);
+  alDeleteSources(1, &source->source);
 }
 
 audio_SourceState audio_SourceCommon_getState(audio_SourceCommon const *source) {
@@ -73,4 +85,17 @@ float audio_SourceCommon_getPitch(audio_SourceCommon const* source) {
 
 void audio_SourceCommon_setPitch(audio_SourceCommon const* source, float gain) {
   alSourcef(source->source, AL_PITCH, gain);
+}
+
+void audio_SourceCommon_setVelocity(audio_SourceCommon const* source, float x, float y, float z){
+  alSource3f(source->source, AL_VELOCITY, x, y, z);
+}
+
+void audio_SourceCommon_setPosition(audio_SourceCommon const* source, float x, float y, float z){
+  //In order to have this working you need to have a mono sound file!
+  //alSourcei(source->source, AL_SOURCE_RELATIVE, AL_FALSE);
+  //alListener3f(AL_POSITION, x, y, z);
+  //float vec[6] = {x, y, z, 0.0f, 1.0f, 0.0f};
+  //alListenerfv(AL_ORIENTATION, vec);
+  alSource3f(source->source, AL_POSITION, x, y, z);
 }
