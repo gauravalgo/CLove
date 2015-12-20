@@ -59,27 +59,27 @@ int audio_wav_load(unsigned int buffer, char const * filename) {
                 switch(convert_format){
                 case 8:
                         {
-                        switch(header.channels){
-                        case 1:
-                                format = AL_FORMAT_MONO8;
+                                switch(header.channels){
+                                case 1:
+                                        format = AL_FORMAT_MONO8;
+                                        break;
+                                case 2:
+                                        format = AL_FORMAT_STEREO8;
+                                        break;
+                                }
                                 break;
-                        case 2:
-                                format = AL_FORMAT_STEREO8;
-                                break;
-                        }
-                        break;
                         }
                 case 16:
                         {
-                        switch(header.channels){
-                        case 1:
-                                format = AL_FORMAT_MONO16;
+                                switch(header.channels){
+                                case 1:
+                                        format = AL_FORMAT_MONO16;
+                                        break;
+                                case 2:
+                                        format = AL_FORMAT_STEREO16;
+                                        break;
+                                }
                                 break;
-                        case 2:
-                                format = AL_FORMAT_STEREO16;
-                                break;
-                        }
-                        break;
                         }
                 case 18:
                         {
@@ -97,4 +97,6 @@ int audio_wav_load(unsigned int buffer, char const * filename) {
                 alBufferData(buffer, format,  data->readBuffer, header.totallength, data->samplerate);
                 return 1;
         }
+        else
+                return 0;
 }

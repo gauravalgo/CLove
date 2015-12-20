@@ -11,17 +11,21 @@ static const char* get_filename_ext(const char *filename) {
   return dot+1;
 }
 
-void audio_loadStatic(audio_StaticSource *source, char const * filename) {
+int audio_loadStatic(audio_StaticSource *source, char const * filename) {
   audio_SourceCommon_init(&source->common);
 
-
-
   alGenBuffers(1, &source->buffer);
-  if(strncmp(get_filename_ext(filename),"wav", 3) == 0)
-    audio_wav_load(source->buffer, filename);
-  else if((strncmp(get_filename_ext(filename), "ogg", 3)) == 0)
-    audio_vorbis_load(source->buffer, filename);
+  if(strncmp(get_filename_ext(filename),"wav", 3) == 0){
+    int succeded = audio_wav_load(source->buffer, filename);
+    if (succeded == 0) return 0;
+  }else if((strncmp(get_filename_ext(filename), "ogg", 3)) == 0){
+    int succeded = audio_vorbis_load(source->buffer, filename);
+    if (succeded == 0) return 0;
+  }else
+    return -1; //Unknow file type :(
+
   alSourcei(source->common.source, AL_BUFFER, source->buffer);
+  return 1;
 }
 
 void audio_StaticSource_play(audio_StaticSource *source) {

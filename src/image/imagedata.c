@@ -4,9 +4,16 @@
 #include "imagedata.h"
 
 
-void image_ImageData_new_with_filename(image_ImageData *dst, char const* filename) {
+int image_ImageData_new_with_filename(image_ImageData *dst, char const* filename) {
   int n;
   dst->surface = stbi_load(filename, &dst->w, &dst->h, &n, 4);
+  if(dst->surface == 0) //image could not be loaded
+    return 0;
+  return 1;
+}
+
+const char* image_error(void){
+  return stbi_failure_reason();
 }
 
 void image_ImageData_new_with_size(image_ImageData *dst, int width, int height) {
