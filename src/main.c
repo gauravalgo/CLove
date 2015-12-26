@@ -39,6 +39,7 @@ int lua_errorhandler(lua_State *state) {
     lua_pushstring(state, "\n");
     ++level;
   }
+  
   lua_concat(state, 4*level+1);
   return 1;
 }
@@ -66,7 +67,6 @@ void main_loop(void *data) {
   lua_rawgeti(loopData->luaState, LUA_REGISTRYINDEX, loopData->errhand);
   lua_getglobal(loopData->luaState, "love");
   lua_pushstring(loopData->luaState, "update");
-
 
   lua_rawget(loopData->luaState, -2);
   lua_pushnumber(loopData->luaState, timer_getDelta());
