@@ -2,11 +2,10 @@
 # include <emscripten.h>
 #endif
 #include <stdio.h>
-#include <dirent.h>
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-#include <SDL.h>
+#include <../../3rdparty/lua/lua.h>
+#include <../../3rdparty/lua/lauxlib.h>
+#include <../../3rdparty/lua/lualib.h>
+#include <../../3rdparty/SDL2/include/SDL.h>
 
 #include "luaapi/audio.h"
 #include "luaapi/mouse.h"

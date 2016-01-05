@@ -1,7 +1,7 @@
 #ifdef EMSCRIPTEN
 # include <emscripten.h>
 #else
-# include <SDL.h>
+#include <../../3rdparty/SDL2/include/SDL.h>
 #endif
 #include "timer.h"
 

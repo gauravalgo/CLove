@@ -1,5 +1,5 @@
 #include "vector.h"
-#include <tgmath.h>
+#include <math.h>
 
 void m4x4_scale(mat4x4 *inout, float x, float y, float z) {
   for(int i = 0; i < 3; ++i) {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL.h>
+#include <../../3rdparty/SDL2/include/SDL.h>
 #include "luaapi/mouse.h"
 
 // TODO:
