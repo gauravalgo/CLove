@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <lauxlib.h>
+#include <../../3rdparty/lua/lauxlib.h>
 #include "filesystem.h"
 #include "tools.h"
 #include "../filesystem/filesystem.h"

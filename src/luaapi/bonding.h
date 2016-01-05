@@ -1,6 +1,4 @@
 #pragma once
 
-#include <lua.h>
-
-
+#include <../../3rdparty/lua/lua.h>
 int l_bonding_register(lua_State* state);

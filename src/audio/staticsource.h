@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
-#include <AL/al.h>
+#include <../../3rdparty/openal/include/AL/al.h>
 
 #include "source.h"
 

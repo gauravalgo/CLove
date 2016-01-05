@@ -1,7 +1,6 @@
 #pragma once
 
-#include <lua.h>
-#include <stdbool.h>
+#include <../../3rdparty/lua/lua.h>
 #include "../audio/audio.h"
 #include "../audio/staticsource.h"
 

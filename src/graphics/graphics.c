@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <SDL.h>
+#include <../../3rdparty/SDL2/include/SDL.h>
 #include "graphics.h"
 
 #ifdef EMSCRIPTEN

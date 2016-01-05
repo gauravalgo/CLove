@@ -1,6 +1,6 @@
 #pragma once
-#include <AL/al.h>
-#include <alloca.h>
+
+#include <../../3rdparty/openal/include/AL/al.h>
 #include <stdio.h>
 
 typedef struct {

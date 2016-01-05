@@ -1,4 +1,4 @@
-#include <lauxlib.h>
+#include <../../3rdparty/lua/lauxlib.h>
 #include "image.h"
 #include "tools.h"
 #include "../image/imagedata.h"

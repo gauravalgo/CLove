@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tgmath.h>
+#include <math.h>
 #include "image.h"
 #include "quad.h"
 #include <ft2build.h>

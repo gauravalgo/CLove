@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lua.h>
+#include <../../3rdparty/lua/lua.h>
 
 void l_mouse_register(lua_State* state);
 void l_mouse_pressed(int x, int y, int button);

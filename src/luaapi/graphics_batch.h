@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
-#include <lua.h>
+#include <../../3rdparty/lua/lua.h>
 #include "../graphics/batch.h"
 
 typedef struct {

@@ -1,4 +1,4 @@
-#include <lauxlib.h>
+#include <../../3rdparty/lua/lauxlib.h>
 #include "../graphics/graphics.h"
 #include "graphics_window.h"
 #include "tools.h"

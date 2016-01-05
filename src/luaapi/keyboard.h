@@ -1,8 +1,8 @@
 #pragma once
 
-#include <stdbool.h>
-#include <lua.h>
-# include <SDL_keycode.h>
+#include <../../3rdparty/lua/lua.h>
+#include <../../3rdparty/SDL2/include/SDL_keycode.h>
+
 void l_keyboard_register(lua_State* state);
 void l_keyboard_keypressed(SDL_Keycode key, bool repeat);
 void l_keyboard_keyreleased(SDL_Keycode key);

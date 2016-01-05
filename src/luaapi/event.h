@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lua.h>
+#include <../../3rdparty/lua/lua.h>
 
 int l_event_register(lua_State* state);
 int l_event_running();

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdbool.h>
-#include <lua.h>
+#include <../../3rdparty/lua/lua.h>
 #include "../graphics/quad.h"
 
 int l_graphics_newQuad(lua_State* state);

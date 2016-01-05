@@ -1,5 +1,6 @@
 #include "tools.h"
 #include "audio.h"
+#include <../../3rdparty/lua/lua.h>
 
 static struct {
   int audioDataMT;

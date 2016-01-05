@@ -10,7 +10,6 @@
 #include "image.h"
 #include "../math/vector.h"
 #include "vertex.h"
-#include <stdbool.h>
 
 typedef enum {
   graphics_BatchUsage_static = GL_STATIC_DRAW,

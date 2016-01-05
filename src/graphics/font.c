@@ -1,6 +1,5 @@
 #define _POSIX_SOURCE
 #include <string.h>
-#include <tgmath.h>
 #include "font.h"
 #include <stdlib.h>
 #include "quad.h"

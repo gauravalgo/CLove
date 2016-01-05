@@ -1,5 +1,4 @@
 #pragma once
-#include <stdbool.h>
 
 #ifdef EMSCRIPTEN
 #include <GLES2/gl2.h>

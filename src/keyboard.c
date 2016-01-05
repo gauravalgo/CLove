@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "keyboard.h"
 #include "luaapi/keyboard.h"
 

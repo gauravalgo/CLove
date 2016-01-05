@@ -1,4 +1,5 @@
-#include <lauxlib.h>
+#include <../../3rdparty/lua/lauxlib.h>
+
 #include "boot.h"
 
 static char const bootScript[] =
