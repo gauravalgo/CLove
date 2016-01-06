@@ -1,8 +1,9 @@
 #pragma once
 
-#include <../../3rdparty/lua/lua.h>
-#include <../../3rdparty/lua/lauxlib.h>
+#include "../3rdparty/lua/lua.h"
+#include "../3rdparty/lua/lauxlib.h"
 #include <string.h>
+#include <stdbool.h>
 
 void l_tools_registerFuncsInModule(lua_State* state, char const* module, luaL_Reg const* funcs);
 void l_tools_registerModule(lua_State* state, char const* moduleName, luaL_Reg const * funcs);

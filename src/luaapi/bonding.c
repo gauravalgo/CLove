@@ -1,4 +1,4 @@
-#include <../../3rdparty/lua/lualib.h>
+#include "../3rdparty/lua/lualib.h"
 #include "bonding.h"
 #include "../bonding.h"
 

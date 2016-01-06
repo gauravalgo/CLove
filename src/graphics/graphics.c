@@ -1,11 +1,11 @@
 #include <stdint.h>
-#include <../../3rdparty/SDL2/include/SDL.h>
+#include "../3rdparty/SDL2/include/SDL.h"
 #include "graphics.h"
 
 #ifdef EMSCRIPTEN
 #include <GLES2/gl2.h>
 #else
-#include <GL/glew.h>
+#include "../3rdparty/glew/include/GL/glew.h"
 #endif
 
 #include "../math/vector.h"

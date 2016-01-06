@@ -1,6 +1,8 @@
 #pragma once
 
-#include <../../3rdparty/SDL2/include/SDL_keyboard.h>
+#include "3rdparty/SDL2/include/SDL_keyboard.h"
+
+#include <stdbool.h>
 
 void keyboard_init(void);
 char const * keyboard_getKeyName(SDL_Keycode key);

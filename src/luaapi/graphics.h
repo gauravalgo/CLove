@@ -1,6 +1,6 @@
 #pragma once
 
-#include <../../3rdparty/lua/lua.h>
+#include "../3rdparty/lua/lua.h"
 #include "tools.h"
 #include "../graphics/image.h"
 

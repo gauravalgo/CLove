@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h> // for memcmp
 #include <stdint.h> // for int16_t and int32_t
-#include <iostream>   
-#include <cstdlib> 
 
 struct wavfile
 {

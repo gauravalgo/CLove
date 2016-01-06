@@ -3,7 +3,7 @@
 #ifdef EMSCRIPTEN
 #include <GLES2/gl2.h>
 #else
-#include <GL/glew.h>
+#include "../3rdparty/glew/include/GL/glew.h"
 #endif
 
 #include "quad.h"

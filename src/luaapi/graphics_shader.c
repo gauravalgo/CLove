@@ -1,6 +1,7 @@
+#include "../3rdparty/lua/lauxlib.h"
+
 #include <string.h>
 #include <stdlib.h>
-#include <../../3rdparty/lua/lauxlib.h>
 #include "tools.h"
 #include "graphics_shader.h"
 #include "graphics_image.h"

@@ -2,10 +2,11 @@
 # include <emscripten.h>
 #endif
 #include <stdio.h>
-#include <../../3rdparty/lua/lua.h>
-#include <../../3rdparty/lua/lauxlib.h>
-#include <../../3rdparty/lua/lualib.h>
-#include <../../3rdparty/SDL2/include/SDL.h>
+
+#include "3rdparty/lua/lua.h"
+#include "3rdparty/lua/lauxlib.h"
+#include "3rdparty/lua/lualib.h"
+#include "3rdparty/SDL2/include/SDL.h"
 
 #include "luaapi/audio.h"
 #include "luaapi/mouse.h"
@@ -157,7 +158,7 @@ void main_loop(void *data) {
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   lua_State *lua = luaL_newstate();
   luaL_openlibs(lua);
 

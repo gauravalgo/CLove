@@ -1,6 +1,6 @@
 #include "audio.h"
-#include <../../3rdparty/openal/include/AL/al.h>
-#include <../../3rdparty/openal/include/AL/alc.h>
+#include "../3rdparty/openal/include/AL/al.h"
+#include "../3rdparty/openal/include/AL/alc.h"
 #include <stdio.h>
 
 static struct {

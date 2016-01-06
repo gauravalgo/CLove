@@ -1,4 +1,4 @@
-#include <../../3rdparty/lua/lauxlib.h>
+#include "../3rdparty/lua/lauxlib.h"
 #include "tools.h"
 #include "graphics_font.h"
 #include "../graphics/font.h"

@@ -1,5 +1,6 @@
-#include <../../3rdparty/lua/lauxlib.h>
-#include <../../3rdparty/lua/lualib.h>
+#include "../3rdparty/lua/lauxlib.h"
+#include "../3rdparty/lua/lualib.h"
+
 #include "graphics.h"
 #include "graphics_image.h"
 #include "tools.h"

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <../../3rdparty/openal/include/AL/al.h>
+#include "../3rdparty/openal/include/AL/al.h"
+#include <stdbool.h>
 
 typedef enum {
   audio_SourceState_playing,

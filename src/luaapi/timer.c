@@ -1,4 +1,5 @@
-#include <../../3rdparty/lua/lauxlib.h>
+#include "../3rdparty/lua/lauxlib.h"
+
 #include "timer.h"
 #include "../timer/timer.h"
 #include "tools.h"

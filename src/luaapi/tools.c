@@ -1,4 +1,5 @@
-#include <../../3rdparty/lua/lauxlib.h>
+#include "../3rdparty/lua/lauxlib.h"
+
 #include <string.h>
 #include "tools.h"
 

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <../../3rdparty/lua/lua.h>
+#include "../3rdparty/lua/lua.h"
 #include "../image/imagedata.h"
+#include <stdbool.h>
 
 bool l_image_isImageData(lua_State* state, int index);
 image_ImageData* l_image_toImageData(lua_State* state, int index);

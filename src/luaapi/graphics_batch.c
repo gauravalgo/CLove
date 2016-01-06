@@ -1,4 +1,4 @@
-#include <../../3rdparty/lua/lauxlib.h>
+#include "../3rdparty/lua/lauxlib.h"
 #include <math.h>
 #include "graphics_batch.h"
 #include "graphics_image.h"

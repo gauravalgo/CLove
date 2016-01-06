@@ -1,7 +1,8 @@
 #pragma once
 
-#include <../../3rdparty/lua/lua.h>
+#include "../3rdparty/lua/lua.h"
 #include "../graphics/font.h"
+#include <stdbool.h>
 
 void l_graphics_font_register(lua_State* state);
 bool l_graphics_isFont(lua_State* state, int index);
