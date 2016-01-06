@@ -16,6 +16,8 @@ FILE(
     src/image/*.c
     src/luaapi/*.h
     src/luaapi/*.c
+    src/tools/*.c
+    src/tools/*.h
     src/math/*.h
     src/math/*.c
     src/timer/*.h
@@ -48,7 +50,6 @@ include_directories(src/3rdparty/freetype/include)
 #openal
 add_subdirectory(src/3rdparty/openal)
 set(OPENAL_INCLUDE_DIR src/3rdparty/openal/include/)
-set(OPENAL_LIBRARIES "${OPENAL_LIBRARY}")
 
 #lua
 add_subdirectory(src/3rdparty/lua)
@@ -62,11 +63,12 @@ SET(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
 #sdl
 ADD_SUBDIRECTORY(src/3rdparty/sdl2/)
 SET(SDL_INCLUDE_DIR src/3rdparty/sdl2/include/)
-
+add_definitions(-DAL_LIBTYPE_STATIC)
+add_definitions(-DGLEW_STATIC)
 SET(FREETYPE_LIBRARIES freetype)
 SET(SDL_LIBRARIES SDL2)
 SET(GLEW_LIBRARIES libglew_static)
-SET(OPENAL_LIBRARY OpenAL32)
+SET(OPENAL_LIBRARIES OpenAL32)
 
 if(WIN32)
     target_link_libraries(love ws2_32.lib
