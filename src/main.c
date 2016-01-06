@@ -158,7 +158,7 @@ void main_loop(void *data) {
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(void) {
   lua_State *lua = luaL_newstate();
   luaL_openlibs(lua);
 
@@ -211,4 +211,5 @@ int main(int argc, char *argv[]) {
   if(!l_event_running())
     quit_function(lua);
 #endif
+  return 0;
 }

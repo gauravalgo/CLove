@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(love)
 
-add_definitions(-std=c11 -O3)
+add_definitions(-std=c99 -O3)
 
 FILE(
     GLOB SOURCE_FILES
@@ -53,7 +53,7 @@ set(OPENAL_INCLUDE_DIR src/3rdparty/openal/include/)
 
 #lua
 add_subdirectory(src/3rdparty/lua)
-set(LUA_INCLUDE_DIR src/3rdparty/lua/ ${CMAKE_BINARY_DIR}/src/3rdparty/lua/)
+set(LUA_INCLUDE_DIR src/3rdparty/lua/)
 SET(LUA_LIBRARIES lua)
 
 #glew
@@ -70,7 +70,7 @@ SET(SDL_LIBRARIES SDL2)
 SET(GLEW_LIBRARIES libglew_static)
 SET(OPENAL_LIBRARIES OpenAL32)
 
-if(WIN32)
+if(MINGW)
     target_link_libraries(love ws2_32.lib
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}

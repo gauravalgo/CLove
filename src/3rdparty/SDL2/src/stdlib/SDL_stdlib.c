@@ -26,7 +26,7 @@
 #include "../libm/math_libm.h"
 #include <stdlib.h>
 #include <string.h>
-#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 double
