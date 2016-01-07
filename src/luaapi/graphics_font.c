@@ -100,7 +100,7 @@ int l_graphics_newFont(lua_State* state) {
   // TODO: alternative signatures for newFont
   char const * filename = l_tools_toStringOrError(state, 1);
   int ptsize = l_tools_toNumberOrError(state, 2);
-  
+
   // Create string font:size
   // Stack: ... fontname
   lua_pushstring(state, ":");

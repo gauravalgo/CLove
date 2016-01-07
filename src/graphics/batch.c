@@ -150,7 +150,6 @@ void graphics_Batch_draw(graphics_Batch const* batch,
   float const * color = batch->colorUsed ? defaultColor : graphics_getColor();
   graphics_drawArray(&fullQuad, &tr2d, moduleData.sharedIndexBuffer, batch->insertPos*6,
                      GL_TRIANGLES, GL_UNSIGNED_SHORT, color, 1.0f, 1.0f);
-
 }
 
 void graphics_Batch_setBufferSizeClearing(graphics_Batch* batch, int newsize) {
@@ -171,16 +170,16 @@ void graphics_Batch_unbind(graphics_Batch *batch) {
     return;
   }
 
-  if(batch->dirty) {
-    glBufferData(GL_ARRAY_BUFFER, 4*batch->maxCount*sizeof(graphics_Vertex), batch->vbo, batch->usage);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*batch->insertPos*sizeof(graphics_Vertex), batch->vertexData);
-    batch->dirty = false;
-  }
+  glBindBuffer(GL_ARRAY_BUFFER, batch->vbo);
+  glBufferData(GL_ARRAY_BUFFER, 4*batch->maxCount*sizeof(graphics_Vertex), NULL, batch->usage);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, 4*batch->insertPos*sizeof(graphics_Vertex), batch->vertexData);
+
   batch->bound = false;
 }
 
 void graphics_Batch_clear(graphics_Batch *batch) {
   batch->insertPos = 0;
+  //glBindBuffer(GL_ARRAY_BUFFER, 0);
   batch->colorUsed = false;
 }
 

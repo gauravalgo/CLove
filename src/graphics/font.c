@@ -36,10 +36,10 @@ void graphics_GlyphMap_newTexture(graphics_GlyphMap *map) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   if(map->numTextures > 0) {
-    graphics_Filter filter;
-    graphics_Texture_getFilter(map->textures[map->numTextures-1], &filter);
-    graphics_Texture_setFilter(map->textures[map->numTextures], &filter);
-  }
+      graphics_Filter filter;
+      graphics_Texture_getFilter(map->textures[map->numTextures-1], &filter);
+      graphics_Texture_setFilter(map->textures[map->numTextures], &filter);
+    }
   ++map->numTextures;
 
 }
@@ -62,14 +62,14 @@ graphics_Glyph const* graphics_Font_findGlyph(graphics_Font *font, unsigned unic
   // Do we already have the glyph?
   int i = 0;
   for(; i < set->numGlyphs; ++i) {
-    graphics_Glyph const* glyph = &set->glyphs[i];
-    // The list is sorted, break early if possible
-    if(glyph->code > unicode) {
-      break;
-    } else if(glyph->code == unicode) {
-      return glyph;
+      graphics_Glyph const* glyph = &set->glyphs[i];
+      // The list is sorted, break early if possible
+      if(glyph->code > unicode) {
+          break;
+        } else if(glyph->code == unicode) {
+          return glyph;
+        }
     }
-  }
 
   // Allocate new glyphs, copy old glyphs over and make space for the new one in the
   // right position (leave space at insert point)
@@ -96,25 +96,25 @@ graphics_Glyph const* graphics_Font_findGlyph(graphics_Font *font, unsigned unic
   uint8_t *buf = malloc(2*b.rows*b.width);
   uint8_t *row = b.buffer;
   for(int i = 0; i < b.rows; ++i) {
-    for(int c = 0; c < b.width; ++c) {
-      buf[2*(i*b.width + c)] = 255;
-      buf[2*(i*b.width + c) + 1] = row[c];
+      for(int c = 0; c < b.width; ++c) {
+          buf[2*(i*b.width + c)] = 255;
+          buf[2*(i*b.width + c) + 1] = row[c];
+        }
+      row += b.pitch;
     }
-    row += b.pitch;
-  }
 
   if(font->glyphs.currentX + GlyphTexturePadding + b.width > font->glyphs.textureWidth) {
-    font->glyphs.currentX = GlyphTexturePadding;
-    font->glyphs.currentY += font->glyphs.currentRowHeight;
-    font->glyphs.currentRowHeight = GlyphTexturePadding;
-  }
+      font->glyphs.currentX = GlyphTexturePadding;
+      font->glyphs.currentY += font->glyphs.currentRowHeight;
+      font->glyphs.currentRowHeight = GlyphTexturePadding;
+    }
 
   if(font->glyphs.currentY + GlyphTexturePadding + b.rows > font->glyphs.textureHeight) {
-    font->glyphs.currentX = GlyphTexturePadding;
-    font->glyphs.currentY = GlyphTexturePadding;
-    font->glyphs.currentRowHeight = GlyphTexturePadding;
-    graphics_GlyphMap_newTexture(&font->glyphs);
-  }
+      font->glyphs.currentX = GlyphTexturePadding;
+      font->glyphs.currentY = GlyphTexturePadding;
+      font->glyphs.currentRowHeight = GlyphTexturePadding;
+      graphics_GlyphMap_newTexture(&font->glyphs);
+    }
 
   // Bind current texture and upload data to the appropriate position.
   // This assumes pixel unpack alignment is set to 1 (glPixelStorei)
@@ -151,11 +151,10 @@ int graphics_Font_new(graphics_Font *dst, char const* filename, int ptsize) {
   // TODO use error
   int error;
   if(filename) {
-    FT_New_Face(moduleData.ft, filename, 0, &dst->face);
-  } else {
-    printf("%s","Could not load font: ", "%s", filename);
-    FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &dst->face);
-  }
+      FT_New_Face(moduleData.ft, filename, 0, &dst->face);
+    } else {
+      FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &dst->face);
+    }
   (void)error;
   FT_Set_Pixel_Sizes(dst->face, 0, ptsize);
 
@@ -164,11 +163,11 @@ int graphics_Font_new(graphics_Font *dst, char const* filename, int ptsize) {
   dst->height = dst->face->size->metrics.height >> 6;
   int estArea = dst->height * dst->height * 80;
   for(int i = 0; i < TextureSizeCount; ++i) {
-    if(estArea <= TextureWidths[i] * TextureHeights[i]) {
-      sizeIdx = i;
-      break;
+      if(estArea <= TextureWidths[i] * TextureHeights[i]) {
+          sizeIdx = i;
+          break;
+        }
     }
-  }
 
   dst->glyphs.textureWidth = TextureWidths[sizeIdx];
   dst->glyphs.textureHeight = TextureHeights[sizeIdx];
@@ -191,39 +190,27 @@ int graphics_Font_getWrap(graphics_Font * font, char const* text, int width, cha
   return 0;
 }
 
-static void drawLine(graphics_Font* font, int x, int y, int start, int end, int rest, int spacewidth, float leftScale, float centerScale) {
-
-}
-
 static void prepareBatches(graphics_Font const* font, int chars) {
   int newSize = max(chars, moduleData.batchsize);
-    if(font->glyphs.numTextures > moduleData.batchcount) {
+  if(font->glyphs.numTextures > moduleData.batchcount) {
       moduleData.batches = realloc(moduleData.batches, font->glyphs.numTextures * sizeof(graphics_Batch));
       for(int i = moduleData.batchcount; i < font->glyphs.numTextures; ++i) {
-        graphics_Image *img = malloc(sizeof(graphics_Image));
-        img->texID = font->glyphs.textures[i];
-        img->width = font->glyphs.textureWidth;
-        img->height = font->glyphs.textureHeight;
-        graphics_Batch_new(&moduleData.batches[i], img, newSize, graphics_BatchUsage_stream);
-        graphics_Batch_bind(&moduleData.batches[i]);
-      }
+          graphics_Image *img = malloc(sizeof(graphics_Image));
+          img->texID = font->glyphs.textures[i];
+          img->width = font->glyphs.textureWidth;
+          img->height = font->glyphs.textureHeight;
+          graphics_Batch_new(&moduleData.batches[i], img, newSize, graphics_BatchUsage_stream);
+          graphics_Batch_bind(&moduleData.batches[i]);
+        }
     }
-    if(moduleData.batchsize < newSize) {
+  if(moduleData.batchsize < newSize) {
       for(int i = 0; i < moduleData.batchcount; ++i) {
-        graphics_Batch_bind(&moduleData.batches[i]);
-        graphics_Batch_setBufferSizeClearing(&moduleData.batches[i], newSize);
-        ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
-        ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
-        ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
-      }
-    } else {
-      for(int i = 0; i < moduleData.batchcount; ++i) {
-        graphics_Batch_bind(&moduleData.batches[i]);
-        graphics_Batch_clear(&moduleData.batches[i]);
-        ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
-        ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
-        ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
-      }
+          graphics_Batch_bind(&moduleData.batches[i]);
+          graphics_Batch_setBufferSizeClearing(&moduleData.batches[i], newSize);
+          ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
+          ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
+          ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
+        }
     }
   moduleData.batchcount = font->glyphs.numTextures;
   moduleData.batchsize = newSize;
@@ -237,23 +224,24 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
   int x = 0;
   int y = font->ascent;
   while((cp = utf8_scan(&text))) {
-    if(cp == '\n') {
-      x = 0;
-      y += floor(font->height * font->lineHeight + 0.5f);
-      continue;
+      if(cp == '\n') {
+          x = 0;
+          y += floor(font->height * font->lineHeight + 0.5f);
+          continue;
+        }
+      // This will create the glyph if required
+      graphics_Glyph const* glyph = graphics_Font_findGlyph(font, cp);
+
+      graphics_Batch_add(&moduleData.batches[glyph->textureIdx], &glyph->textureCoords, 1, x+glyph->bearingX, y-glyph->bearingY, 0, 1, 1, 0, 0, 0, 0);
+
+      x += glyph->advance;
     }
-    // This will create the glyph if required
-    graphics_Glyph const* glyph = graphics_Font_findGlyph(font, cp);
-
-    graphics_Batch_add(&moduleData.batches[glyph->textureIdx], &glyph->textureCoords, 1, x+glyph->bearingX, y-glyph->bearingY, 0, 1, 1, 0, 0, 0, 0);
-
-    x += glyph->advance;
-  }
 
   for(int i = 0; i < moduleData.batchcount; ++i) {
-    graphics_Batch_unbind(&moduleData.batches[i]);
-    graphics_Batch_draw(&moduleData.batches[i], px, py, r, sx, sy, ox, oy, kx, ky);
-  }
+      graphics_Batch_bind(&moduleData.batches[i]);
+      graphics_Batch_draw(&moduleData.batches[i], px, py, r, sx, sy, ox, oy, kx, ky);
+      graphics_Batch_unbind(&moduleData.batches[i]);
+    }
 
   graphics_setShader(shader);
 }
@@ -291,16 +279,16 @@ int graphics_Font_getWidth(graphics_Font * font, char const* line) {
   uint32_t uni;
   int width=0;
   while((uni = utf8_scan(&line))) {
-    graphics_Glyph const* g = graphics_Font_findGlyph(font, uni);
-    width += g->advance;
-  }
+      graphics_Glyph const* g = graphics_Font_findGlyph(font, uni);
+      width += g->advance;
+    }
   return width;
 }
 
 void graphics_Font_setFilter(graphics_Font *font, graphics_Filter const* filter) {
   for(int i = 0; i < font->glyphs.numTextures; i++) {
-    graphics_Texture_setFilter(font->glyphs.textures[i], filter);
-  }
+      graphics_Texture_setFilter(font->glyphs.textures[i], filter);
+    }
 }
 
 void graphics_Font_getFilter(graphics_Font *font, graphics_Filter *filter) {
