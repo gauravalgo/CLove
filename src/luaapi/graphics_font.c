@@ -2,6 +2,7 @@
 #include "tools.h"
 #include "graphics_font.h"
 #include "../graphics/font.h"
+#include <stdio.h>
 
 #include "../graphics/matrixstack.h"
 #include "../graphics/shader.h"
@@ -52,7 +53,6 @@ static int l_graphics_printf(lua_State* state) {
   if(!moduleData.currentFont) {
     l_graphics_loadDefaultFont();
   }
-
   char const* text = l_tools_toStringOrError(state, 1);
   int x = l_tools_toNumberOrError(state, 2);
   int y = l_tools_toNumberOrError(state, 3);
@@ -66,10 +66,10 @@ static int l_graphics_printf(lua_State* state) {
   float r = luaL_optnumber(state, 6, 0);
   float sx = luaL_optnumber(state, 7, 1.0f);
   float sy = luaL_optnumber(state, 8, sx);
-  float ox = luaL_optnumber(state, 9, 0);
-  float oy = luaL_optnumber(state, 10, 0);
-  float kx = luaL_optnumber(state, 11, 0);
-  float ky = luaL_optnumber(state, 12, 0);
+  float ox = luaL_optnumber(state, 9, 0.0f);
+  float oy = luaL_optnumber(state, 10, 0.0f);
+  float kx = luaL_optnumber(state, 11, 0.0f);
+  float ky = luaL_optnumber(state, 12, 0.0f);
 
   graphics_Font_printf(moduleData.currentFont, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky);
 

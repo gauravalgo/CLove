@@ -49,7 +49,7 @@ void graphics_Batch_new(graphics_Batch* batch, graphics_Image const* texture, in
   graphics_batch_makeIndexBuffer(maxSize);
 
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), 0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)0);
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(2*sizeof(float)));
   glEnableVertexAttribArray(2);
@@ -71,7 +71,7 @@ void graphics_Batch_free(graphics_Batch* batch) {
 }
 
 static const vec2 batchQuadPts[4] = {
-  {0,0},{0,1},{1,0},{1,1}
+  {0.0f,0.0f},{0.0f,1.0f},{1.0f,0.0f},{1.0f,1.0f}
 };
 
 int graphics_Batch_add(graphics_Batch* batch, graphics_Quad const* q, int text, float x, float y, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
@@ -175,7 +175,6 @@ void graphics_Batch_unbind(graphics_Batch *batch) {
     glBufferData(GL_ARRAY_BUFFER, 4*batch->maxCount*sizeof(graphics_Vertex), batch->vbo, batch->usage);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4*batch->insertPos*sizeof(graphics_Vertex), batch->vertexData);
     batch->dirty = false;
-
   }
   batch->bound = false;
 }

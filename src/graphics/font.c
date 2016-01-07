@@ -2,6 +2,7 @@
 #include <string.h>
 #include "font.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "quad.h"
 #include "graphics.h"
 #include "../tools/utf8.h"
@@ -9,6 +10,9 @@
 #include "shader.h"
 #include "batch.h"
 #include "vera_ttf.c"
+#include "../3rdparty/freetype/include/ft2build.h"
+#include "../3rdparty/freetype/include/freetype.h"
+#include "../3rdparty/freetype/include/ftglyph.h"
 
 #include FT_GLYPH_H
 
@@ -149,6 +153,7 @@ int graphics_Font_new(graphics_Font *dst, char const* filename, int ptsize) {
   if(filename) {
     FT_New_Face(moduleData.ft, filename, 0, &dst->face);
   } else {
+    printf("%s","Could not load font: ", "%s", filename);
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &dst->face);
   }
   (void)error;
@@ -192,28 +197,36 @@ static void drawLine(graphics_Font* font, int x, int y, int start, int end, int 
 
 static void prepareBatches(graphics_Font const* font, int chars) {
   int newSize = max(chars, moduleData.batchsize);
-  if(font->glyphs.numTextures > moduleData.batchcount) {
-    moduleData.batches = realloc(moduleData.batches, font->glyphs.numTextures * sizeof(graphics_Batch));
-    for(int i = moduleData.batchcount; i < font->glyphs.numTextures; ++i) {
-      graphics_Image *img = malloc(sizeof(graphics_Image));
-      img->texID = font->glyphs.textures[i];
-      img->width = font->glyphs.textureWidth;
-      img->height = font->glyphs.textureHeight;
-      graphics_Batch_new(&moduleData.batches[i], img, newSize, graphics_BatchUsage_stream);
-      graphics_Batch_bind(&moduleData.batches[i]);
+    if(font->glyphs.numTextures > moduleData.batchcount) {
+      moduleData.batches = realloc(moduleData.batches, font->glyphs.numTextures * sizeof(graphics_Batch));
+      for(int i = moduleData.batchcount; i < font->glyphs.numTextures; ++i) {
+        graphics_Image *img = malloc(sizeof(graphics_Image));
+        img->texID = font->glyphs.textures[i];
+        img->width = font->glyphs.textureWidth;
+        img->height = font->glyphs.textureHeight;
+        graphics_Batch_new(&moduleData.batches[i], img, newSize, graphics_BatchUsage_stream);
+        graphics_Batch_bind(&moduleData.batches[i]);
+      }
     }
-  }
-  if(moduleData.batchsize < newSize) {
-    for(int i = 0; i < moduleData.batchcount; ++i) {
-      graphics_Batch_bind(&moduleData.batches[i]);
-      graphics_Batch_setBufferSizeClearing(&moduleData.batches[i], newSize);
-      ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
-      ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
-      ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
+    if(moduleData.batchsize < newSize) {
+      for(int i = 0; i < moduleData.batchcount; ++i) {
+        graphics_Batch_bind(&moduleData.batches[i]);
+        graphics_Batch_setBufferSizeClearing(&moduleData.batches[i], newSize);
+        ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
+        ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
+        ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
+      }
+    } else {
+      for(int i = 0; i < moduleData.batchcount; ++i) {
+        graphics_Batch_bind(&moduleData.batches[i]);
+        graphics_Batch_clear(&moduleData.batches[i]);
+        ((graphics_Image*)moduleData.batches[i].texture)->texID = font->glyphs.textures[i];
+        ((graphics_Image*)moduleData.batches[i].texture)->width = font->glyphs.textureWidth;
+        ((graphics_Image*)moduleData.batches[i].texture)->height = font->glyphs.textureHeight;
+      }
     }
-  }
   moduleData.batchcount = font->glyphs.numTextures;
-  //moduleData.batchsize = newSize;
+  moduleData.batchsize = newSize;
 }
 
 void graphics_Font_render(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {

@@ -44,8 +44,6 @@ INCLUDE_DIRECTORIES(src/3rdparty/stb)
 #freetype
 add_subdirectory(src/3rdparty/freetype)
 set(FREETYPE_INCLUDE_DIR src/3rdparty/freetype/include)
-set(FREETYPE_LIBRARIES freetype)
-include_directories(src/3rdparty/freetype/include)
 
 #openal
 add_subdirectory(src/3rdparty/openal)
@@ -63,9 +61,13 @@ SET(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
 #sdl
 ADD_SUBDIRECTORY(src/3rdparty/sdl2/)
 SET(SDL_INCLUDE_DIR src/3rdparty/sdl2/include/)
+
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
+#add_definitions(-DFT2_BUILD_LIBRARY)
+
 SET(FREETYPE_LIBRARIES freetype)
+include_directories(src/3rdparty/freetype/include)
 SET(SDL_LIBRARIES SDL2)
 SET(GLEW_LIBRARIES libglew_static)
 SET(OPENAL_LIBRARIES OpenAL32)

@@ -3,8 +3,11 @@
 #include <math.h>
 #include "image.h"
 #include "quad.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
+
+#include "../../3rdparty/freetype/include/ft2build.h"
+#include "../3rdparty/freetype/include/ft2build.h"
+#include "../3rdparty/freetype/include/freetype.h"
+#include "../3rdparty/freetype/include/ftglyph.h"
 
 typedef struct {
   unsigned code;

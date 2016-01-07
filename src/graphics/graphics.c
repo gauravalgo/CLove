@@ -149,7 +149,7 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   );
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-  glDrawElements(type, count, indexType, 0);
+  glDrawElements(type, count, indexType, (GLvoid const*)0);
 }
 
 int graphics_setTitle(const char* title){
