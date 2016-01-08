@@ -10,61 +10,37 @@
 #include "../3rdparty/freetype/include/ftglyph.h"
 
 typedef struct {
-  unsigned code;
-  int bearingX;
-  int bearingY;
-  int advance;
-  int textureIdx;
-  graphics_Quad textureCoords;
-} graphics_Glyph;
-
-typedef struct {
-  graphics_Glyph const* glyphs;
-  int numGlyphs;
-
-} graphics_GlyphSet;
-
-typedef struct {
-  GLuint *textures;
-
-  graphics_GlyphSet glyphs[256];
-
-  int numTextures;
-  int currentX;
-  int currentY;
-  int currentRowHeight;
-  int textureWidth;
-  int textureHeight;
-
-} graphics_GlyphMap;
-
-typedef struct {
+  unsigned int vbo;
+  unsigned int ibo;
+  unsigned int tex;
+  FT_Library ft;
   FT_Face face;
-  graphics_GlyphMap glyphs;
-  int height;
-  int descent;
-  int ascent;
-  float lineHeight;
+  FT_GlyphSlot glyph;
+  char const* text;
 } graphics_Font;
 
 
-int graphics_Font_getWrap(graphics_Font * font, char const* line, int width, char **wrapped);
+void graphics_Font_setFilter(graphics_Font *img, graphics_Filter const* filter);
+void graphics_Font_getFilter(graphics_Font *img, graphics_Filter *filter);
+void graphics_Font_setWrap(graphics_Font *img, graphics_Wrap const* wrap);
+void graphics_Font_getWrap(graphics_Font *img, graphics_Wrap *wrap);
 
-void graphics_font_init(void);
 
-int graphics_Font_new(graphics_Font *dst, char const* filename, int ptsize);
+int graphics_font_init(void);
 
-void graphics_Font_free(graphics_Font *obj);
+int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize);
 
-int graphics_Font_getHeight(graphics_Font const* font);
+void graphics_Font_free(graphics_Font* font);
 
-int graphics_Font_getAscent(graphics_Font const* font);
+int graphics_Font_getHeight(graphics_Font* font);
 
-int graphics_Font_getDescent(graphics_Font const* font);
+int graphics_Font_getAscent(graphics_Font* font);
 
-int graphics_Font_getBaseline(graphics_Font const* font);
+int graphics_Font_getDescent(graphics_Font* font);
 
-int graphics_Font_getWidth(graphics_Font * font, char const* line);
+int graphics_Font_getBaseline(graphics_Font* font);
+
+int graphics_Font_getWidth(graphics_Font* font, char const* line);
 
 typedef enum {
   graphics_TextAlign_center,

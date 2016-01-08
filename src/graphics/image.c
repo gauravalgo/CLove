@@ -101,6 +101,7 @@ void graphics_Image_draw(graphics_Image const* image, graphics_Quad const* quad,
   m4x4_newTransform2d(&tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
 //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof imageVertices, imageVertices);
-  graphics_drawArray(quad, &tr2d,  moduleData.imageIBO, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE, graphics_getColor(), image->width * quad->w, image->height * quad->h);
+  graphics_drawArray(quad, &tr2d,  moduleData.imageIBO, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+                     graphics_getColor(), image->width * quad->w, image->height * quad->h);
   
 }

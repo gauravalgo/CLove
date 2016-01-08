@@ -44,6 +44,7 @@ static const l_tools_Enum l_graphics_AlignMode[] = {
 };
 
 static void l_graphics_loadDefaultFont() {
+  moduleData.currentFont = malloc(sizeof(graphics_Font()));
   graphics_Font_new(&moduleData.defaultFont, NULL, 12);
   moduleData.currentFont = &moduleData.defaultFont;
 }
@@ -71,7 +72,7 @@ static int l_graphics_printf(lua_State* state) {
   float kx = luaL_optnumber(state, 11, 0.0f);
   float ky = luaL_optnumber(state, 12, 0.0f);
 
-  graphics_Font_printf(moduleData.currentFont, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky);
+  //graphics_Font_printf(moduleData.currentFont, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky);
 
   return 0;
 }
@@ -160,8 +161,8 @@ static int l_graphics_Font_getHeight(lua_State* state) {
 
   graphics_Font* font = l_graphics_toFont(state, 1);
   
-  int height = graphics_Font_getHeight(font);
-  lua_pushinteger(state, height);
+  //int height = graphics_Font_getHeight(font);
+  //lua_pushinteger(state, height);
   return 1;
 }
 
@@ -170,7 +171,7 @@ static int l_graphics_Font_getDescent(lua_State* state) {
 
   graphics_Font* font = l_graphics_toFont(state, 1);
 
-  lua_pushinteger(state, graphics_Font_getDescent(font));
+  //lua_pushinteger(state, graphics_Font_getDescent(font));
   return 1;
 }
 
@@ -179,7 +180,7 @@ static int l_graphics_Font_getAscent(lua_State* state) {
 
   graphics_Font* font = l_graphics_toFont(state, 1);
 
-  lua_pushinteger(state, graphics_Font_getAscent(font));
+  //lua_pushinteger(state, graphics_Font_getAscent(font));
   return 1;
 }
 
@@ -188,19 +189,21 @@ static int l_graphics_Font_getBaseline(lua_State* state) {
 
   graphics_Font* font = l_graphics_toFont(state, 1);
 
-  lua_pushinteger(state, graphics_Font_getBaseline(font));
+  //lua_pushinteger(state, graphics_Font_getBaseline(font));
   return 1;
 }
 
 static int l_graphics_Font_getWidth(lua_State* state) {
   l_assertType(state, 1, l_graphics_isFont);
 
+  /*
   graphics_Font* font = l_graphics_toFont(state, 1);
 
   char const* line = l_tools_toStringOrError(state, 2);
   int width = graphics_Font_getWidth(font, line);
 
   lua_pushinteger(state, width);
+  */
   return 1;
 }
 
@@ -212,7 +215,7 @@ static int l_graphics_Font_getWrap(lua_State* state) {
   char const* line = l_tools_toStringOrError(state, 2);
   int width = l_tools_toNumberOrError(state, 3);
 
-  lua_pushinteger(state, graphics_Font_getWrap(font, line, width, NULL));
+  //lua_pushinteger(state, graphics_Font_getWrap(font, line, width, NULL));
   return 1;
 }
 
@@ -223,7 +226,7 @@ static int l_graphics_Font_getFilter(lua_State* state) {
 
   graphics_Filter filter;
 
-  graphics_Font_getFilter(font, &filter);
+  //graphics_Font_getFilter(font, &filter);
 
   l_tools_pushEnum(state, filter.minMode, l_graphics_FilterMode);
   l_tools_pushEnum(state, filter.magMode, l_graphics_FilterMode);
@@ -235,6 +238,7 @@ static int l_graphics_Font_getFilter(lua_State* state) {
 static int l_graphics_Font_setFilter(lua_State* state) {
   l_assertType(state, 1, l_graphics_isFont);
 
+  /*
   graphics_Font* font = l_graphics_toFont(state, 1);
   graphics_Filter newFilter;
   graphics_Font_getFilter(font, &newFilter);
@@ -242,7 +246,7 @@ static int l_graphics_Font_setFilter(lua_State* state) {
   newFilter.magMode = l_tools_toEnumOrError(state, 3, l_graphics_FilterMode);
   newFilter.maxAnisotropy = luaL_optnumber(state, 4, 1.0f);
   graphics_Font_setFilter(font, &newFilter);
-
+  */
   return 0;
 }
 
