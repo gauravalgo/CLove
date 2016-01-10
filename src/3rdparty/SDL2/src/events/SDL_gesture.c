@@ -258,8 +258,40 @@ static float dollarDifference(SDL_FloatPoint* points,SDL_FloatPoint* templ,float
 
 static float bestDollarDifference(SDL_FloatPoint* points,SDL_FloatPoint* templ)
 {
-
-    return SDL_min(1,2);
+    /*------------BEGIN DOLLAR BLACKBOX------------------
+      -TRANSLATED DIRECTLY FROM PSUDEO-CODE AVAILABLE AT-
+      -"http://depts.washington.edu/aimgroup/proj/dollar/"
+    */
+    double ta = -M_PI/4;
+    double tb = M_PI/4;
+    double dt = M_PI/90;
+    float x1 = (float)(PHI*ta + (1-PHI)*tb);
+    float f1 = dollarDifference(points,templ,x1);
+    float x2 = (float)((1-PHI)*ta + PHI*tb);
+    float f2 = dollarDifference(points,templ,x2);
+    while (SDL_fabs(ta-tb) > dt) {
+        if (f1 < f2) {
+            tb = x2;
+            x2 = x1;
+            f2 = f1;
+            x1 = (float)(PHI*ta + (1-PHI)*tb);
+            f1 = dollarDifference(points,templ,x1);
+        }
+        else {
+            ta = x1;
+            x1 = x2;
+            f1 = f2;
+            x2 = (float)((1-PHI)*ta + PHI*tb);
+            f2 = dollarDifference(points,templ,x2);
+        }
+    }
+    /*
+      if (f1 <= f2)
+          printf("Min angle (x1): %f\n",x1);
+      else if (f1 >  f2)
+          printf("Min angle (x2): %f\n",x2);
+    */
+    return SDL_min(f1,f2);
 }
 
 /* DollarPath contains raw points, plus (possibly) the calculated length */

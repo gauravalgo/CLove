@@ -1308,4 +1308,3 @@ endif()
 #else()
   #install(TARGETS SDL2 RUNTIME DESTINATION bin)
 #endif()
-

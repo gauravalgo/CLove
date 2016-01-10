@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(love)
 
-add_definitions(-std=c99 -O3)
+if (UNIX)
+    add_definitions(-std=gnu99 -O3)
+endif()
+if(MINGW)
+    add_definitions(-std=c99 -O3)
+endif()
 
 FILE(
     GLOB SOURCE_FILES
@@ -59,8 +64,9 @@ add_subdirectory(src/3rdparty/glew/)
 SET(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
 
 #sdl
-ADD_SUBDIRECTORY(src/3rdparty/sdl2/)
-SET(SDL_INCLUDE_DIR src/3rdparty/sdl2/include/)
+ADD_SUBDIRECTORY(src/3rdparty/SDL2/)
+include_directories(src/3rdparty/SDL2/include/)
+SET(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
 
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
@@ -70,8 +76,13 @@ SET(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
 SET(SDL_LIBRARIES SDL2)
 SET(GLEW_LIBRARIES libglew_static)
-SET(OPENAL_LIBRARIES OpenAL32)
 
+if(MINGW)
+SET(OPENAL_LIBRARIES OpenAL32)
+endif()
+if(UNIX)
+SET(OPENAL_LIBRARIES openal)
+endif()
 if(MINGW)
     target_link_libraries(love ws2_32.lib
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
@@ -80,13 +91,15 @@ if(MINGW)
 endif()
 
 if(APPLE)
-    target_link_libraries(love sdl ${SDL_LIBRARIES}
-        ${GLEW_LIBRARIES} ${OPENAL_LIBRARIES} ${FREETYPE_LIBRARIES}
-        ${LUA_LIBRARIES})
+    target_link_libraries(love
+    	 ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+        ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
+        ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
 
 if(UNIX)
-    target_link_libraries(love dl ${SDL_LIBRARIES}
-        ${GLEW_LIBRARIES} ${OPENAL_LIBRARIES} ${FREETYPE_LIBRARIES}
-        ${LUA_LIBRARIES})
+    target_link_libraries(love
+    	 ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+        ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
+        ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
