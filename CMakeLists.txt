@@ -1,3 +1,12 @@
+#
+#   love
+#
+#   Copyright (C) 2016 Muresan Vlad
+#
+#   This project is free software; you can redistribute it and/or modify it
+#   under the terms of the MIT license. See LICENSE.md for details.
+#
+
 cmake_minimum_required(VERSION 2.8)
 
 project(love)
