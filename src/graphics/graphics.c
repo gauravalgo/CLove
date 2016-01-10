@@ -50,33 +50,34 @@ static struct {
 } moduleData;
 
 #ifndef EMSCRIPTEN
-  SDL_Window* graphics_getWindow(void) {
-    return moduleData.window;
-  }
+SDL_Window* graphics_getWindow(void) {
+  return moduleData.window;
+}
 #endif
 
 void graphics_init(int width, int height) {
   SDL_Init(SDL_INIT_VIDEO);
   moduleData.isCreated = 0;
-  #ifdef EMSCRIPTEN
-    moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
-  #else
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    moduleData.width = width;
-    moduleData.height = height;
-    moduleData.x = SDL_WINDOWPOS_UNDEFINED;
-    moduleData.y = SDL_WINDOWPOS_UNDEFINED;
-    moduleData.title = "Love";
-    moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL);
-    moduleData.context = SDL_GL_CreateContext(moduleData.window);
-    moduleData.surface = SDL_GetWindowSurface(moduleData.window);
-  #endif
-    GLenum res = glewInit();
-    if(res != GLEW_OK){
+#ifdef EMSCRIPTEN
+  moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
+#else
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+  moduleData.width = width;
+  moduleData.height = height;
+  moduleData.x = SDL_WINDOWPOS_UNDEFINED;
+  moduleData.y = SDL_WINDOWPOS_UNDEFINED;
+  moduleData.title = "Love";
+  moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL);
+  moduleData.context = SDL_GL_CreateContext(moduleData.window);
+  moduleData.surface = SDL_GetWindowSurface(moduleData.window);
+#endif
+  GLenum res = glewInit();
+  if(res != GLEW_OK){
       printf("Could not init glew...");
     }
+  SDL_GL_SetSwapInterval(1); //this may not work on all drivers
   glViewport(0,0,width,height);
 
   matrixstack_init();
@@ -140,13 +141,13 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
 
   graphics_Shader_activate(
-    &moduleData.projectionMatrix,
-    &tr,
-    quad,
-    useColor,
-    ws,
-    hs
-  );
+        &moduleData.projectionMatrix,
+        &tr,
+        quad,
+        useColor,
+        ws,
+        hs
+        );
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   glDrawElements(type, count, indexType, (GLvoid const*)0);
@@ -219,7 +220,7 @@ int graphics_setFullscreen(int value, const char* mode){
 #ifndef EMSCRIPTEN
   if ((strncmp(mode,"desktop", 7) == 0) && value == 1)
     SDL_SetWindowFullscreen(moduleData.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-  #endif
+#endif
   return 1;
 }
 
@@ -266,41 +267,41 @@ void graphics_setBlendMode(graphics_BlendMode mode) {
   GLenum bFunc = GL_FUNC_ADD;
 
   switch(mode) {
-  case graphics_BlendMode_alpha:
-    sfRGB = GL_SRC_ALPHA;
-    sfA = GL_ONE;
-    dfRGB = dfA = GL_ONE_MINUS_SRC_ALPHA;
-    break;
+    case graphics_BlendMode_alpha:
+      sfRGB = GL_SRC_ALPHA;
+      sfA = GL_ONE;
+      dfRGB = dfA = GL_ONE_MINUS_SRC_ALPHA;
+      break;
 
-  case graphics_BlendMode_subtractive:
-    bFunc = GL_FUNC_REVERSE_SUBTRACT;
-    // fallthrough
-  case graphics_BlendMode_additive:
-    sfA = sfRGB = GL_SRC_ALPHA;
-    dfA = dfRGB = GL_ONE;
-    break;
+    case graphics_BlendMode_subtractive:
+      bFunc = GL_FUNC_REVERSE_SUBTRACT;
+      // fallthrough
+    case graphics_BlendMode_additive:
+      sfA = sfRGB = GL_SRC_ALPHA;
+      dfA = dfRGB = GL_ONE;
+      break;
 
 
-  case graphics_BlendMode_multiplicative:
-    sfA = sfRGB = GL_DST_COLOR;
-    dfA = dfRGB = GL_ZERO;
-    break;
+    case graphics_BlendMode_multiplicative:
+      sfA = sfRGB = GL_DST_COLOR;
+      dfA = dfRGB = GL_ZERO;
+      break;
 
-  case graphics_BlendMode_premultiplied:
-    sfA = sfRGB = GL_ONE;
-    dfA = dfRGB = GL_ONE_MINUS_SRC_ALPHA;
-    break;
+    case graphics_BlendMode_premultiplied:
+      sfA = sfRGB = GL_ONE;
+      dfA = dfRGB = GL_ONE_MINUS_SRC_ALPHA;
+      break;
 
-  case graphics_BlendMode_screen:
-    sfA = sfRGB = GL_ONE;
-    dfA = dfRGB = GL_ONE_MINUS_SRC_COLOR;
-    break;
+    case graphics_BlendMode_screen:
+      sfA = sfRGB = GL_ONE;
+      dfA = dfRGB = GL_ONE_MINUS_SRC_COLOR;
+      break;
 
-  case graphics_BlendMode_replace:
-  default:
-    // uses default init values   
-    break;
-  }
+    case graphics_BlendMode_replace:
+    default:
+      // uses default init values
+      break;
+    }
 
   glBlendFuncSeparate(sfRGB, dfRGB, sfA, dfA);
   glBlendEquation(bFunc);
@@ -323,8 +324,8 @@ void graphics_setScissor(int x, int y, int w, int h) {
 
 bool graphics_getScissor(int *x, int *y, int *w, int *h) {
   if(!moduleData.scissorSet) {
-    return false;
-  }
+      return false;
+    }
 
   *x = moduleData.scissorBox[0];
   *y = moduleData.scissorBox[1];

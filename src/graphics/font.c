@@ -60,21 +60,45 @@ static const graphics_Filter defaultFilter = {
   .mipmapMode = graphics_FilterMode_none
 };
 
+static const graphics_Wrap defaultWrap = {
+  .verMode = graphics_WrapMode_clamp,
+  .horMode = graphics_WrapMode_clamp
+};
+
 static void graphics_Font_newTexture(graphics_Font* font) {
   /* Upload the "bitmap", which contains an 8-bit grayscale image, as an alpha texture */
   glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &font->tex);
   glBindTexture(GL_TEXTURE_2D, font->tex);
-  graphics_Font_setWrap(font, NULL);
+
+  FT_BitmapGlyph fg = (FT_BitmapGlyph)moduleData.g;
+  FT_Bitmap b = moduleData.g->bitmap;
+
+    // Create LUMINANCE_ALPHA texture data
+    // TODO: Maybe just alpha (or GL_R on modern core profiles) is
+    //       enough?
+    uint8_t *buf = malloc(2*b.rows*b.width);
+    uint8_t *row = b.buffer;
+    for(int i = 0; i < b.rows; ++i) {
+      for(int c = 0; c < b.width; ++c) {
+        buf[2*(i*b.width + c)    ] = 255;
+        buf[2*(i*b.width + c) + 1] = row[c];
+      }
+      row += b.pitch;
+    }
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+               moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0, GL_LUMINANCE_ALPHA,
+               GL_UNSIGNED_BYTE, buf);
+
+  graphics_Font_setWrap(font, &defaultWrap);
   graphics_Font_setFilter(font, &defaultFilter);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0, GL_ALPHA,
-               GL_UNSIGNED_BYTE, moduleData.g->bitmap.buffer);
 }
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
       if (FT_New_Face(moduleData.ft, filename, 0, &font->face)) {
-          fprintf(stderr, "Could not open font %s\n", filename);
+          fprintf(stderr, "Could not open font %s \n", filename);
           return 0;
         }
     }else
@@ -102,7 +126,7 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   moduleData.g = font->face->glyph;
 
   // Load first 128 characters of ASCII set
-    for (GLubyte c = 0; c < 128; c++)
+  for (GLubyte c = 0; c < 128; c++)
     {
       // Load character glyph
       if (FT_Load_Char(font->face, c, FT_LOAD_RENDER))
@@ -112,12 +136,12 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
       // Now store character for later use
       character _character = {
         font->tex,
-        font->face->glyph->bitmap.width,
-        font->face->glyph->bitmap.rows,
-        font->face->glyph->bitmap_left,
-        font->face->glyph->bitmap_top,
-        font->face->glyph->advance.x,
-        font->face->glyph->advance.y
+        moduleData.g->bitmap.width,
+        moduleData.g->bitmap.rows,
+        moduleData.g->bitmap_left,
+        moduleData.g->bitmap_top,
+        moduleData.g->advance.x,
+        moduleData.g->advance.y
       };
       moduleData.characters[c] = _character;
     }
@@ -141,21 +165,21 @@ void graphics_Font_setWrap(graphics_Font *font, graphics_Wrap const* wrap) {
 
 void graphics_Font_free(graphics_Font* font) {
   FT_Done_Face(font->face);
-  FT_Done_Glyph(font->glyph);
   FT_Done_FreeType(moduleData.ft);
   glDeleteTextures(1,&font->tex);
   free(font);
 }
 
 void graphics_Font_render(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
-  graphics_Shader* shader = graphics_getShader();
-  graphics_setDefaultShader();
   uint32_t cp;
   character ch;
-  //glActiveTexture(GL_TEXTURE0);
+  int x = 0;
+  int y = 0;
+  graphics_Shader* shader = graphics_getShader();
+  graphics_setDefaultShader();
+
   while((cp = utf8_scan(&text))) {
       ch = moduleData.characters[cp];
-
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
 
       if (cp == '\n'){
@@ -164,8 +188,8 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
           continue;
         }
 
-      int x = px + ch.bearingx;
-      int y = py - ch.bearingy;
+      x = px + ch.bearingx;
+      y = py - ch.bearingy;
 
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
       graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
