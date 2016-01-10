@@ -20,6 +20,7 @@ static const KeyName keynames[] = {
   {SDLK_UNKNOWN,      "unknown"},
   {SDLK_RETURN,       "return"},
   {SDLK_ESCAPE,       "escape"},
+  {SDLK_ESCAPE,       "esc"},
   {SDLK_BACKSPACE,    "backspace"},
   {SDLK_TAB,          "tab"},
   {SDLK_SPACE,        " "},
