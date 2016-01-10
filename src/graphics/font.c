@@ -23,6 +23,7 @@
 #include "../3rdparty/freetype/include/ftglyph.h"
 
 #include FT_GLYPH_H
+
 typedef struct {
   unsigned int textureid;
   float sizex;
@@ -39,7 +40,6 @@ static struct {
   mat4x4 tr2d;
   FT_GlyphSlot g;
 } moduleData;
-
 
 static graphics_Vertex const imageVertices[] = {
   {{0.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
@@ -85,7 +85,6 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   glGenBuffers(1, &font->vbo);
   glGenBuffers(1, &font->ibo);
 
-
   glBindBuffer(GL_ARRAY_BUFFER, font->vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
   unsigned char const imageIndices[] = { 0, 1, 2, 3 };
@@ -109,25 +108,7 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
       if (FT_Load_Char(font->face, c, FT_LOAD_RENDER))
         continue;
 
-      // Generate texture
-      glGenTextures(1, &font->tex);
-      glBindTexture(GL_TEXTURE_2D, font->tex);
-      glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_ALPHA,
-        font->face->glyph->bitmap.width,
-        font->face->glyph->bitmap.rows,
-        0,
-        GL_ALPHA,
-        GL_UNSIGNED_BYTE,
-        font->face->glyph->bitmap.buffer
-        );
-      // Set texture options
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      graphics_Font_newTexture(font);
       // Now store character for later use
       character _character = {
         font->tex,
@@ -170,20 +151,28 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
   uint32_t cp;
-  glActiveTexture(GL_TEXTURE0);
+  character ch;
+  //glActiveTexture(GL_TEXTURE0);
   while((cp = utf8_scan(&text))) {
-      character ch = moduleData.characters[cp];
+      ch = moduleData.characters[cp];
+
+      glBindTexture(GL_TEXTURE_2D,ch.textureid);
+
+      if (cp == '\n'){
+          px = (ch.advancex >> 5) * (ch.sizex + ch.bearingx);
+          py += floor(ch.bearingy + 5.25f);
+          continue;
+        }
 
       int x = px + ch.bearingx;
       int y = py - ch.bearingy;
 
-      glBindTexture(GL_TEXTURE_2D,ch.textureid);
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
       graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                          graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
 
-      px += ch.advancex >> 6;//(moduleData.g->advance.x >> 6);
-      py += (ch.advancey >> 6);
+      px += ch.advancex >> 6;
+      py += ch.advancey >> 6;
     }
   graphics_setShader(shader);
 }
