@@ -185,7 +185,7 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
 
       if (cp == '\n'){
-          px = (ch.advancex >> 5) * (ch.sizex + ch.bearingx);
+          px = ((ch.advancex >> 5) * (ch.sizex + ch.bearingx));
           py += floor(ch.bearingy + 5.25f);
           continue;
         }
@@ -213,12 +213,23 @@ void graphics_Font_getFilter(graphics_Font *font, graphics_Filter *filter) {
 
 void graphics_Font_setWrap(graphics_Font *font, graphics_Wrap const* wrap) {
   glBindTexture(GL_TEXTURE_2D, font->tex);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, graphics_WrapMode_clamp);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, graphics_WrapMode_clamp);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap->horMode);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap->verMode);
+}
+
+int graphics_Font_getDescent(graphics_Font* font) {
+  return font->face->descender;
+}
+
+int graphics_Font_getBaseline(graphics_Font* font) {
+  return floor(font->glyph->bitmap.rows / 1.25f + .5f);
+}
+
+int graphics_Font_getAscent(graphics_Font* font) {
+  return font->face->ascender;
 }
 
 int graphics_Font_getHeight(graphics_Font* font){
-  printf("%i /n", font->glyph->bitmap.rows);
-  return moduleData.g->bitmap.rows;
+  return font->glyph->bitmap.rows;
 }
 
