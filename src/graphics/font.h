@@ -22,10 +22,12 @@ typedef struct {
   unsigned int vbo;
   unsigned int ibo;
   unsigned int tex;
+  int size;
   FT_Library ft;
   FT_Face face;
   FT_GlyphSlot glyph;
   char const* text;
+  const char* name;
 } graphics_Font;
 
 
@@ -50,6 +52,9 @@ int graphics_Font_getDescent(graphics_Font* font);
 int graphics_Font_getBaseline(graphics_Font* font);
 
 int graphics_Font_getWidth(graphics_Font* font, char const* line);
+
+void graphics_Font_setName(graphics_Font* font, const char* name);
+const char* graphics_Font_getName(graphics_Font* font);
 
 typedef enum {
   graphics_TextAlign_center,
