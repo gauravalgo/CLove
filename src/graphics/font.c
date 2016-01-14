@@ -176,6 +176,7 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
   uint32_t cp;
   character ch;
   int x = 0;
+  int storeX = 0;
   int y = font->face->ascender;
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
@@ -184,14 +185,19 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
       ch = moduleData.characters[cp];
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
 
-      if (cp == '\n'){
-          x = 0;//(((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
-          py += floor(ch.bearingy + 5.25f);
-          continue;
-        }
+      if (storeX == 0)
+        storeX = px - ch.sizex;
 
       x = px + ch.bearingx;
       y = py - ch.bearingy;
+
+      if (cp == '\n'){
+          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          if (px < storeX)
+            px = storeX;
+          py += floor(ch.bearingy + 5.25f);
+          continue;
+        }
 
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
       graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
