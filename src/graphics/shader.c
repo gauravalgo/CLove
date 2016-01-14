@@ -312,13 +312,12 @@ graphics_ShaderCompileStatus graphics_Shader_new(graphics_Shader *shader, char c
 
 
 void graphics_Shader_free(graphics_Shader* shader) {
-  glDeleteProgram(shader->program);
-
   for(int i = 0; i < shader->uniformCount; ++i) {
-    free(shader->uniforms[i].name);
+      free(shader->uniforms[i].name);
   }
   free(shader->textureUnits);
   free(shader->uniforms);
+  glDeleteProgram(shader->program);
 }
 
 void graphics_Shader_activate(mat4x4 const* projection, mat4x4 const* transform, graphics_Quad const* textureRect, float const* useColor, float ws, float hs) {

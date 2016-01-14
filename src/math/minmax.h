@@ -15,3 +15,7 @@ inline int max(int i, int j) {
 inline int min(int i, int j) {
   return i < j ? i : j;
 }
+
+inline int clamp(int a, int i, int k) {
+  return a > k ? k : i ? i : a;
+}

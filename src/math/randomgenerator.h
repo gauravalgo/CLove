@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "util.h"
 
 #define RANDOMGENERATOR_STATE_STR_SZ (19)
 
@@ -38,4 +39,3 @@ double RandomGenerator_random1(RandomGenerator *r, double max);
 double RandomGenerator_random2(RandomGenerator *r, double min, double max);
 double RandomGenerator_randomNormal(RandomGenerator *r, double stddev);
 double RandomGenerator_randomNormal2(RandomGenerator *r, double stddev, double mean);
-

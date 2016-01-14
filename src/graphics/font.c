@@ -176,7 +176,7 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
   uint32_t cp;
   character ch;
   int x = 0;
-  int y = 0;
+  int y = font->face->ascender;
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
 
@@ -185,7 +185,7 @@ void graphics_Font_render(graphics_Font* font, char const* text, int px, int py,
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
 
       if (cp == '\n'){
-          px = ((ch.advancex >> 5) * (ch.sizex + ch.bearingx));
+          x = 0;//(((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
           py += floor(ch.bearingy + 5.25f);
           continue;
         }
