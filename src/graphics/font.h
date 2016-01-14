@@ -36,7 +36,6 @@ void graphics_Font_getFilter(graphics_Font *font, graphics_Filter *filter);
 void graphics_Font_setWrap(graphics_Font *font, graphics_Wrap const* wrap);
 void graphics_Font_getWrap(graphics_Font *font, graphics_Wrap *wrap);
 
-
 int graphics_font_init(void);
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize);

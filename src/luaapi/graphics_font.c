@@ -25,22 +25,6 @@ static struct {
   graphics_Font defaultFont;
 } moduleData;
 
-static int l_graphics_setFont(lua_State* state) {
-  l_assertType(state, 1, l_graphics_isFont);
-
-  lua_settop(state, 1);
-
-  graphics_Font* font = l_graphics_toFont(state, 1);
-
-  // Release current font in Lua, so it can be GCed if needed
-  if(moduleData.currentFont) {
-      luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
-    }
-
-  moduleData.currentFontRef = luaL_ref(state, LUA_REGISTRYINDEX);
-  moduleData.currentFont = font;
-  return 0;
-}
 
 static const l_tools_Enum l_graphics_AlignMode[] = {
   {"left", graphics_TextAlign_left},
@@ -56,6 +40,35 @@ static void l_graphics_loadDefaultFont() {
   moduleData.currentFont = &moduleData.defaultFont;
 }
 
+static void l_graphics_loadDefaultFont_with_size(const int size) {
+  moduleData.currentFont = malloc(sizeof(graphics_Font()));
+  graphics_Font_new(&moduleData.defaultFont, NULL, size);
+  moduleData.currentFont = &moduleData.defaultFont;
+}
+
+static int l_graphics_setFont(lua_State* state) {
+  l_assertType(state, 1, l_graphics_isFont);
+
+  lua_settop(state, 1);
+
+  graphics_Font* font = l_graphics_toFont(state, 1);
+
+  // Release current font in Lua, so it can be GCed if needed
+  if(moduleData.currentFont)
+    luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
+
+  moduleData.currentFontRef = luaL_ref(state, LUA_REGISTRYINDEX);
+  moduleData.currentFont = font;
+  return 0;
+}
+
+static int l_graphics_setNewFont(lua_State* state) {
+
+  if(lua_tonumber(state, 1))
+    l_graphics_loadDefaultFont_with_size(lua_tonumber(state, 1));
+
+  return 0;
+}
 
 static int l_graphics_printf(lua_State* state) {
   if(!moduleData.currentFont) {
@@ -88,7 +101,9 @@ static int l_graphics_print(lua_State* state) {
   if(!moduleData.currentFont) {
       l_graphics_loadDefaultFont();
     }
-  char const* text = l_tools_toStringOrError(state, 1);
+  char const* text = lua_tostring(state, 1);
+  if (text == NULL)
+    text = "";
   int x = l_tools_toNumberOrError(state, 2);
   int y = l_tools_toNumberOrError(state, 3);
 
@@ -202,14 +217,13 @@ static int l_graphics_Font_getBaseline(lua_State* state) {
 static int l_graphics_Font_getWidth(lua_State* state) {
   l_assertType(state, 1, l_graphics_isFont);
 
-  /*
+
   graphics_Font* font = l_graphics_toFont(state, 1);
 
   char const* line = l_tools_toStringOrError(state, 2);
   int width = graphics_Font_getWidth(font, line);
 
   lua_pushinteger(state, width);
-  */
   return 1;
 }
 
@@ -267,7 +281,7 @@ static luaL_Reg const fontMetatableFuncs[] = {
   {"getAscent",          l_graphics_Font_getAscent},
   {"getDescent",         l_graphics_Font_getDescent},
   {"getBaseline",        l_graphics_Font_getBaseline},
-  //{"getWidth",           l_graphics_Font_getWidth},
+  {"getWidth",           l_graphics_Font_getWidth},
   //{"getWrap",            l_graphics_Font_getWrap},
   {"getFilter",          l_graphics_Font_getFilter},
   {"setFilter",          l_graphics_Font_setFilter},
@@ -278,6 +292,7 @@ static luaL_Reg const fontFreeFuncs[] = {
   {"newFont",            l_graphics_newFont},
   {"getFont",            l_graphics_getFont},
   {"setFont",            l_graphics_setFont},
+  {"setNewFont",         l_graphics_setNewFont},
   //{"printf",             l_graphics_printf},
   {"print",              l_graphics_print},
   {NULL, NULL}

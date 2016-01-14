@@ -172,6 +172,14 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   return 0;
 }
 
+int graphics_Font_getWidth(graphics_Font* font, char const* line) {
+  int sum;
+  for(int c = 1; c < utf8_scan(&line);c++) {
+      sum = c * moduleData.g->bitmap.width;
+    }
+  return sum;
+}
+
 void graphics_Font_render(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
   uint32_t cp;
   character ch;
@@ -236,6 +244,6 @@ int graphics_Font_getAscent(graphics_Font* font) {
 }
 
 int graphics_Font_getHeight(graphics_Font* font){
-  return font->glyph->bitmap.rows;
+  return moduleData.g->bitmap.rows;
 }
 
