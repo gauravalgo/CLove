@@ -7,11 +7,11 @@
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
 #include "../3rdparty/lua/lualib.h"
-#include "bonding.h"
-#include "../bonding.h"
+#include "love.h"
+#include "../love.h"
 
-int l_bonding_getVersion(lua_State* state) {
-  bonding_Version const * version = bonding_getVersion();
+int l_love_getVersion(lua_State* state) {
+  love_Version const * version = love_getVersion();
   lua_pushnumber(state, version->major);
   lua_pushnumber(state, version->minor);
   lua_pushnumber(state, version->revision);
@@ -19,11 +19,11 @@ int l_bonding_getVersion(lua_State* state) {
   return 4;
 }
 
-int l_bonding_register(lua_State* state) {
+int l_love_register(lua_State* state) {
   lua_newtable(state);
 
   lua_pushstring(state, "getVersion");
-  lua_pushcfunction(state, l_bonding_getVersion);
+  lua_pushcfunction(state, l_love_getVersion);
   lua_rawset(state, -3);
   
   lua_setglobal(state, "love");

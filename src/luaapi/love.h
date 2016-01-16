@@ -8,11 +8,5 @@
 */
 #pragma once
 
-typedef struct {
-  int width;
-  int height;
-} bonding_WindowConfig;
-
-typedef struct {
-  bonding_WindowConfig window;
-} bonding_Config;
+#include "../3rdparty/lua/lua.h"
+int l_love_register(lua_State* state);

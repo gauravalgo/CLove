@@ -13,15 +13,6 @@
 #include <string.h>
 #include "luaapi/mouse.h"
 
-// TODO:
-// moduleData.getRelativeMode()
-// moduleData.getSystemCursor()
-// moduleData.isGrabbed()
-// moduleData.newCursor()
-// moduleData.setCursor()
-// moduleData.setGrabbed()
-// moduleData.setRelativeMode()
-
 #ifndef EMSCRIPTEN
 extern SDL_Window* graphics_getWindow(void);
 #endif

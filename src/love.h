@@ -13,6 +13,6 @@ typedef struct {
   int minor;
   int revision;
   char const * codename;
-} bonding_Version;
+} love_Version;
 
-bonding_Version const * bonding_getVersion(void);
+love_Version const * love_getVersion(void);

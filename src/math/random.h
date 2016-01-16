@@ -9,3 +9,4 @@
 #pragma once
 
 float math_random(float min, float max);
+void math_random_setSeed(double value);

@@ -22,7 +22,7 @@
 #include "luaapi/graphics.h"
 #include "luaapi/graphics_font.h"
 #include "luaapi/image.h"
-#include "luaapi/bonding.h"
+#include "luaapi/love.h"
 #include "luaapi/boot.h"
 #include "luaapi/keyboard.h"
 #include "luaapi/mouse.h"
@@ -171,9 +171,9 @@ int main(void) {
   lua_State *lua = luaL_newstate();
   luaL_openlibs(lua);
 
-  bonding_Config config;
+  love_Config config;
 
-  l_bonding_register(lua);
+  l_love_register(lua);
   l_audio_register(lua);
   l_event_register(lua);
   l_graphics_register(lua);
@@ -190,7 +190,7 @@ int main(void) {
   graphics_init(config.window.width, config.window.height);
   audio_init();
 
-  if(luaL_dofile(lua, source_dir ? source_dir : "main.lua")) {
+  if(luaL_dofile(lua, "main.lua")) {
       printf("Error: %s\n", lua_tostring(lua, -1));
     }
 

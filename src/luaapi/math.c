@@ -29,6 +29,12 @@ int l_math_random(lua_State* state) {
   return 1;
 }
 
+int l_math_random_setSeed(lua_State* state) {
+  double value = l_tools_toNumberOrError(state, 1);
+  math_random_setSeed(value);
+  return 0;
+}
+
 int l_math_max(lua_State* state) {
   float x = l_tools_toNumberOrError(state, 1);
   float y = l_tools_toNumberOrError(state, 2);
@@ -56,6 +62,7 @@ int l_math_clamp(lua_State* state) {
 
 static luaL_Reg const mathFreeFuncs[] = {
   {"random", l_math_random},
+  {"setRandomSeed", l_math_random_setSeed},
   {"max", l_math_max},
   {"min", l_math_min},
   {"clamp", l_math_clamp},

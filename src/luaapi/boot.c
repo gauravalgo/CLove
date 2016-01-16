@@ -40,7 +40,7 @@ static char const bootScript[] =
   "return conf\n"
 ;
 
-int l_boot(lua_State* state, bonding_Config *config) {
+int l_boot(lua_State* state, love_Config *config) {
   if(luaL_dostring(state, bootScript)) {
     return 1;
   }

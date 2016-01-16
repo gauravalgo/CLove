@@ -6,10 +6,10 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
-#include "bonding.h"
+#include "love.h"
 
-bonding_Version const * bonding_getVersion(void) {
-  static const bonding_Version version = {
+love_Version const * love_getVersion(void) {
+  static const love_Version version = {
     .major = 0,
     .minor = 2,
     .revision = 0,
