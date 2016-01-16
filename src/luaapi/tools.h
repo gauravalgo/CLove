@@ -73,7 +73,7 @@ inline int l_tools_toEnumOrError(lua_State* state, int index, l_tools_Enum const
       ++values;
     }
 
-  lua_pushstring(state, "invalid enum value");
+  luaL_argerror(state,index-1,"invalid enum value");
   return lua_error(state);
 }
 
@@ -96,11 +96,10 @@ void l_tools_pushEnum(lua_State* state, int value, l_tools_Enum const* values);
   return (type*)lua_touserdata(state, index);\
   }
 
-#ifndef MOTOR_SKIP_SAFETY_CHECKS
-// TODO appropriate name
+#ifndef LOVE_SKIP_SAFETY_CHECKS
 # define l_assertType(state, index, func) \
   if(!func(state, index)) { \
-  lua_pushstring(state, "expected X"); \
+  luaL_argerror(state,index-1,"expected X"); \
   lua_error(state); \
   }
 #else
