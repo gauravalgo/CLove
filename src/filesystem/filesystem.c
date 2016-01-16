@@ -39,6 +39,7 @@ int filesystem_write(const char* name, const char* data)
 
   fprintf(file, data);
   fclose(file);
+
   return size;
 }
 
@@ -57,4 +58,10 @@ int filesystem_read(char const* filename, char** output) {
   fclose(infile);
   (*output)[size] = 0;
   return size;
+}
+
+
+int filesystem_remove(const char* name) {
+  remove(name);
+  return 0;
 }

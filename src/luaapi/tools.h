@@ -29,7 +29,7 @@ inline float l_tools_toNumberOrError(lua_State* state, int index) {
 
 inline char const* l_tools_toStringOrError(lua_State* state, int index) {
   if(lua_type(state, index) != LUA_TSTRING) {
-      luaL_argerror(state,index-1,"expected string");
+      luaL_argerror(state,index,"expected string");
       lua_error(state);
     }
 

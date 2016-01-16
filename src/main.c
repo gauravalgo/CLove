@@ -31,6 +31,7 @@
 #include "luaapi/math.h"
 
 #include "graphics/graphics.h"
+#include "filesystem/filesystem.h"
 #include "audio/audio.h"
 #include "keyboard.h"
 #include "mouse.h"
@@ -40,13 +41,13 @@ int lua_errorhandler(lua_State *state) {
   lua_Debug debug;
   int level = 0;
   while(lua_getstack(state, level, &debug)) {
-    lua_getinfo(state, "Sl", &debug);
-    lua_pushstring(state, debug.short_src);
-    lua_pushstring(state, ":");
-    lua_pushnumber(state, debug.currentline);
-    lua_pushstring(state, "\n");
-    ++level;
-  }
+      lua_getinfo(state, "Sl", &debug);
+      lua_pushstring(state, debug.short_src);
+      lua_pushstring(state, ":");
+      lua_pushnumber(state, debug.currentline);
+      lua_pushstring(state, "\n");
+      ++level;
+    }
   
   lua_concat(state, 4*level+1);
   return 1;
@@ -63,8 +64,8 @@ void quit_function(lua_State* state)
   lua_pushstring(state, "quit");
   lua_rawget(state, -2);
   if(lua_pcall(state, 0, 0, 1)) {
-    printf("Error in love.quit: %s\n", lua_tostring(state, -1));
-  }
+      printf("Error in love.quit: %s\n", lua_tostring(state, -1));
+    }
   lua_pop(state, 1);
 }
 
@@ -80,21 +81,21 @@ void main_loop(void *data) {
   lua_pushnumber(loopData->luaState, timer_getDelta());
 
   if (swap_At == 1){
-    if(luaL_dofile(loopData->luaState, "main.lua")) {
-      printf("Error: %s\n", lua_tostring(loopData->luaState, -1));
+      if(luaL_dofile(loopData->luaState, "main.lua")) {
+          printf("Error: %s\n", lua_tostring(loopData->luaState, -1));
+        }
     }
- }
 
 
   if(lua_pcall(loopData->luaState, 1, 0, 0)) {
-    printf("Lua error: %s\n", lua_tostring(loopData->luaState, -1));
+      printf("Lua error: %s\n", lua_tostring(loopData->luaState, -1));
 #ifdef EMSCRIPTEN
-    quit_function(loopData->luaState);
-    emscripten_force_exit(1);
+      quit_function(loopData->luaState);
+      emscripten_force_exit(1);
 #else
-    exit(1);
+      exit(1);
 #endif
-  }
+    }
 
   graphics_clear();
 
@@ -102,15 +103,15 @@ void main_loop(void *data) {
   lua_rawget(loopData->luaState, -2);
 
   if(lua_pcall(loopData->luaState, 0, 0, 0)) {
-    printf("Lua error: %s\n", lua_tostring(loopData->luaState, -1));
+      printf("Lua error: %s\n", lua_tostring(loopData->luaState, -1));
 #ifdef EMSCRIPTEN
-    quit_function(loopData->luaState);
-    emscripten_force_exit(1);
-    l_running = 0;
-    #else
-    l_running = 0;
+      quit_function(loopData->luaState);
+      emscripten_force_exit(1);
+      l_running = 0;
+#else
+      l_running = 0;
 #endif
-  }
+    }
 
   graphics_swap();
 
@@ -118,52 +119,52 @@ void main_loop(void *data) {
 
   SDL_Event event;
   while(SDL_PollEvent(&event)) {
-    if (event.type == SDL_WINDOWEVENT) {
-      switch (event.window.event) {
-      case SDL_WINDOWEVENT_ENTER:
-        graphics_setMouseFocus(1);
-        break;
-      case SDL_WINDOWEVENT_LEAVE:
-        graphics_setMouseFocus(0);
-        break;
-      case SDL_WINDOWEVENT_FOCUS_LOST:
-        graphics_setFocus(0);
-        break;
-      case SDL_WINDOWEVENT_FOCUS_GAINED:
-        graphics_setFocus(1);
-        break;
-      default:
-        break;
-      }
-    }
-    switch(event.type) {
-    case SDL_KEYDOWN:
-      keyboard_keypressed(event.key.keysym.sym);
-      break;
-    case SDL_KEYUP:
-      keyboard_keyreleased(event.key.keysym.sym);
-      break;
-    case SDL_TEXTINPUT:
-      keyboard_textInput(event.text.text);
-      break;
-    case SDL_MOUSEMOTION:
-      mouse_mousemoved(event.motion.x, event.motion.y);
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      mouse_mousepressed(event.button.x, event.button.y,
-      event.button.button);
-     break;
-    case SDL_MOUSEBUTTONUP:
-      mouse_mousereleased(event.button.x, event.button.y,
-      event.button.button);
-      break;
+      if (event.type == SDL_WINDOWEVENT) {
+          switch (event.window.event) {
+            case SDL_WINDOWEVENT_ENTER:
+              graphics_setMouseFocus(1);
+              break;
+            case SDL_WINDOWEVENT_LEAVE:
+              graphics_setMouseFocus(0);
+              break;
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+              graphics_setFocus(0);
+              break;
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+              graphics_setFocus(1);
+              break;
+            default:
+              break;
+            }
+        }
+      switch(event.type) {
+        case SDL_KEYDOWN:
+          keyboard_keypressed(event.key.keysym.sym);
+          break;
+        case SDL_KEYUP:
+          keyboard_keyreleased(event.key.keysym.sym);
+          break;
+        case SDL_TEXTINPUT:
+          keyboard_textInput(event.text.text);
+          break;
+        case SDL_MOUSEMOTION:
+          mouse_mousemoved(event.motion.x, event.motion.y);
+          break;
+        case SDL_MOUSEBUTTONDOWN:
+          mouse_mousepressed(event.button.x, event.button.y,
+                             event.button.button);
+          break;
+        case SDL_MOUSEBUTTONUP:
+          mouse_mousereleased(event.button.x, event.button.y,
+                              event.button.button);
+          break;
 #ifndef EMSCRIPTEN
-    case SDL_QUIT:
-      quit_function(loopData->luaState);
-      l_running = 0;
+        case SDL_QUIT:
+          quit_function(loopData->luaState);
+          l_running = 0;
 #endif
+        }
     }
-  }
 }
 
 int main(void) {
@@ -189,17 +190,17 @@ int main(void) {
   graphics_init(config.window.width, config.window.height);
   audio_init();
 
-  if(luaL_dofile(lua, "main.lua")) {
-    printf("Error: %s\n", lua_tostring(lua, -1));
-  }
+  if(luaL_dofile(lua, source_dir ? source_dir : "main.lua")) {
+      printf("Error: %s\n", lua_tostring(lua, -1));
+    }
 
   lua_pushcfunction(lua, lua_errorhandler);
   lua_getglobal(lua, "love");
   lua_pushstring(lua, "load");
   lua_rawget(lua, -2);
   if(lua_pcall(lua, 0, 0, 1)) {
-    printf("Error in love.load: %s\n", lua_tostring(lua, -1));
-  }
+      printf("Error in love.load: %s\n", lua_tostring(lua, -1));
+    }
   lua_pop(lua, 1);
 
   lua_pushcfunction(lua, lua_errorhandler);
@@ -214,8 +215,8 @@ int main(void) {
   emscripten_set_main_loop_arg(main_loop, &mainLoopData, 0, 1);
 #else
   while(l_event_running()) {
-    main_loop(&mainLoopData);
-  }
+      main_loop(&mainLoopData);
+    }
   if(!l_event_running())
     quit_function(lua);
 #endif
