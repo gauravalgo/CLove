@@ -106,7 +106,6 @@ static int l_graphics_print(lua_State* state) {
     text = "";
   int x = l_tools_toNumberOrError(state, 2);
   int y = l_tools_toNumberOrError(state, 3);
-
   float r = luaL_optnumber(state, 4, 0);
   float sx = luaL_optnumber(state, 5, 1.0f);
   float sy = luaL_optnumber(state, 6, sx);
@@ -114,7 +113,6 @@ static int l_graphics_print(lua_State* state) {
   float oy = luaL_optnumber(state, 8, 0);
   float kx = luaL_optnumber(state, 9, 0);
   float ky = luaL_optnumber(state, 10, 0);
-
   graphics_Font_render(moduleData.currentFont, text, x, y, r, sx, sy, ox, oy, kx, ky);
   return 0;
 }

@@ -13,8 +13,13 @@
 static char const bootScript[] =
   "package.path = '?.lua;?/init.lua'\n"
   "love.update = function(dt) end\n"
-  "love.draw = function() end\n"
-  "love.load = function() end\n"
+  "love.draw = function() "
+  "love.graphics.setNewFont(26)"
+  "love.graphics.print('No game', 340,300)"
+  "end\n"
+  "love.load = function() "
+  "love.graphics.setBackgroundColor(0x84, 0xca, 0xff) end "
+  "\n"
   "love.mousepressed = function() end\n"
   "love.mousereleased = function() end\n"
   "love.keypressed = function() end\n"
@@ -56,5 +61,4 @@ int l_boot(lua_State* state, bonding_Config *config) {
   lua_pop(state, 3);
 
   return 0;
-
 }
