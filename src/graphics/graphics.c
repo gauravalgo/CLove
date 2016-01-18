@@ -68,16 +68,16 @@ void graphics_init(int width, int height) {
   moduleData.height = height;
   moduleData.x = SDL_WINDOWPOS_UNDEFINED;
   moduleData.y = SDL_WINDOWPOS_UNDEFINED;
-  moduleData.title = "Love";
+  moduleData.title = "Untitled";
   moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL);
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   moduleData.surface = SDL_GetWindowSurface(moduleData.window);
 #endif
   GLenum res = glewInit();
   if(res != GLEW_OK){
-      printf("Could not init glew...");
+      printf("Could not init glew.Something must be very wrong, no gpu drivers?");
     }
-  SDL_GL_SetSwapInterval(1); //this may not work on all drivers
+  SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
   glViewport(0,0,width,height);
 
   matrixstack_init();

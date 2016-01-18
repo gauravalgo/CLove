@@ -10,6 +10,7 @@
 #include "vorbis_decoder.h"
 
 #include "../3rdparty/stb/stb_vorbis.h"
+#include <stdlib.h>
 
 static stb_vorbis *vorbis;
 

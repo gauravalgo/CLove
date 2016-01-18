@@ -120,11 +120,8 @@ const char* graphics_Font_getName(graphics_Font* font) {
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
-      if (FT_New_Face(moduleData.ft, filename, 0, &font->face) != 0) {
-          fprintf(stderr, "Could not open font %s \n", filename);
-          return 1;
-        }
-      graphics_Font_setName(font, filename);
+    FT_New_Face(moduleData.ft, filename, 0, &font->face);
+    graphics_Font_setName(font, filename);
     }else
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
 
