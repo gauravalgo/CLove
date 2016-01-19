@@ -8,6 +8,7 @@
 */
 #include "../mouse.h"
 #include "tools.h"
+#include "../3rdparty/SDL2/include/SDL.h"
 
 
 static struct {
@@ -97,16 +98,19 @@ void l_mouse_register(lua_State* state) {
   l_tools_registerModule(state, "mouse", regFuncs);
 }
 
-static const char* intButtonToString(int button)
-{
-  if(button == 1)
+static const char *buttonStr(int x) {
+  switch (x) {
+  case SDL_BUTTON_LEFT:
     return "l";
-  else if(button == 2)
-    return "m";
-  else if(button == 3)
+
+  case SDL_BUTTON_RIGHT:
     return "r";
 
-  return "";
+  case SDL_BUTTON_MIDDLE:
+    return "m";
+
+  }
+  return "?";
 }
 
 void l_mouse_pressed(int x, int y, int button){
@@ -115,7 +119,7 @@ void l_mouse_pressed(int x, int y, int button){
   lua_rawget(moduleData.luaState, -2);
   lua_pushinteger(moduleData.luaState, x);
   lua_pushinteger(moduleData.luaState, y);
-  lua_pushstring(moduleData.luaState, intButtonToString(button));
+  lua_pushstring(moduleData.luaState, buttonStr(button));
   lua_call(moduleData.luaState, 3, 0);
   lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
 }
@@ -126,7 +130,7 @@ void l_mouse_released(int x, int y, int button){
   lua_rawget(moduleData.luaState, -2);
   lua_pushinteger(moduleData.luaState, x);
   lua_pushinteger(moduleData.luaState, y);
-  lua_pushstring(moduleData.luaState, intButtonToString(button));
+  lua_pushstring(moduleData.luaState, buttonStr(button));
   lua_call(moduleData.luaState, 3, 0);
   lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
 }

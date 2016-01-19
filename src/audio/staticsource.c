@@ -25,11 +25,9 @@ int audio_loadStatic(audio_StaticSource *source, char const * filename) {
 
   alGenBuffers(1, &source->buffer);
   if(strncmp(get_filename_ext(filename),"wav", 3) == 0){
-    int succeded = audio_wav_load(source->buffer, filename);
-    if (succeded == 0) return 0; //file not found
+    audio_wav_load(source->buffer, filename);
   }else if((strncmp(get_filename_ext(filename), "ogg", 3)) == 0){
-    int succeded = audio_vorbis_load(source->buffer, filename);
-    if (succeded == 0) return 0; //file not found
+    audio_vorbis_load(source->buffer, filename);
   }else
     return -1; //Unknow file type :(
 

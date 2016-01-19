@@ -21,6 +21,8 @@
 #include "../3rdparty/freetype/include/ft2build.h"
 #include "../3rdparty/freetype/include/freetype.h"
 #include "../3rdparty/freetype/include/ftglyph.h"
+#include <stdio.h>
+#include <string.h>
 
 #include FT_GLYPH_H
 
@@ -89,16 +91,16 @@ static void graphics_Font_newTexture(graphics_Font* font) {
 
   FT_Bitmap b = moduleData.g->bitmap;
 
-    // Create LUMINANCE_ALPHA texture data
-    // TODO: Maybe just alpha (or GL_R on modern core profiles) is
-    //       enough?
-    uint8_t *buf = malloc(2*b.rows*b.width + 10);
-    uint8_t *row = b.buffer;
-    for(int i = 0; i < b.rows; ++i) {
+  // Create LUMINANCE_ALPHA texture data
+  // TODO: Maybe just alpha (or GL_R on modern core profiles) is
+  //       enough?
+  uint8_t *buf = malloc(2*b.rows*b.width + 10);
+  uint8_t *row = b.buffer;
+  for(int i = 0; i < b.rows; ++i) {
       for(int c = 0; c < b.width; ++c) {
-        buf[2*(i*b.width + c)    ] = 255;
-        buf[2*(i*b.width + c) + 1] = row[c];
-      }
+          buf[2*(i*b.width + c)    ] = 255;
+          buf[2*(i*b.width + c) + 1] = row[c];
+        }
       row += b.pitch;
     }
 
@@ -120,8 +122,8 @@ const char* graphics_Font_getName(graphics_Font* font) {
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
-    FT_New_Face(moduleData.ft, filename, 0, &font->face);
-    graphics_Font_setName(font, filename);
+      FT_New_Face(moduleData.ft, filename, 0, &font->face);
+      graphics_Font_setName(font, filename);
     }else
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
 
@@ -177,7 +179,60 @@ int graphics_Font_getWidth(graphics_Font* font, char const* line) {
   return sum;
 }
 
-void graphics_Font_render(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
+void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py, int limit, graphics_TextAlign align,
+                          float r, float sx, float sy, float ox, float oy, float kx, float ky) {
+  uint32_t cp;
+  character ch;
+  int x = 0;
+  int storeX = 0;
+  int storeY = 0;
+  int y = font->face->ascender;
+
+  graphics_Shader* shader = graphics_getShader();
+  graphics_setDefaultShader();
+
+  int count = 0;
+  int wrapped = 0;
+  while((cp = utf8_scan(&text))) {
+      ch = moduleData.characters[cp];
+      glBindTexture(GL_TEXTURE_2D,ch.textureid);
+
+      if (storeX == 0)
+        storeX = px - ch.sizex;
+      if (storeY == 0)
+        storeY = py + ch.sizey + 1;
+
+      x = px + ch.bearingx;
+      y = py - ch.bearingy;
+
+      if ((wrapped == 0 && ++count >= limit)){
+          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          px = storeX;
+          py = storeY;
+          count = 0;
+          wrapped = 1;
+        }
+
+      if (cp == '\n'){
+          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          if (px < storeX)
+            px = storeX;
+          py += floor(ch.bearingy + 5.25f);
+          continue;
+        }
+
+      m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
+      graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+                         graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
+
+      px += ch.advancex >> 6;
+      py += ch.advancey >> 6;
+    }
+  graphics_setShader(shader);
+
+}
+
+void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
   uint32_t cp;
   character ch;
   int x = 0;

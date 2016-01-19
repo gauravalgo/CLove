@@ -15,7 +15,6 @@
 #include "../3rdparty/glew/include/GL/glew.h"
 #endif
 
-
 void graphics_Texture_setFilter(GLuint texID, graphics_Filter const* filter) {
   glBindTexture(GL_TEXTURE_2D, texID);
 

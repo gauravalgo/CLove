@@ -63,6 +63,8 @@ typedef struct {
     char * program;
   } warnings;
 
+  unsigned int vertex;
+  unsigned int fragment;
   GLuint program;
 } graphics_Shader;
 
@@ -83,8 +85,8 @@ void graphics_setShader(graphics_Shader* shader);
 bool graphics_Shader_compileAndAttachShaderRaw(graphics_Shader *shader, GLenum shaderType, char const* code);
 bool graphics_Shader_compileAndAttachShader(graphics_Shader *shader, GLenum shaderType, char const* code);
 graphics_ShaderUniformInfo const* graphics_Shader_getUniform(graphics_Shader const* shader, char const* name);
-graphics_ShaderUniformType graphics_shader_toMotorType(GLenum type);
-int graphics_shader_toMotorComponents(GLenum type);
+graphics_ShaderUniformType graphics_shader_toLoveType(GLenum type);
+int graphics_shader_toLoveComponents(GLenum type);
 
 void graphics_Shader_sendIntegers(graphics_Shader *shader, graphics_ShaderUniformInfo const* info, int count, GLint const* numbers);
 void graphics_Shader_sendBooleans(graphics_Shader *shader, graphics_ShaderUniformInfo const* info, int count, GLint const* numbers);

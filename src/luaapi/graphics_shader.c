@@ -197,7 +197,7 @@ mkScalarSendFunc(sendBooleans, GLint,   l_tools_toBooleanOrError)
 
 #define mkVectorSendFunc(name, valuetype, totypefunc) \
   static void name(lua_State *state, l_graphics_Shader *shader, graphics_ShaderUniformInfo const* info) { \
-    int components = graphics_shader_toMotorComponents(info->type); \
+    int components = graphics_shader_toLoveComponents(info->type); \
     int count = min(lua_gettop(state) - 2, info->elements);         \
                                                                     \
     growBuffer(sizeof(valuetype) * count * components);             \
@@ -219,7 +219,7 @@ mkVectorSendFunc(sendBooleanVectors, GLint,   l_tools_toBooleanOrError)
 
 
 static void sendFloatMatrices(lua_State *state, l_graphics_Shader* shader, graphics_ShaderUniformInfo const* info) {
-  int components = graphics_shader_toMotorComponents(info->type);
+  int components = graphics_shader_toLoveComponents(info->type);
   int count = min(lua_gettop(state) - 2, info->elements);
   growBuffer(sizeof(float) * components * components * count);
 
@@ -332,13 +332,13 @@ static int l_graphics_Shader_getExternVariable(lua_State* state) {
     goto errout;
   }
   
-  graphics_ShaderUniformType type =  graphics_shader_toMotorType(info->type);
+  graphics_ShaderUniformType type =  graphics_shader_toLoveType(info->type);
   if(type == graphics_ShaderUniformType_none) {
     goto errout;
   }
 
   l_tools_pushEnum(state, type, l_graphics_ShaderUniformType);
-  lua_pushnumber(state, graphics_shader_toMotorComponents(info->type));
+  lua_pushnumber(state, graphics_shader_toLoveComponents(info->type));
   lua_pushnumber(state, info->elements);
 
   return 3;

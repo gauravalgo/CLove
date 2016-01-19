@@ -14,6 +14,7 @@
 #include "../graphics/graphics.h"
 #include "../graphics/matrixstack.h"
 #include "../graphics/shader.h"
+#include "../graphics/gltools.h"
 #include "image.h"
 
 #include "graphics_batch.h"
@@ -215,6 +216,7 @@ static const l_tools_Enum l_graphics_BlendMode[] = {
   {"screen",         graphics_BlendMode_screen},
   {NULL, 0}
 };
+
 
 static int l_graphics_setBlendMode(lua_State* state) {
   graphics_BlendMode mode = l_tools_toEnumOrError(state, 1, l_graphics_BlendMode);

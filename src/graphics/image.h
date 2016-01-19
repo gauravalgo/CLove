@@ -30,6 +30,7 @@ typedef struct {
   graphics_WrapMode horMode;
 } graphics_Wrap;
 
+
 typedef struct {
   GLuint texID;
   int width;

@@ -109,7 +109,7 @@ static int l_graphics_printf(lua_State* state) {
   float kx = luaL_optnumber(state, 11, 0.0f);
   float ky = luaL_optnumber(state, 12, 0.0f);
 
-  //graphics_Font_printf(moduleData.currentFont, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky);
+  graphics_Font_printf(moduleData.currentFont, text, x, y, limit, align, r, sx, sy, ox, oy, kx, ky);
 
   return 0;
 }
@@ -130,14 +130,20 @@ static int l_graphics_print(lua_State* state) {
   float oy = luaL_optnumber(state, 8, 0);
   float kx = luaL_optnumber(state, 9, 0);
   float ky = luaL_optnumber(state, 10, 0);
-  graphics_Font_render(moduleData.currentFont, text, x, y, r, sx, sy, ox, oy, kx, ky);
+  graphics_Font_print(moduleData.currentFont, text, x, y, r, sx, sy, ox, oy, kx, ky);
   return 0;
 }
 
 int l_graphics_newFont(lua_State* state) {
   // TODO: alternative signatures for newFont
-  char const * filename = l_tools_toStringOrError(state, 1);
-  int ptsize = l_tools_toNumberOrError(state, 2);
+  char const* filename;
+  int ptsize;
+
+  if(lua_gettop(state) == 1) {
+      filename = l_tools_toStringOrError(state, 0);
+      ptsize = l_tools_toNumberOrError(state, 1);
+    } else if(lua_gettop(state) == 0)
+    ptsize = l_tools_toNumberOrError(state, 0);
 
   // Create string font:size
   // Stack: ... fontname
@@ -308,7 +314,7 @@ static luaL_Reg const fontFreeFuncs[] = {
   {"getFont",            l_graphics_getFont},
   {"setFont",            l_graphics_setFont},
   {"setNewFont",         l_graphics_setNewFont},
-  //{"printf",             l_graphics_printf},
+  {"printf",             l_graphics_printf},
   {"print",              l_graphics_print},
   {NULL, NULL}
 };

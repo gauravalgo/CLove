@@ -18,7 +18,6 @@
 #include "../3rdparty/glew/include/GL/glew.h"
 #endif
 
-
 static struct {
   graphics_Shader *activeShader;
   graphics_Shader defaultShader;
@@ -139,7 +138,7 @@ static int compareUniformInfo(graphics_ShaderUniformInfo const* a, graphics_Shad
   return strcmp(a->name, b->name);
 }
 
-int graphics_shader_toMotorComponents(GLenum type) {
+int graphics_shader_toLoveComponents(GLenum type) {
   switch(type) {
   case GL_BOOL:
   case GL_INT:
@@ -170,7 +169,7 @@ int graphics_shader_toMotorComponents(GLenum type) {
   };
 }
 
-graphics_ShaderUniformType graphics_shader_toMotorType(GLenum type) {
+graphics_ShaderUniformType graphics_shader_toLoveType(GLenum type) {
   switch(type) {
   case GL_BOOL:
   case GL_BOOL_VEC2:
@@ -287,6 +286,9 @@ graphics_ShaderCompileStatus graphics_Shader_new(graphics_Shader *shader, char c
     return graphics_ShaderCompileStatus_fragmentError;
   }
 
+  shader->vertex = vertexCode;
+  shader->fragment = fragmentCode;
+
   glBindAttribLocation(shader->program, 0, "vPos");
   glBindAttribLocation(shader->program, 1, "vUV");
   glBindAttribLocation(shader->program, 2, "vColor");
@@ -317,6 +319,8 @@ void graphics_Shader_free(graphics_Shader* shader) {
   }
   free(shader->textureUnits);
   free(shader->uniforms);
+  glDetachShader(shader->program,shader->fragment);
+  glDetachShader(shader->program,shader->vertex);
   glDeleteProgram(shader->program);
 }
 
@@ -374,7 +378,7 @@ mkScalarSendFunc(sendFloats,   GLfloat, glUniform1fv)
 #define mkVectorSendFunc(name, valuetype, abbr) \
   void graphics_Shader_ ## name(graphics_Shader *shader, graphics_ShaderUniformInfo const* info, int count, valuetype const* numbers) {  \
     glUseProgram(shader->program);                                \
-    switch(graphics_shader_toMotorComponents(info->type)) {       \
+    switch(graphics_shader_toLoveComponents(info->type)) {       \
     case 2:                                                       \
       glUniform2 ## abbr ## v(info->location, count, numbers);    \
       break;                                                      \
@@ -396,7 +400,7 @@ mkVectorSendFunc(sendFloatVectors,   GLfloat, f)
 void graphics_Shader_sendFloatMatrices(graphics_Shader *shader, graphics_ShaderUniformInfo const* info, int count, float const* numbers) {
   glUseProgram(shader->program);
 
-  switch(graphics_shader_toMotorComponents(info->type)) {
+  switch(graphics_shader_toLoveComponents(info->type)) {
   case 2:
     glUniformMatrix2fv(info->location, count, false, numbers);
     break;

@@ -57,7 +57,6 @@ static int l_graphics_window_hasFocus(lua_State* state){
   return 1;
 }
 
-
 static int l_graphics_window_hasMouseFocus(lua_State* state){
   lua_pushinteger(state, graphics_hasMouseFocus());
   return 1;

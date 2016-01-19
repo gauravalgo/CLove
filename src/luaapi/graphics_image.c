@@ -12,6 +12,7 @@
 #include "graphics.h"
 #include "graphics_image.h"
 #include "tools.h"
+#include "../graphics/gltools.h"
 
 static struct {
   int imageMT;
