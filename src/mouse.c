@@ -1,11 +1,11 @@
 /*
-#   love
-#
-#   Copyright (C) 2016 Muresan Vlad
-#
-#   This project is free software; you can redistribute it and/or modify it
-#   under the terms of the MIT license. See LICENSE.md for details.
-*/
+        #   love
+        #
+        #   Copyright (C) 2016 Muresan Vlad
+        #
+        #   This project is free software; you can redistribute it and/or modify it
+        #   under the terms of the MIT license. See LICENSE.md for details.
+        */
 #include "3rdparty/SDL2/include/SDL.h"
 
 #include <stdio.h>
@@ -27,24 +27,29 @@ static struct {
 
 static const char *buttonStr(int x) {
   switch (x) {
-  case SDL_BUTTON_LEFT:
-    return "l";
+    case SDL_BUTTON_LEFT:
+      return "l";
 
-  case SDL_BUTTON_RIGHT:
-    return "r";
+    case SDL_BUTTON_RIGHT:
+      return "r";
 
-  case SDL_BUTTON_MIDDLE:
-    return "m";
+    case SDL_BUTTON_MIDDLE:
+      return "m";
 
-    /*
-  case SDL_BUTTON_WHEELDOWN:
-    return "wd";
+    case SDL_BUTTON_X1:
+      return "x1";
 
-  case SDL_BUTTON_WHEELUP:
-    return "wu";
+    case SDL_BUTTON_X2:
+      return "x2";
+      /*
+          case SDL_BUTTON_WHEELDOWN:
+            return "wd";
 
-    */
-  }
+          case SDL_BUTTON_WHEELUP:
+            return "wu";
+
+            */
+    }
   return "?";
 }
 
@@ -52,34 +57,41 @@ static const char *buttonStr(int x) {
 static int buttonEnum(const char *str) {
   int res;
   switch (*str) {
-  case 'l':
-    res = SDL_BUTTON_LEFT;
-    break;
+    case 'l':
+      res = SDL_BUTTON_LEFT;
+      break;
 
-  case 'r':
-    res = SDL_BUTTON_RIGHT;
-    break;
+    case 'r':
+      res = SDL_BUTTON_RIGHT;
+      break;
 
-  case 'm':
-    res = SDL_BUTTON_MIDDLE;
-    break;
+    case 'm':
+      res = SDL_BUTTON_MIDDLE;
+      break;
 
-    /*
-  case 'wd':
-    res = SDL_BUTTON_WHEELDOWN;
-  break;
+    case 'x1':
+      return SDL_BUTTON_X1;
+      break;
 
-  case 'up':
-    res = SDL_BUTTON_WHEELUP;
-  break;
-    */
-  default:
-    return -1;
-  }
+    case 'x2':
+      return SDL_BUTTON_X2;
+      break;
+      /*
+          case 'wd':
+            res = SDL_BUTTON_WHEELDOWN;
+          break;
+
+          case 'up':
+            res = SDL_BUTTON_WHEELUP;
+          break;
+            */
+    default:
+      return -1;
+    }
 
   if(str[1] != '\0') {
-    return -1;
-  }
+      return -1;
+    }
 
   return res;
 }
@@ -87,8 +99,8 @@ static int buttonEnum(const char *str) {
 
 void mouse_mousemoved(int x, int y) {
   if(moduleData.x == x && moduleData.y == y) {
-    return;
-  }
+      return;
+    }
 
   moduleData.dx = x - moduleData.x;
   moduleData.dy = y - moduleData.y;
@@ -119,8 +131,8 @@ void mouse_getPosition(int *x, int *y) {
 int mouse_isDown(const char *str) {
   int x = buttonEnum(str);
   if(x < 0) {
-    return -1;
-  }
+      return -1;
+    }
   return moduleData.buttons[x];
 }
 

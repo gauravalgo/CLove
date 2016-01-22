@@ -22,6 +22,8 @@ int filesystem_exists(const char* name)
   if(!file){
     return 0;
   }
+
+  fclose(file);
   return 1;
 }
 
@@ -32,6 +34,20 @@ int filesystem_write(const char* name, const char* data)
     printf("%s No file named %s",name,"%s creating one");
     return -1;
   }
+
+  fseek(file,0,SEEK_END);
+  long size = ftell(file);
+  rewind(file);
+
+  fprintf(file, data);
+  fclose(file);
+
+  return size;
+}
+
+int filesystem_append(const char* name, const char* data)
+{
+  FILE* file = fopen(name, "a");
 
   fseek(file,0,SEEK_END);
   long size = ftell(file);
