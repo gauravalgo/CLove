@@ -69,9 +69,10 @@ static int l_graphics_setFont(lua_State* state) {
 
 static int l_graphics_setNewFont(lua_State* state) {
 
-  if(lua_tonumber(state, 1))
+  if(lua_tonumber(state, 1)){
     l_graphics_loadDefaultFont_with_size(lua_tonumber(state, 1));
-
+    return 1;
+    }
 
   const char* path = l_tools_toStringOrError(state, 1);
   int size = l_tools_toNumberOrError(state, 2);

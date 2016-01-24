@@ -69,13 +69,6 @@ static int buttonEnum(const char *str) {
       res = SDL_BUTTON_MIDDLE;
       break;
 
-    case 'x1':
-      return SDL_BUTTON_X1;
-      break;
-
-    case 'x2':
-      return SDL_BUTTON_X2;
-      break;
       /*
           case 'wd':
             res = SDL_BUTTON_WHEELDOWN;

@@ -190,10 +190,10 @@ int main(void) {
   graphics_init(config.window.width, config.window.height);
   audio_init();
 
-  if(luaL_dofile(lua, "main.lua")) {
+  if(luaL_dofile(lua, "main.lua")){
       printf("Error: %s\n", lua_tostring(lua, -1));
+      l_no_game(lua,&config);
     }
-
   lua_pushcfunction(lua, lua_errorhandler);
   lua_getglobal(lua, "love");
   lua_pushstring(lua, "load");
@@ -210,6 +210,7 @@ int main(void) {
   };
 
   timer_init();
+
 #ifdef EMSCRIPTEN
   //TODO find a way to quit(love.event.quit) love on web?
   emscripten_set_main_loop_arg(main_loop, &mainLoopData, 0, 1);

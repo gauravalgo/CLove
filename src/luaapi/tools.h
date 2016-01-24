@@ -13,11 +13,15 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "../love_config.h"
+#include "../graphics/font.h"
+
 void l_tools_registerFuncsInModule(lua_State* state, char const* module, luaL_Reg const* funcs);
 void l_tools_registerModule(lua_State* state, char const* moduleName, luaL_Reg const * funcs);
 int l_tools_makeTypeMetatable(lua_State* state, luaL_Reg const* funcs);
 
 #ifndef LOVE_SKIP_SAFETY_CHECKS
+
 inline float l_tools_toNumberOrError(lua_State* state, int index) {
   if(lua_type(state, index) != LUA_TNUMBER) {
       luaL_argerror(state,index-1,"expected number");
