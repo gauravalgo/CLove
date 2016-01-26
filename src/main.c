@@ -137,6 +137,17 @@ void main_loop(void *data) {
               break;
             }
         }
+      switch(event.wheel.type)
+        {
+        case SDL_MOUSEWHEEL:
+          mouse_mousewheel(event.wheel.y);
+          int _what = event.wheel.y == 1 ? SDL_BUTTON_WHEEL_UP : SDL_BUTTON_WHEEL_DOWN;
+          mouse_mousepressed(event.button.x, event.button.y,
+                             _what);
+          break;
+        default:
+          break;
+        }
       switch(event.type) {
         case SDL_KEYDOWN:
           keyboard_keypressed(event.key.keysym.sym);

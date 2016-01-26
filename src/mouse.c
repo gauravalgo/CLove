@@ -23,72 +23,29 @@ static struct {
   int visible;
   int buttons[256];
   lua_State* luaState;
+  int wheel;
 } moduleData;
-
-static const char *buttonStr(int x) {
-  switch (x) {
-    case SDL_BUTTON_LEFT:
-      return "l";
-
-    case SDL_BUTTON_RIGHT:
-      return "r";
-
-    case SDL_BUTTON_MIDDLE:
-      return "m";
-
-    case SDL_BUTTON_X1:
-      return "x1";
-
-    case SDL_BUTTON_X2:
-      return "x2";
-      /*
-          case SDL_BUTTON_WHEELDOWN:
-            return "wd";
-
-          case SDL_BUTTON_WHEELUP:
-            return "wu";
-
-            */
-    }
-  return "?";
-}
 
 
 static int buttonEnum(const char *str) {
-  int res;
-  switch (*str) {
-    case 'l':
-      res = SDL_BUTTON_LEFT;
-      break;
-
-    case 'r':
-      res = SDL_BUTTON_RIGHT;
-      break;
-
-    case 'm':
-      res = SDL_BUTTON_MIDDLE;
-      break;
-
-      /*
-          case 'wd':
-            res = SDL_BUTTON_WHEELDOWN;
-          break;
-
-          case 'up':
-            res = SDL_BUTTON_WHEELUP;
-          break;
-            */
-    default:
-      return -1;
-    }
-
-  if(str[1] != '\0') {
-      return -1;
-    }
-
+  int res = 0;
+  if (strncmp (str,"l",1) == 0)
+    res = SDL_BUTTON_LEFT;
+  if (strncmp (str,"r",1) == 0)
+    res = SDL_BUTTON_RIGHT;
+  if (strncmp (str,"m",1) == 0)
+    res = SDL_BUTTON_MIDDLE;
   return res;
 }
 
+void mouse_mousewheel(int y) {
+  moduleData.wheel = y;
+  moduleData.buttons[y] = 1;
+}
+
+int mouse_getwheel() {
+  return moduleData.wheel;
+}
 
 void mouse_mousemoved(int x, int y) {
   if(moduleData.x == x && moduleData.y == y) {
@@ -102,8 +59,14 @@ void mouse_mousemoved(int x, int y) {
 }
 
 void mouse_mousepressed(int x, int y, int button) {
-  l_mouse_pressed(x, y, button);
-  mouse_mousemoved(x, y);
+  if (button == SDL_BUTTON_WHEEL_UP || button == SDL_BUTTON_WHEEL_DOWN) {
+      l_mouse_pressed(moduleData.x, moduleData.y, button);
+      mouse_mousemoved(moduleData.x, moduleData.y);
+    }else{
+      l_mouse_pressed(x, y, button);
+      mouse_mousemoved(x, y);
+    }
+
   moduleData.buttons[button] = 1;
 }
 

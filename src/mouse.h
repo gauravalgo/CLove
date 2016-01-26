@@ -9,6 +9,8 @@
 #pragma once
 
 void mouse_mousemoved(int x, int y);
+int mouse_getwheel();
+void mouse_mousewheel(int y);
 void mouse_mousepressed(int x, int y, int button);
 void mouse_mousereleased(int x, int y, int button);
 int mouse_isDown(const char *str);

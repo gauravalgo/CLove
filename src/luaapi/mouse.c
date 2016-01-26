@@ -20,8 +20,8 @@ static int l_mouse_isDown(lua_State *state) {
   const char *name = luaL_checkstring(state, 1);
   int res = mouse_isDown(name);
   if(res < 0) {
-    luaL_error(state, "bad button name '%s'", name);
-  }
+      luaL_error(state, "bad button name '%s'", name);
+    }
   lua_pushboolean(state, res);
   return 1;
 }
@@ -65,13 +65,11 @@ static int l_mouse_setVisible(lua_State *state) {
   return 0;
 }
 
-
 static int l_mouse_setX(lua_State *state) {
   int x = luaL_checknumber(state, 1);
   mouse_setX(x);
   return 0;
 } 
-
 
 static int l_mouse_setY(lua_State *state) {
   int y = luaL_checknumber(state, 1);
@@ -100,16 +98,23 @@ void l_mouse_register(lua_State* state) {
 
 static const char *buttonStr(int x) {
   switch (x) {
-  case SDL_BUTTON_LEFT:
-    return "l";
+    case SDL_BUTTON_LEFT:
+      return "l";
+      break;
+    case SDL_BUTTON_RIGHT:
+      return "r";
+      break;
+    case SDL_BUTTON_MIDDLE:
+      return "m";
+      break;
+    case SDL_BUTTON_WHEEL_UP:
+      return "wu";
+      break;
+    case SDL_BUTTON_WHEEL_DOWN:
+      return "wd";
+      break;
 
-  case SDL_BUTTON_RIGHT:
-    return "r";
-
-  case SDL_BUTTON_MIDDLE:
-    return "m";
-
-  }
+    }
   return "?";
 }
 
