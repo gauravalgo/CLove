@@ -232,5 +232,6 @@ int main(void) {
   if(!l_event_running())
     quit_function(lua);
 #endif
+  audio_close ();
   return 0;
 }

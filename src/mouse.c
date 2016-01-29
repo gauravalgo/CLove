@@ -77,12 +77,10 @@ void mouse_mousereleased(int x, int y, int button) {
   l_mouse_released(x, y, button);
 }
 
-
 void mouse_getPosition(int *x, int *y) {
   *x = moduleData.x;
   *y = moduleData.y;
 }
-
 
 int mouse_isDown(const char *str) {
   int x = buttonEnum(str);
@@ -92,21 +90,17 @@ int mouse_isDown(const char *str) {
   return moduleData.buttons[x];
 }
 
-
 int mouse_isVisible(void) {
   return moduleData.visible;
 }
-
 
 int mouse_getX(void) {
   return moduleData.x;
 }
 
-
 int mouse_getY(void) {
   return moduleData.y;
 }
-
 
 void mouse_setPosition(int x, int y) {
 #ifdef EMSCRIPTEN
@@ -116,12 +110,10 @@ void mouse_setPosition(int x, int y) {
 #endif
 }
 
-
 void mouse_setVisible(int b) {
   moduleData.visible = !!b;
   SDL_ShowCursor(b ? SDL_ENABLE : SDL_DISABLE);
 }
-
 
 void mouse_setX(int x) {
 #ifdef EMSCRIPTEN
@@ -130,7 +122,6 @@ void mouse_setX(int x) {
   SDL_WarpMouseInWindow(graphics_getWindow(), x, moduleData.y);
 #endif
 }
-
 
 void mouse_setY(int y) {
 #ifdef EMSCRIPTEN

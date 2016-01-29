@@ -28,3 +28,8 @@ void audio_init(void) {
 void audio_setVolume(double value){
   alListenerf(AL_GAIN, value);
 }
+
+void audio_close () {
+  alcDestroyContext(moduleData.context);
+  alcCloseDevice(moduleData.device);
+}

@@ -13,3 +13,4 @@
 
 void audio_init(void);
 void audio_setVolume(double value);
+void audio_close(void);
