@@ -17,8 +17,8 @@ static struct {
   image_ImageData* imageData;
 } moduleData;
 
-const char* l_image_getPath(lua_State* state) {
-  return moduleData.imageData->path;
+image_ImageData* l_image_getImageData() {
+  return moduleData.imageData;
 }
 
 int l_image_newImageData(lua_State* state) {

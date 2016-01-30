@@ -35,6 +35,7 @@ int l_graphics_newImage(lua_State* state) {
   int ref = luaL_ref(state, LUA_REGISTRYINDEX);
 
   l_graphics_Image *image = (l_graphics_Image*)lua_newuserdata(state, sizeof(l_graphics_Image));
+  image->path = imageData->path;
 
   graphics_Image_new_with_ImageData(&image->image, imageData);
   image->imageDataRef = ref;
@@ -56,7 +57,9 @@ static int l_graphics_gcImage(lua_State* state) {
 static int l_graphics_Image_getPath(lua_State* state) {
   l_assertType(state, 1, l_graphics_isImage);
 
-  lua_pushstring (state, l_image_getPath (state));
+  l_graphics_Image* img = l_graphics_toImage(state, 1);
+  printf("%s \n",img->path);
+  lua_pushstring (state, img->path);
   return 1;
 }
 

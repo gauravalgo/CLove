@@ -40,7 +40,6 @@ typedef struct {
 
 void graphics_image_init(void);
 void graphics_Image_new_with_ImageData(graphics_Image *dst, image_ImageData *data);
-const char* graphics_Image_getPath();
 void graphics_Image_new(graphics_Image *dst);
 void graphics_Image_free(graphics_Image *obj);
 void graphics_Image_setFilter(graphics_Image *img, graphics_Filter const* filter);

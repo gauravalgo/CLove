@@ -15,6 +15,7 @@
 typedef struct {
   graphics_Image image;
   int imageDataRef;
+  const char* path;
 } l_graphics_Image;
 
 void l_graphics_image_register(lua_State* state);
