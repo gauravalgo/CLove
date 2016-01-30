@@ -20,17 +20,18 @@ static struct {
 
 int l_graphics_newImage(lua_State* state) {
   if(lua_type(state, 1) == LUA_TSTRING) {
-    l_image_newImageData(state);
-    lua_remove(state, 1);
-  } 
+      l_image_newImageData(state);
+      lua_remove(state, 1);
+    }
   
   if(!l_image_isImageData(state, 1)) {
-    lua_pushstring(state, "expected ImageData");
-    return lua_error(state);
-  }
+      lua_pushstring(state, "expected ImageData");
+      return lua_error(state);
+    }
 
   lua_settop(state, 1);
   image_ImageData * imageData = (image_ImageData*)lua_touserdata(state, 1);
+
   int ref = luaL_ref(state, LUA_REGISTRYINDEX);
 
   l_graphics_Image *image = (l_graphics_Image*)lua_newuserdata(state, sizeof(l_graphics_Image));
@@ -50,6 +51,13 @@ static int l_graphics_gcImage(lua_State* state) {
   graphics_Image_free(&img->image);
   luaL_unref(state, LUA_REGISTRYINDEX, img->imageDataRef);
   return 0;
+}
+
+static int l_graphics_Image_getPath(lua_State* state) {
+  l_assertType(state, 1, l_graphics_isImage);
+
+  lua_pushstring (state, l_image_getPath (state));
+  return 1;
 }
 
 static int l_graphics_Image_getDimensions(lua_State* state) {
@@ -143,14 +151,14 @@ static int l_graphics_Image_setMipmapFilter(lua_State* state) {
   graphics_Image_getFilter(&img->image, &newFilter);
 
   if(lua_isnoneornil(state, 2)) {
-    newFilter.mipmapMode  = graphics_FilterMode_none; 
-    newFilter.mipmapLodBias = 0.0f;
-  } else {
-    newFilter.mipmapMode  = l_tools_toEnumOrError(state, 2, l_graphics_FilterMode);
-    // param 2 is supposed to be "sharpness", which is exactly opposite to LOD,
-    // therefore we use the negative value
-    newFilter.mipmapLodBias = -luaL_optnumber(state, 3, 0.0f);
-  }
+      newFilter.mipmapMode  = graphics_FilterMode_none;
+      newFilter.mipmapLodBias = 0.0f;
+    } else {
+      newFilter.mipmapMode  = l_tools_toEnumOrError(state, 2, l_graphics_FilterMode);
+      // param 2 is supposed to be "sharpness", which is exactly opposite to LOD,
+      // therefore we use the negative value
+      newFilter.mipmapLodBias = -luaL_optnumber(state, 3, 0.0f);
+    }
   graphics_Image_setFilter(&img->image, &newFilter);
 
   return 0;
@@ -206,6 +214,7 @@ static luaL_Reg const imageMetatableFuncs[] = {
   {"getWrap",            l_graphics_Image_getWrap},
   {"getData",            l_graphics_Image_getData},
   {"refresh",            l_graphics_Image_refresh},
+  {"getPath",            l_graphics_Image_getPath},
   {NULL, NULL}
 };
 

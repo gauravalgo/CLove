@@ -14,6 +14,7 @@
 typedef struct {
   int w;
   int h;
+  const char* path;
   uint8_t *surface;
 } image_ImageData;
 

@@ -14,26 +14,32 @@
 
 static struct {
   int imageDataMT;
+  image_ImageData* imageData;
 } moduleData;
 
+const char* l_image_getPath(lua_State* state) {
+  return moduleData.imageData->path;
+}
+
 int l_image_newImageData(lua_State* state) {
-  image_ImageData* imageData = (image_ImageData*)lua_newuserdata(state, sizeof(image_ImageData));
+  moduleData.imageData = (image_ImageData*)lua_newuserdata(state, sizeof(image_ImageData));
   int s1type = lua_type(state, 1);
   if(s1type == LUA_TSTRING) {
-    if(image_ImageData_new_with_filename(imageData, lua_tostring(state, 1)) == 0){
-      lua_pushstring(state, "Could not load image file: ");
-      lua_pushstring(state, lua_tostring(state, 1));
-      lua_pushstring(state, ", reason: ");
-      lua_pushstring(state, image_error());
-      lua_concat(state, 4);
+      moduleData.imageData->path = lua_tostring(state, 1);
+      if(image_ImageData_new_with_filename(moduleData.imageData, lua_tostring(state, 1)) == 0){
+          lua_pushstring(state, "Could not load image file: ");
+          lua_pushstring(state, lua_tostring(state, 1));
+          lua_pushstring(state, ", reason: ");
+          lua_pushstring(state, image_error());
+          lua_concat(state, 4);
+          return lua_error(state);
+        }
+    } else if(s1type == LUA_TNUMBER && lua_type(state, 2) == LUA_TNUMBER) {
+      image_ImageData_new_with_size(moduleData.imageData, lua_tointeger(state, 1), lua_tointeger(state, 2));
+    } else {
+      lua_pushstring(state, "need filename or size for imagedata");
       return lua_error(state);
     }
-  } else if(s1type == LUA_TNUMBER && lua_type(state, 2) == LUA_TNUMBER) {
-    image_ImageData_new_with_size(imageData, lua_tointeger(state, 1), lua_tointeger(state, 2));
-  } else {
-    lua_pushstring(state, "need filename or size for imagedata");
-    return lua_error(state);
-  }
 
   lua_rawgeti(state, LUA_REGISTRYINDEX, moduleData.imageDataMT);
   lua_setmetatable(state, -2);
