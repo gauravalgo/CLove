@@ -88,13 +88,15 @@ static void graphics_Font_newTexture(graphics_Font* font) {
   glActiveTexture(GL_TEXTURE0);
   glGenTextures(1, &font->tex);
   glBindTexture(GL_TEXTURE_2D, font->tex);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0, GL_LUMINANCE_ALPHA,
+               GL_UNSIGNED_BYTE, NULL);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   FT_Bitmap b = moduleData.g->bitmap;
 
-  // Create LUMINANCE_ALPHA texture data
-  // TODO: Maybe just alpha (or GL_R on modern core profiles) is
-  //       enough?
-  uint8_t *buf = malloc(2*b.rows*b.width + 10);
+  uint8_t *buf = malloc(2*b.rows*b.width);
   uint8_t *row = b.buffer;
   for(int i = 0; i < b.rows; ++i) {
       for(int c = 0; c < b.width; ++c) {
@@ -104,27 +106,21 @@ static void graphics_Font_newTexture(graphics_Font* font) {
       row += b.pitch;
     }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0, GL_LUMINANCE_ALPHA,
-               GL_UNSIGNED_BYTE, buf);
+
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                  b.width, b.rows, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, buf);
 
   graphics_Font_setWrap(font, &defaultWrap);
   graphics_Font_setFilter(font, &defaultFilter);
+
+  free(buf);
 }
 
-void graphics_Font_setName(graphics_Font* font, const char *name) {
-  font->name = name;
-}
-
-const char* graphics_Font_getName(graphics_Font* font) {
-  return font->name;
-}
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
       FT_New_Face(moduleData.ft, filename, 0, &font->face);
-      graphics_Font_setName(font, filename);
-    }else
+  }else
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
 
   FT_Set_Pixel_Sizes(font->face, 0, ptsize);
@@ -264,7 +260,7 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
                          graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
 
       px += ch.advancex >> 6;
-      py += ch.advancey >> 6;
+      //py += ch.advancey >> 6;
     }
   graphics_setShader(shader);
 }

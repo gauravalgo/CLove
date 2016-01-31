@@ -178,7 +178,7 @@ void main_loop(void *data) {
     }
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
   lua_State *lua = luaL_newstate();
   luaL_openlibs(lua);
 

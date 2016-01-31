@@ -54,44 +54,45 @@ static void l_graphics_loadFont(const char* path, const int size) {
 static int l_graphics_setFont(lua_State* state) {
   l_assertType(state, 1, l_graphics_isFont);
 
-  lua_settop(state, 1);
-
   graphics_Font* font = l_graphics_toFont(state, 1);
 
   // Release current font in Lua, so it can be GCed if needed
-  if(moduleData.currentFont)
-    luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
+  if(moduleData.currentFont) {
+      luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
+    }
 
   moduleData.currentFontRef = luaL_ref(state, LUA_REGISTRYINDEX);
   moduleData.currentFont = font;
+
   return 0;
 }
+
 
 static int l_graphics_setNewFont(lua_State* state) {
 
   if(lua_tonumber(state, 1)){
-    l_graphics_loadDefaultFont_with_size(lua_tonumber(state, 1));
-    return 1;
+      l_graphics_loadDefaultFont_with_size(lua_tonumber(state, 1));
+      return 1;
+    }else{
+
+      const char* path = l_tools_toStringOrError(state, 1);
+      int size = l_tools_toNumberOrError(state, 2);
+
+      // Release current font in Lua, so it can be GCed if needed
+      if(moduleData.currentFont)
+        luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
+
+      moduleData.currentFontRef = luaL_ref(state, LUA_REGISTRYINDEX);
+
+      l_graphics_loadFont(path, size);
     }
-
-  const char* path = l_tools_toStringOrError(state, 1);
-  int size = l_tools_toNumberOrError(state, 2);
-
-  // Release current font in Lua, so it can be GCed if needed
-  if(moduleData.currentFont)
-    luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
-
-  moduleData.currentFontRef = luaL_ref(state, LUA_REGISTRYINDEX);
-
-  l_graphics_loadFont(path, size);
-
   return 1;
 }
 
 static int l_graphics_printf(lua_State* state) {
   if(!moduleData.currentFont) {
-    l_graphics_loadDefaultFont();
-  }
+      l_graphics_loadDefaultFont();
+    }
   char const* text = l_tools_toStringOrError(state, 1);
   int x = l_tools_toNumberOrError(state, 2);
   int y = l_tools_toNumberOrError(state, 3);
@@ -99,8 +100,8 @@ static int l_graphics_printf(lua_State* state) {
   // TODO
   graphics_TextAlign align = graphics_TextAlign_left;
   if(!lua_isnoneornil(state, 5)) {
-    align = l_tools_toEnumOrError(state, 5, l_graphics_AlignMode);
-  }
+      align = l_tools_toEnumOrError(state, 5, l_graphics_AlignMode);
+    }
 
   float r = luaL_optnumber(state, 6, 0);
   float sx = luaL_optnumber(state, 7, 1.0f);
@@ -117,8 +118,8 @@ static int l_graphics_printf(lua_State* state) {
 
 static int l_graphics_print(lua_State* state) {
   if(!moduleData.currentFont) {
-    l_graphics_loadDefaultFont();
-  }
+      l_graphics_loadDefaultFont();
+    }
   char const* text = lua_tostring(state, 1);
   if (text == NULL)
     text = "";
@@ -140,10 +141,10 @@ int l_graphics_newFont(lua_State* state) {
   char const* filename;
   int ptsize;
 
-  if(lua_gettop(state) == 1) {
-      filename = l_tools_toStringOrError(state, 0);
-      ptsize = l_tools_toNumberOrError(state, 1);
-    } else if(lua_gettop(state) == 0)
+  if(lua_gettop(state) == 2) {
+      filename = l_tools_toStringOrError(state, 1);
+      ptsize = l_tools_toNumberOrError(state, 2);
+    } else if(lua_gettop(state) == 1)
     ptsize = l_tools_toNumberOrError(state, 0);
 
   // Create string font:size
@@ -166,31 +167,31 @@ int l_graphics_newFont(lua_State* state) {
   lua_gettable(state, -3);
 
   if(lua_isnoneornil(state, -1)) {
-    // Stack: ... fonts fontname
-    lua_pop(state, 1);
+      // Stack: ... fonts fontname
+      lua_pop(state, 1);
 
-    // Stack: ... fonts fontname raw-font
-    graphics_Font* font = lua_newuserdata(state, sizeof(graphics_Font));
-    if(graphics_Font_new(font, filename, ptsize) != 0) {
-      lua_pushstring(state, "Could not open font");
-      lua_pushstring(state, filename);
-      lua_error(state);
+      // Stack: ... fonts fontname raw-font
+      graphics_Font* font = lua_newuserdata(state, sizeof(graphics_Font));
+      if(graphics_Font_new(font, filename, ptsize) != 0) {
+          lua_pushstring(state, "Could not open font");
+          lua_pushstring(state, filename);
+          lua_error(state);
+        }
+      // Stack: ... fonts fontname raw-font metatable
+      lua_rawgeti(state, LUA_REGISTRYINDEX, moduleData.fontMT);
+
+      // Stack: ... fonts fontname constructed-font
+      lua_setmetatable(state, -2);
+
+      // Stack: ... fonts fontname constructed-font constructed-font
+      lua_pushvalue(state, -1);
+
+      // Stack: ... fonts constructed-font fontname constructed-font
+      lua_insert(state, -3);
+
+      // Stack: ... fonts constructed-font
+      lua_settable(state, -4);
     }
-    // Stack: ... fonts fontname raw-font metatable
-    lua_rawgeti(state, LUA_REGISTRYINDEX, moduleData.fontMT);
-
-    // Stack: ... fonts fontname constructed-font
-    lua_setmetatable(state, -2);
-
-    // Stack: ... fonts fontname constructed-font constructed-font
-    lua_pushvalue(state, -1);
-
-    // Stack: ... fonts constructed-font fontname constructed-font
-    lua_insert(state, -3);
-
-    // Stack: ... fonts constructed-font
-    lua_settable(state, -4);
-  }
   return 1;
 }
 
