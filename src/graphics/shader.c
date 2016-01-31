@@ -286,8 +286,8 @@ graphics_ShaderCompileStatus graphics_Shader_new(graphics_Shader *shader, char c
     return graphics_ShaderCompileStatus_fragmentError;
   }
 
-  shader->vertex = vertexCode;
-  shader->fragment = fragmentCode;
+  //shader->vertex = vertexCode;
+  //shader->fragment = fragmentCode;
 
   glBindAttribLocation(shader->program, 0, "vPos");
   glBindAttribLocation(shader->program, 1, "vUV");
@@ -319,8 +319,8 @@ void graphics_Shader_free(graphics_Shader* shader) {
   }
   free(shader->textureUnits);
   free(shader->uniforms);
-  glDetachShader(shader->program,shader->fragment);
-  glDetachShader(shader->program,shader->vertex);
+  //glDetachShader(shader->program,shader->fragment);
+  //glDetachShader(shader->program,shader->vertex);
   glDeleteProgram(shader->program);
 }
 

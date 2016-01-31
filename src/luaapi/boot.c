@@ -61,7 +61,7 @@ int l_boot(lua_State* state, love_Config *config) {
 static char const no_game_Script[] =
   "package.path = '?.lua;?/init.lua'\n"
   "love.update = function(dt) end\n"
-  "love.draw = function() love.graphics.setBackgroundColor(0x84, 0xca, 0xff) love.graphics.setNewFont(32) "
+  "love.draw = function() love.graphics.setBackgroundColor(0x84, 0xca, 0xff) "
   "love.graphics.print('No main.lua found',love.window.getWidth()/2 - 190,love.window.getHeight()/2) end \n"
   "love.load = function() end \n"
   "love.mousepressed = function() end\n"

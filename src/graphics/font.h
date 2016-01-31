@@ -52,9 +52,6 @@ int graphics_Font_getBaseline(graphics_Font* font);
 
 int graphics_Font_getWidth(graphics_Font* font, char const* line);
 
-void graphics_Font_setName(graphics_Font* font, const char* name);
-const char* graphics_Font_getName(graphics_Font* font);
-
 typedef enum {
   graphics_TextAlign_center,
   graphics_TextAlign_left,

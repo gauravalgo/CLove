@@ -91,10 +91,7 @@ static void graphics_Font_newTexture(graphics_Font* font) {
 
   FT_Bitmap b = moduleData.g->bitmap;
 
-  // Create LUMINANCE_ALPHA texture data
-  // TODO: Maybe just alpha (or GL_R on modern core profiles) is
-  //       enough?
-  uint8_t *buf = malloc(2*b.rows*b.width + 10);
+  uint8_t *buf = malloc(2*b.rows*b.width);
   uint8_t *row = b.buffer;
   for(int i = 0; i < b.rows; ++i) {
       for(int c = 0; c < b.width; ++c) {
@@ -104,38 +101,31 @@ static void graphics_Font_newTexture(graphics_Font* font) {
       row += b.pitch;
     }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-               moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0, GL_LUMINANCE_ALPHA,
-               GL_UNSIGNED_BYTE, buf);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0,
+               GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, buf);
 
   graphics_Font_setWrap(font, &defaultWrap);
   graphics_Font_setFilter(font, &defaultFilter);
+
+  free(buf);
 }
 
-void graphics_Font_setName(graphics_Font* font, const char *name) {
-  font->name = name;
-}
-
-const char* graphics_Font_getName(graphics_Font* font) {
-  return font->name;
-}
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
       FT_New_Face(moduleData.ft, filename, 0, &font->face);
-      graphics_Font_setName(font, filename);
-    }else
+  }else
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
 
   FT_Set_Pixel_Sizes(font->face, 0, ptsize);
 
   glGenBuffers(1, &font->vbo);
-  glGenBuffers(1, &font->ibo);
 
   glBindBuffer(GL_ARRAY_BUFFER, font->vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
-  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
 
+  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
+  glGenBuffers(1, &font->ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font->ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
 
