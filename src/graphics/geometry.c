@@ -90,7 +90,7 @@ void graphics_geometry_fillRectangle(float x, float y, float w, float h) {
   graphics_Image img = {
     0, w, h
   };
-   graphics_setShader(&moduleData.plainColorShader);
+  graphics_setShader(&moduleData.plainColorShader);
   graphics_Image_draw(&img, &quad, x, y, 0, 1, 1, 0, 0, 0, 0);
 
   graphics_setShader(shader);

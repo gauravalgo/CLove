@@ -10,6 +10,7 @@
 #include "math.h"
 #include "../math/minmax.h"
 #include "../math/random.h"
+#include "../3rdparty/noise/simplexnoise.h"
 
 int l_math_random(lua_State* state) {
   float lo = 0.0f, hi = 1.0f;
@@ -60,7 +61,44 @@ int l_math_clamp(lua_State* state) {
   return 1;
 }
 
+static int l_math_noise(lua_State* state) {
+  float a[4];
+  float r;
+
+  int t = min(lua_gettop(state), 4);
+
+  for(int i = 0; i < t; ++i) {
+    a[i] = l_tools_toNumberOrError(state, i+1);
+  }
+
+  switch(t) {
+  case 1:
+    r = simplexnoise_noise1(a[0]);
+    break;
+
+  case 2:
+    r = simplexnoise_noise2(a[0], a[1]);
+    break;
+
+  case 3:
+    r = simplexnoise_noise3(a[0], a[1], a[2]);
+    break;
+
+  case 4:
+    r = simplexnoise_noise4(a[0], a[1], a[2], a[3]);
+    break;
+
+  default:
+    lua_pushstring(state, "need at least one dimension");
+    return lua_error(state);
+  }
+
+  lua_pushnumber(state, r);
+  return 1;
+}
+
 static luaL_Reg const mathFreeFuncs[] = {
+  {"noise", l_math_noise},
   {"random", l_math_random},
   {"setRandomSeed", l_math_random_setSeed},
   {"max", l_math_max},

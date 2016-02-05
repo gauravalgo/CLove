@@ -50,6 +50,8 @@ add_executable(
     src/3rdparty/stb/stb_image.c
     src/3rdparty/stb/stb_vorbis.c
     src/3rdparty/stb/stb_vorbis.h
+    src/3rdparty/noise/simplexnoise.c
+    src/3rdparty/noise/simplexnoise.h
     src/3rdparty/slre/slre.c
     src/3rdparty/slre/slre.h
     )
@@ -79,7 +81,7 @@ SET(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
 
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
-#add_definitions(-DFT2_BUILD_LIBRARY)
+add_definitions(-DFT2_BUILD_LIBRARY)
 
 SET(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
