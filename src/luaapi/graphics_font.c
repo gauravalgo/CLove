@@ -120,9 +120,11 @@ static int l_graphics_print(lua_State* state) {
   if(!moduleData.currentFont) {
       l_graphics_loadDefaultFont();
     }
+
   char const* text = lua_tostring(state, 1);
   if (text == NULL)
     text = "";
+
   int x = l_tools_toNumberOrError(state, 2);
   int y = l_tools_toNumberOrError(state, 3);
   float r = luaL_optnumber(state, 4, 0);
@@ -132,7 +134,9 @@ static int l_graphics_print(lua_State* state) {
   float oy = luaL_optnumber(state, 8, 0);
   float kx = luaL_optnumber(state, 9, 0);
   float ky = luaL_optnumber(state, 10, 0);
+
   graphics_Font_print(moduleData.currentFont, text, x, y, r, sx, sy, ox, oy, kx, ky);
+
   return 0;
 }
 

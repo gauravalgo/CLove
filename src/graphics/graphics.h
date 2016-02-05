@@ -34,6 +34,12 @@ void graphics_clear(void);
 void graphics_swap(void);
 void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const * useColor, float ws, float hs);
 
+void graphics_setVBO();
+void graphics_setIBO();
+
+GLuint graphics_getVBO();
+GLuint graphics_getIBO();
+
 //Window
 int mouse_focus;
 int graphics_hasMouseFocus();

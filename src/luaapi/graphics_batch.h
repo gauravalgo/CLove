@@ -10,6 +10,7 @@
 
 #include "../3rdparty/lua/lua.h"
 #include "../graphics/batch.h"
+#include <stdbool.h>
 
 typedef struct {
   graphics_Batch batch;

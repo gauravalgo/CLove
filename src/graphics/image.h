@@ -35,6 +35,8 @@ typedef struct {
   GLuint texID;
   int width;
   int height;
+  GLuint imageVBO;
+  GLuint imageIBO;
 } graphics_Image;
 
 

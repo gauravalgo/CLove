@@ -178,7 +178,7 @@ void main_loop(void *data) {
     }
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
   lua_State *lua = luaL_newstate();
   luaL_openlibs(lua);
 
@@ -232,6 +232,8 @@ int main(void) {
   if(!l_event_running())
     quit_function(lua);
 #endif
+  glDeleteBuffers(1, &graphics_getIBO);
+  glDeleteBuffers(1, &graphics_getVBO);
   audio_close ();
   return 0;
 }

@@ -74,13 +74,27 @@ int graphics_font_init(void) {
       printf("%s \n","Could not init freetype");
       return 0;
     }
+  graphics_setVBO ();
+  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
+
+  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
+  graphics_setIBO ();
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), 0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(2*sizeof(float)));
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(4*sizeof(float)));
+
   return 1;
 }
 
 void graphics_Font_free(graphics_Font* font) {
   FT_Done_Face(font->face);
   FT_Done_FreeType(moduleData.ft);
-  glDeleteTextures(1,&font->tex);
+ glDeleteTextures(1,&font->tex);
 }
 
 static void graphics_Font_newTexture(graphics_Font* font) {
@@ -114,27 +128,10 @@ static void graphics_Font_newTexture(graphics_Font* font) {
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
   if(filename){
       FT_New_Face(moduleData.ft, filename, 0, &font->face);
-  }else
+    }else
     FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
 
   FT_Set_Pixel_Sizes(font->face, 0, ptsize);
-
-  glGenBuffers(1, &font->vbo);
-
-  glBindBuffer(GL_ARRAY_BUFFER, font->vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
-
-  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
-  glGenBuffers(1, &font->ibo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font->ibo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
-
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), 0);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(2*sizeof(float)));
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(4*sizeof(float)));
 
   moduleData.g = font->face->glyph;
 
@@ -248,9 +245,9 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
           py += floor(ch.bearingy + 5.25f);
           continue;
         }
-
+      glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
-      graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+      graphics_drawArray(&quad, &moduleData.tr2d,  graphics_getIBO(), 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                          graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
 
       px += ch.advancex >> 6;

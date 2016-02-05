@@ -47,6 +47,10 @@ static struct {
   const char* title;
   int x;
   int y;
+
+  GLuint vbo;
+  GLuint ibo;
+
 } moduleData;
 
 #ifndef EMSCRIPTEN
@@ -72,12 +76,12 @@ void graphics_init(int width, int height) {
   moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL);
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   moduleData.surface = SDL_GetWindowSurface(moduleData.window);
+  SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
 #endif
   GLenum res = glewInit();
   if(res != GLEW_OK){
       printf("Could not init glew.Something must be very wrong, no gpu drivers?");
     }
-  SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
   glViewport(0,0,width,height);
 
   matrixstack_init();
@@ -90,6 +94,11 @@ void graphics_init(int width, int height) {
 
   graphics_setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+  graphics_geometry_init();
+  graphics_font_init();
+  graphics_batch_init();
+  graphics_image_init();
+  graphics_shader_init();
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -99,11 +108,25 @@ void graphics_init(int width, int height) {
   glEnable(GL_BLEND);
   graphics_clearScissor();
 
-  graphics_geometry_init();
-  graphics_shader_init();
-  graphics_font_init();
-  graphics_batch_init();
-  graphics_image_init();
+}
+
+void graphics_setVBO() {
+  glGenBuffers(1, &moduleData.vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
+}
+
+void graphics_setIBO(){
+  glGenBuffers(1, &moduleData.ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
+}
+
+
+GLuint graphics_getVBO() {
+  return moduleData.vbo;
+}
+
+GLuint graphics_getIBO(){
+  return moduleData.ibo;
 }
 
 void graphics_setBackgroundColor(float red, float green, float blue, float alpha) {
@@ -134,7 +157,8 @@ void graphics_swap(void) {
 }
 
 static mat4x4 tr;
-void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
+void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo,
+                        GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
 
   m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
 
