@@ -41,6 +41,16 @@ static int l_geometry_rectangle(lua_State* state) {
   return 1;
 }
 
+static int l_geometry_points(lua_State* state) {
+  float x = l_tools_toNumberOrError(state, 1);
+  float y = l_tools_toNumberOrError(state, 2);
+
+  graphics_geometry_points (x, y);
+
+  return 1;
+}
+
+
 static int l_geometry_setLineWidth(lua_State* state) {
   float width = l_tools_toNumberOrError(state, 1);
   //graphics_geometry_setLineWidth(width);
@@ -53,6 +63,8 @@ static int l_geometry_getLineWidth(lua_State* state) {
 }
 
 static luaL_Reg const geometryFuncs[] = {
+  {"points",       l_geometry_points},
+  {"point",       l_geometry_points},
   {"rectangle",    l_geometry_rectangle},
   {"circle",       l_geometry_circle},
   {"setLineWidth", l_geometry_setLineWidth},

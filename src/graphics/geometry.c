@@ -17,28 +17,32 @@
 #include "vertex.h"
 
 static struct {
-  GLuint vbo;
-  GLuint ibo;
   graphics_Shader plainColorShader;
+  mat4x4 tr2d;
 } moduleData;
 
+static graphics_Vertex const point_vertices[] = {
+  {{1.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
+  {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
+  {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
+  {{0.0f, 0.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}}
+};
+
+
 static graphics_Vertex const square_vertices[] = {
-  {{0.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
-  {{1.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
+  {{1.0f, 0.0f}, {0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
+  {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
   {{0.0f, 1.0f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
   {{1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}}
 };
 
+static unsigned char const square_indices[] = { 0, 1, 2, 3};
+
 void graphics_geometry_init(void) {
-  glGenBuffers(1, &moduleData.vbo);
-  glGenBuffers(1, &moduleData.ibo);
-
-  unsigned char const square_indices[] = { 0, 1, 3, 2 };
-
-  glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
+  graphics_setVBO ();
   glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
+  graphics_setIBO ();
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indices), square_indices, GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
@@ -86,20 +90,41 @@ void graphics_geometry_fillRectangle(float x, float y, float w, float h) {
   graphics_Image img = {
     0, w, h
   };
-  graphics_Quad q = {0,0,1,1};
-  graphics_setShader(&moduleData.plainColorShader);
-  graphics_Image_draw(&img, &q, x, y, 0, 1, 1, 0, 0, 0, 0);
+   graphics_setShader(&moduleData.plainColorShader);
+  graphics_Image_draw(&img, &quad, x, y, 0, 1, 1, 0, 0, 0, 0);
 
   graphics_setShader(shader);
 }
-
 
 void graphics_geometry_drawRectangle(float x, float y, float w, float h) {
   graphics_Shader *shader = graphics_getShader();
   graphics_setShader(&moduleData.plainColorShader);
-  mat4x4 tr2d;
-  m4x4_newTransform2d(&tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
-  graphics_drawArray(&quad, &tr2d,  moduleData.ibo, 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,
+
+  m4x4_newTransform2d(&moduleData.tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_DYNAMIC_DRAW);
+  graphics_drawArray(&quad, &moduleData.tr2d,  graphics_getIBO (), 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,
                      graphics_getColor(), w * quad.w, h * quad.h);
   graphics_setShader(shader);
 }
+
+void graphics_geometry_points(float x, float y) {
+  graphics_Shader *shader = graphics_getShader();
+  graphics_setShader(&moduleData.plainColorShader);
+  m4x4_newTransform2d(&moduleData.tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(point_vertices), point_vertices, GL_DYNAMIC_DRAW);
+  graphics_drawArray(&quad, &moduleData.tr2d,  graphics_getIBO (), 4, GL_POINTS, GL_UNSIGNED_BYTE,
+                     graphics_getColor(), quad.w, quad.h);
+  graphics_setShader(shader);
+}
+
+
+
+
+
+
+
+
+
+
+
+
