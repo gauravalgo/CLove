@@ -142,6 +142,7 @@ void graphics_Batch_draw(graphics_Batch const* batch,
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, batch->texture->texID);
 
+  glBufferData(GL_ARRAY_BUFFER, 4*batch->maxCount*sizeof(graphics_Vertex), batch->vertexData, batch->usage);
   m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
   float const * color = batch->colorUsed ? defaultColor : graphics_getColor();
 
@@ -161,7 +162,6 @@ void graphics_Batch_clear(graphics_Batch *batch) {
 
 void graphics_Batch_flush(graphics_Batch *batch) {
   glBindBuffer(GL_ARRAY_BUFFER, batch->vbo);
-  glBufferData(GL_ARRAY_BUFFER, 4*batch->maxCount*sizeof(graphics_Vertex), batch->vertexData, batch->usage);
   glBufferSubData(GL_ARRAY_BUFFER, 0, 4*batch->insertPos*sizeof(graphics_Vertex), batch->vertexData);
 }
 

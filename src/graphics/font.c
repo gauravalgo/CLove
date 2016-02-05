@@ -77,8 +77,8 @@ int graphics_font_init(void) {
   graphics_setVBO ();
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
 
-  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
   graphics_setIBO ();
+  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
@@ -94,7 +94,7 @@ int graphics_font_init(void) {
 void graphics_Font_free(graphics_Font* font) {
   FT_Done_Face(font->face);
   FT_Done_FreeType(moduleData.ft);
- glDeleteTextures(1,&font->tex);
+  glDeleteTextures(1,&font->tex);
 }
 
 static void graphics_Font_newTexture(graphics_Font* font) {
@@ -180,6 +180,7 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
 
   int count = 0;
   int wrapped = 0;
+  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
   while((cp = utf8_scan(&text))) {
       ch = moduleData.characters[cp];
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
@@ -228,6 +229,7 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
 
+  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
   while((cp = utf8_scan(&text))) {
       ch = moduleData.characters[cp];
       glBindTexture(GL_TEXTURE_2D,ch.textureid);
@@ -245,7 +247,6 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
           py += floor(ch.bearingy + 5.25f);
           continue;
         }
-      glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
       graphics_drawArray(&quad, &moduleData.tr2d,  graphics_getIBO(), 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                          graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
