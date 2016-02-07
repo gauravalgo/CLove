@@ -10,7 +10,6 @@
 #pragma once
 
 #include "../3rdparty/openal/include/AL/al.h"
-#include <stdio.h>
 
 typedef struct {
   ALshort    *readBuffer;
