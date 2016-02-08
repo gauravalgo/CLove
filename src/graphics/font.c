@@ -25,23 +25,12 @@
 #include <string.h>
 
 #include FT_GLYPH_H
-
-typedef struct {
-  unsigned int textureid;
-  float sizex;
-  float sizey;
-  float bearingx;
-  float bearingy;
-  unsigned int advancex;
-  unsigned int advancey;
-} character;
-
 static struct {
-  character characters[300];
-  FT_Library ft;
   mat4x4 tr2d;
   FT_GlyphSlot g;
   const char* name;
+  GLuint vbo;
+  GLuint ibo;
 } moduleData;
 
 static graphics_Vertex const imageVertices[] = {
@@ -55,6 +44,7 @@ static graphics_Quad const quad = {
   0.0f,0.0f,1.0f,1.0f
 };
 
+static unsigned char const imageIndices[] = { 0, 1, 2, 3 };
 static const graphics_Filter defaultFilter = {
   .maxAnisotropy = 1.0f,
   .mipmapLodBias = 1.0f,
@@ -69,16 +59,15 @@ static const graphics_Wrap defaultWrap = {
 };
 
 int graphics_font_init(void) {
-  int error = FT_Init_FreeType(&moduleData.ft);
-  if(error){
-      printf("%s \n","Could not init freetype");
-      return 0;
-    }
-  graphics_setVBO ();
+
+
+
+  glGenBuffers(1, &moduleData.vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
 
-  graphics_setIBO ();
-  unsigned char const imageIndices[] = { 0, 1, 2, 3 };
+  glGenBuffers(1, &moduleData.ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
@@ -93,7 +82,7 @@ int graphics_font_init(void) {
 
 void graphics_Font_free(graphics_Font* font) {
   FT_Done_Face(font->face);
-  FT_Done_FreeType(moduleData.ft);
+  FT_Done_FreeType(font->ft);
   glDeleteTextures(1,&font->tex);
 }
 
@@ -126,15 +115,21 @@ static void graphics_Font_newTexture(graphics_Font* font) {
 
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
+  int error = FT_Init_FreeType(&font->ft);
+  if(error){
+      printf("%s \n","Could not init freetype");
+      return 1;
+    }
   if(filename){
-      FT_New_Face(moduleData.ft, filename, 0, &font->face);
+      FT_New_Face(font->ft, filename, 0, &font->face);
+      font->path = filename;
     }else
-    FT_New_Memory_Face(moduleData.ft, defaultFontData, defaultFontSize, 0, &font->face);
+    FT_New_Memory_Face(font->ft, defaultFontData, defaultFontSize, 0, &font->face);
 
-  FT_Set_Pixel_Sizes(font->face, 0, ptsize);
+  font->size = ptsize;
+  FT_Set_Pixel_Sizes(font->face, 0, font->size);
 
   moduleData.g = font->face->glyph;
-
   // Load first 128 characters of ASCII set
   for (GLubyte c = 0; c < 128; c++){
       // Load character glyph
@@ -152,9 +147,9 @@ int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize) {
         moduleData.g->advance.x,
         moduleData.g->advance.y
       };
-      moduleData.characters[c] = _character;
+      //moduleData.characters[c] = _character;
+      font->characters[c] = _character;
     }
-
   return 0;
 }
 
@@ -169,7 +164,6 @@ int graphics_Font_getWidth(graphics_Font* font, char const* line) {
 void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py, int limit, graphics_TextAlign align,
                           float r, float sx, float sy, float ox, float oy, float kx, float ky) {
   uint32_t cp;
-  character ch;
   int x = 0;
   int storeX = 0;
   int storeY = 0;
@@ -182,19 +176,20 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
   int wrapped = 0;
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
   while((cp = utf8_scan(&text))) {
-      ch = moduleData.characters[cp];
-      glBindTexture(GL_TEXTURE_2D,ch.textureid);
+      //ch = moduleData.characters[cp];
+      font->ch = font->characters[cp];
+      glBindTexture(GL_TEXTURE_2D,font->ch.textureid);
 
       if (storeX == 0)
-        storeX = px - ch.sizex;
+        storeX = px - font->ch.sizex;
       if (storeY == 0)
-        storeY = py + ch.sizey + 1;
+        storeY = py + font->ch.sizey + 1;
 
-      x = px + ch.bearingx;
-      y = py - ch.bearingy;
+      x = px + font->ch.bearingx;
+      y = py - font->ch.bearingy;
 
       if ((wrapped == 0 && ++count >= limit)){
-          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          px = x - (((font->ch.advancex >> 5)) * (font->ch.sizex + font->ch.bearingx));
           px = storeX;
           py = storeY;
           count = 0;
@@ -202,19 +197,19 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
         }
 
       if (cp == '\n'){
-          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          px = x - (((font->ch.advancex >> 5)) * (font->ch.sizex + font->ch.bearingx));
           if (px < storeX)
             px = storeX;
-          py += floor(ch.bearingy + 5.25f);
+          py += floor(font->ch.bearingy + 5.25f);
           continue;
         }
 
       m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
       graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                         graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
+                         graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
 
-      px += ch.advancex >> 6;
-      py += ch.advancey >> 6;
+      px += font->ch.advancex >> 6;
+      py += font->ch.advancey >> 6;
     }
   graphics_setShader(shader);
 
@@ -222,37 +217,36 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
 
 void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, float r, float sx, float sy, float ox, float oy, float kx, float ky) {
   uint32_t cp;
-  character ch;
   int x = 0;
   int storeX = 0;
   int y = font->face->ascender;
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
 
-  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
   while((cp = utf8_scan(&text))) {
-      ch = moduleData.characters[cp];
-      glBindTexture(GL_TEXTURE_2D,ch.textureid);
+      font->ch = font->characters[cp];
+      glBindTexture(GL_TEXTURE_2D,font->ch.textureid);
 
       if (storeX == 0)
-        storeX = px - ch.sizex;
+        storeX = px - font->ch.sizex;
 
-      x = px + ch.bearingx;
-      y = py - ch.bearingy;
+      x = px + font->ch.bearingx;
+      y = py - font->ch.bearingy;
 
       if (cp == '\n'){
-          px = x - (((ch.advancex >> 5)) * (ch.sizex + ch.bearingx));
+          px = x - (((font->ch.advancex >> 5)) * (font->ch.sizex + font->ch.bearingx));
           if (px < storeX)
             px = storeX;
-          py += floor(ch.bearingy + 5.25f);
+          py += floor(font->ch.bearingy + 5.25f);
           continue;
         }
-      m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
-      graphics_drawArray(&quad, &moduleData.tr2d,  graphics_getIBO(), 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                         graphics_getColor(), quad.w * ch.sizex , quad.h * ch.sizey);
 
-      px += ch.advancex >> 6;
-      py += ch.advancey >> 6;
+      m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
+      graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+                         graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
+
+      px += font->ch.advancex >> 6;
+      py += font->ch.advancey >> 6;
     }
   graphics_setShader(shader);
 }

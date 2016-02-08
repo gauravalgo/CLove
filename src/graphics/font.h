@@ -19,6 +19,16 @@
 #include "../3rdparty/freetype/include/ftglyph.h"
 
 typedef struct {
+  unsigned int textureid;
+  float sizex;
+  float sizey;
+  float bearingx;
+  float bearingy;
+  unsigned int advancex;
+  unsigned int advancey;
+} character;
+
+typedef struct {
   unsigned int vbo;
   unsigned int ibo;
   unsigned int tex;
@@ -27,7 +37,10 @@ typedef struct {
   FT_Face face;
   FT_GlyphSlot glyph;
   char const* text;
-  const char* name;
+  const char* path;
+  int ref;
+  character characters[300];
+  character ch;
 } graphics_Font;
 
 
@@ -39,6 +52,7 @@ void graphics_Font_getWrap(graphics_Font *font, graphics_Wrap *wrap);
 int graphics_font_init(void);
 
 int graphics_Font_new(graphics_Font* font, char const* filename, int ptsize);
+int graphics_Font_load(graphics_Font* font);
 
 void graphics_Font_free(graphics_Font* font);
 
