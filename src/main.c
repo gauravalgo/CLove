@@ -29,6 +29,7 @@
 #include "luaapi/filesystem.h"
 #include "luaapi/timer.h"
 #include "luaapi/math.h"
+#include "luaapi/system.h"
 
 #include "graphics/graphics.h"
 #include "filesystem/filesystem.h"
@@ -194,6 +195,7 @@ int main(int argc, char* argv[]) {
   l_filesystem_register(lua);
   l_timer_register(lua);
   l_math_register(lua);
+  l_system_register(lua);
 
   l_boot(lua, &config);
 
@@ -232,8 +234,8 @@ int main(int argc, char* argv[]) {
   if(!l_event_running())
     quit_function(lua);
 #endif
-  glDeleteBuffers(1, &graphics_getIBO);
-  glDeleteBuffers(1, &graphics_getVBO);
+  glDeleteBuffers(1, graphics_getIBO());
+  glDeleteBuffers(1, graphics_getVBO());
   audio_close ();
   return 0;
 }

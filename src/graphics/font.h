@@ -33,7 +33,6 @@ typedef struct {
   unsigned int ibo;
   unsigned int tex;
   int size;
-  FT_Library ft;
   FT_Face face;
   FT_GlyphSlot glyph;
   char const* text;
@@ -41,6 +40,8 @@ typedef struct {
   int ref;
   character characters[300];
   character ch;
+  int w;
+  int h;
 } graphics_Font;
 
 
