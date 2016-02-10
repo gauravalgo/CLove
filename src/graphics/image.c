@@ -16,6 +16,8 @@
 
 static struct {
   mat4x4 tr2d;
+  GLuint vbo;
+  GLuint ibo;
 } moduleData;
 
 static graphics_Vertex const imageVertices[] = {
@@ -28,10 +30,12 @@ static unsigned char const imageIndices[] = { 0, 1, 2, 3 };
 
 void graphics_image_init(void) {
 
-  graphics_setVBO ();
+  glGenBuffers(1, &moduleData.vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
 
-  graphics_setIBO ();
+  glGenBuffers(1, &moduleData.ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
 
   glEnableVertexAttribArray(0);
@@ -74,6 +78,8 @@ void graphics_Image_refresh(graphics_Image *img, image_ImageData const *data) {
 
 void graphics_Image_free(graphics_Image *obj) {
   glDeleteTextures(1, &obj->texID);
+  glDeleteBuffers(1, &moduleData.ibo);
+  glDeleteBuffers(1, &moduleData.vbo);
 }
 
 void graphics_Image_setFilter(graphics_Image *img, graphics_Filter const* filter) {
@@ -104,7 +110,7 @@ void graphics_Image_draw(graphics_Image const* image, graphics_Quad const* quad,
   glBindTexture(GL_TEXTURE_2D, image->texID);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
   m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
-  graphics_drawArray(quad, &moduleData.tr2d,  graphics_getIBO (), 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+  graphics_drawArray(quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                      graphics_getColor(), image->width * quad->w, image->height * quad->h);
 
 }

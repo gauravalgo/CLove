@@ -26,5 +26,7 @@ void graphics_geometry_drawCircle(float x,float y, float radius, int segments);
 
 void graphics_geometry_points(float x, float y);
 
+void graphics_geometry_free();
+
 void graphics_geometry_setLineWidth(float width);
 float graphics_geometry_getLineWidth();

@@ -129,6 +129,14 @@ GLuint graphics_getIBO(){
   return moduleData.ibo;
 }
 
+GLuint graphics_getVBO_address() {
+  return &moduleData.vbo;
+}
+
+GLuint graphics_getIBO_address(){
+  return &moduleData.ibo;
+}
+
 void graphics_setBackgroundColor(float red, float green, float blue, float alpha) {
   moduleData.backgroundColor.red   = red;
   moduleData.backgroundColor.green = green;

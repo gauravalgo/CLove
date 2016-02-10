@@ -94,6 +94,8 @@ void graphics_Font_free(graphics_Font* font) {
   FT_Done_Face(font->face);
   FT_Done_FreeType(moduleData.ft);
   glDeleteTextures(1,&font->tex);
+  glDeleteBuffers(1, &moduleData.ibo);
+  glDeleteBuffers(1, &moduleData.vbo);
 }
 
 static void graphics_Font_newTexture(graphics_Font* font) {

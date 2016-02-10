@@ -15,7 +15,6 @@
 #include "3rdparty/lua/lauxlib.h"
 #include "3rdparty/lua/lualib.h"
 #include "3rdparty/SDL2/include/SDL.h"
-
 #include "luaapi/audio.h"
 #include "luaapi/mouse.h"
 #include "luaapi/event.h"
@@ -234,8 +233,6 @@ int main(int argc, char* argv[]) {
   if(!l_event_running())
     quit_function(lua);
 #endif
-  glDeleteBuffers(1, graphics_getIBO());
-  glDeleteBuffers(1, graphics_getVBO());
   audio_close ();
   return 0;
 }

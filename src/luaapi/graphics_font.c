@@ -73,8 +73,8 @@ static int l_graphics_printf(lua_State* state) {
   if(!text) {
        text = "";
     }
-  int x = l_tools_toNumberOrError(state, 2);
-  int y = l_tools_toNumberOrError(state, 3);
+  int x = luaL_optnumber(state, 2, 0);
+  int y = luaL_optnumber(state, 3, x);
   int limit = l_tools_toNumberOrError(state, 4);
   graphics_TextAlign align = graphics_TextAlign_left;
   if(!lua_isnoneornil(state, 5)) {
@@ -102,8 +102,8 @@ static int l_graphics_print(lua_State* state) {
   if(!text) {
       text = "";
     }
-  int x = l_tools_toNumberOrError(state, 2);
-  int y = l_tools_toNumberOrError(state, 3);
+  int x = luaL_optnumber(state, 2, 0);
+  int y = luaL_optnumber(state, 3, x);
 
   float r = luaL_optnumber(state, 4, 0);
   float sx = luaL_optnumber(state, 5, 1.0f);
