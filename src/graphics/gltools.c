@@ -62,7 +62,7 @@ void graphics_Texture_setFilter(GLuint texID, graphics_Filter const* filter) {
   
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
-  //  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, filter->maxAnisotropy);
+  //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, filter->maxAnisotropy);
   
   // Not supported by WebGL, still interesting for native builds.
   // Accept GL_INVALID_ENUM on WebGL

@@ -71,7 +71,7 @@ void quit_function(lua_State* state)
 
 void main_loop(void *data) {
   MainLoopData* loopData = (MainLoopData*)data;
-
+  
   timer_step();
   lua_rawgeti(loopData->luaState, LUA_REGISTRYINDEX, loopData->errhand);
   lua_getglobal(loopData->luaState, "love");
@@ -79,13 +79,12 @@ void main_loop(void *data) {
 
   lua_rawget(loopData->luaState, -2);
   lua_pushnumber(loopData->luaState, timer_getDelta());
-
+    
   if (swap_At == 1){
       if(luaL_dofile(loopData->luaState, "main.lua")) {
           printf("Error: %s\n", lua_tostring(loopData->luaState, -1));
         }
     }
-
 
   if(lua_pcall(loopData->luaState, 1, 0, 0)) {
       printf("Lua error: %s\n", lua_tostring(loopData->luaState, -1));
@@ -98,7 +97,7 @@ void main_loop(void *data) {
     }
 
   graphics_clear();
-
+  
   lua_pushstring(loopData->luaState, "draw");
   lua_rawget(loopData->luaState, -2);
 

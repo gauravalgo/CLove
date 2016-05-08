@@ -21,6 +21,7 @@ static struct {
   mat4x4 tr2d;
   GLuint vbo;
   GLuint ibo;
+  GLuint vao;
 } moduleData;
 
 static graphics_Vertex const point_vertices[] = {
@@ -41,8 +42,11 @@ static graphics_Vertex const square_vertices[] = {
 static unsigned char const square_indices[] = { 0, 1, 2, 3};
 
 void graphics_geometry_init(void) {
-
-
+  
+#ifdef __MACH__
+  glGenVertexArrays(1, &moduleData.vao);
+  glBindVertexArray(moduleData.vao);
+#endif
   glGenBuffers(1, &moduleData.vbo);
   glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
@@ -51,7 +55,7 @@ void graphics_geometry_init(void) {
   glGenBuffers(1, &moduleData.ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(square_indices), square_indices, GL_STATIC_DRAW);
-
+  
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), 0);
   glEnableVertexAttribArray(1);
@@ -69,6 +73,9 @@ void graphics_geometry_init(void) {
 void graphics_geometry_free () {
   glDeleteBuffers(1, &moduleData.ibo);
   glDeleteBuffers(1, &moduleData.vbo);
+#ifdef __MACH__
+  glDeleteBuffers(1, &moduleData.vao);
+#endif
   graphics_Shader_free(&moduleData.plainColorShader);
 }
 
@@ -114,8 +121,13 @@ void graphics_geometry_drawRectangle(float x, float y, float w, float h) {
 
   m4x4_newTransform2d(&moduleData.tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
   glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_DYNAMIC_DRAW);
-  graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,
+#ifdef __MACH__
+  graphics_drawArrayVAO(&quad, &moduleData.tr2d,  moduleData.ibo, moduleData.vao, 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,
                      graphics_getColor(), w * quad.w, h * quad.h);
+#else 
+    graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,
+                     graphics_getColor(), w * quad.w, h * quad.h);
+#endif
   graphics_setShader(shader);
 }
 
@@ -124,8 +136,13 @@ void graphics_geometry_points(float x, float y) {
   graphics_setShader(&moduleData.plainColorShader);
   m4x4_newTransform2d(&moduleData.tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
   glBufferData(GL_ARRAY_BUFFER, sizeof(point_vertices), point_vertices, GL_DYNAMIC_DRAW);
+#ifdef __MACH__
+  graphics_drawArrayVAO(&quad, &moduleData.tr2d,  moduleData.ibo, moduleData.vao, 4, GL_POINTS, GL_UNSIGNED_BYTE,
+                     graphics_getColor(), quad.w, quad.h);
+#else 
   graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_POINTS, GL_UNSIGNED_BYTE,
                      graphics_getColor(), quad.w, quad.h);
+#endif
   graphics_setShader(shader);
 }
 

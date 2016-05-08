@@ -32,7 +32,9 @@ float* graphics_getColor(void);
 float* graphics_getBackgroundColor(void);
 void graphics_clear(void);
 void graphics_swap(void);
+void graphics_drawArrayVAO(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint vao, GLuint count, GLenum type, GLenum indexType, float const * useColor, float ws, float hs);
 void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const * useColor, float ws, float hs);
+
 
 //Window
 int mouse_focus;

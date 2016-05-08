@@ -38,8 +38,6 @@ static struct {
   int scissorBox[4];
   bool scissorSet;
 
-  GLuint polygonVBO;
-  GLuint polygonIBO;
   mat4x4 projectionMatrix;
   int isCreated;
   int width;
@@ -47,10 +45,6 @@ static struct {
   const char* title;
   int x;
   int y;
-
-  GLuint vbo;
-  GLuint ibo;
-
 } moduleData;
 
 #ifndef EMSCRIPTEN
@@ -60,29 +54,34 @@ SDL_Window* graphics_getWindow(void) {
 #endif
 
 void graphics_init(int width, int height) {
-  SDL_Init(SDL_INIT_VIDEO);
+ 
+  if (SDL_Init(SDL_INIT_EVERYTHING) == 0) 
+    printf("Could not init SDL");
+  
   moduleData.isCreated = 0;
 #ifdef EMSCRIPTEN
   moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
 #else
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);                                               
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);   
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   moduleData.width = width;
   moduleData.height = height;
   moduleData.x = SDL_WINDOWPOS_UNDEFINED;
   moduleData.y = SDL_WINDOWPOS_UNDEFINED;
   moduleData.title = "Untitled";
-  moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL);
+  moduleData.window = SDL_CreateWindow(moduleData.title, moduleData.x, moduleData.y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+  if(moduleData.window == NULL) 
+    printf("Could not create window :O");
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   moduleData.surface = SDL_GetWindowSurface(moduleData.window);
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
 #endif
+  glewExperimental = true;
   GLenum res = glewInit();
   if(res != GLEW_OK){
       printf("Could not init glew.Something must be very wrong, no gpu drivers?");
-    }
-  glViewport(0,0,width,height);
+    }  glViewport(0,0,width,height);
 
   matrixstack_init();
   m4x4_newTranslation(&moduleData.projectionMatrix, -1.0f, -1.0f, 0.0f);
@@ -107,34 +106,7 @@ void graphics_init(int width, int height) {
   graphics_setBlendMode(graphics_BlendMode_alpha);
   glEnable(GL_BLEND);
   graphics_clearScissor();
-
-}
-
-void graphics_setVBO() {
-  glGenBuffers(1, &moduleData.vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
-}
-
-void graphics_setIBO(){
-  glGenBuffers(1, &moduleData.ibo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
-}
-
-
-GLuint graphics_getVBO() {
-  return moduleData.vbo;
-}
-
-GLuint graphics_getIBO(){
-  return moduleData.ibo;
-}
-
-GLuint graphics_getVBO_address() {
-  return &moduleData.vbo;
-}
-
-GLuint graphics_getIBO_address(){
-  return &moduleData.ibo;
+  
 }
 
 void graphics_setBackgroundColor(float red, float green, float blue, float alpha) {
@@ -164,10 +136,9 @@ void graphics_swap(void) {
 #endif
 }
 
-static mat4x4 tr;
-void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo,
-                        GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
-
+void graphics_drawArrayVAO(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint vao, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
+  
+  mat4x4 tr;
   m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
 
   graphics_Shader_activate(
@@ -178,10 +149,31 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
         ws,
         hs
         );
-
+  
+  glBindVertexArray(vao);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   glDrawElements(type, count, indexType, (GLvoid const*)0);
 }
+
+void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
+  
+  mat4x4 tr;
+  m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
+
+  graphics_Shader_activate(
+        &moduleData.projectionMatrix,
+        &tr,
+        quad,
+        useColor,
+        ws,
+        hs
+        );
+  
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  glDrawElements(type, count, indexType, (GLvoid const*)0);
+}
+
+
 
 int graphics_setTitle(const char* title){
 #ifndef EMSCRIPTEN

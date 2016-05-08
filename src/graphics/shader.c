@@ -11,6 +11,7 @@
 #include <string.h>
 #include "shader.h"
 #include "../3rdparty/slre/slre.h"
+#include <stdio.h>
 
 #ifdef EMSCRIPTEN
 #include <GLES2/gl2.h>
@@ -30,6 +31,7 @@ GLchar const *defaultVertexSource =
   "}\n";
 
 static GLchar const vertexHeader[] =
+  "#version 100 \n"
   "uniform   mat4 transform;\n"  
   "uniform   mat4 projection;\n"
   "uniform   mat2 textureRect;\n"
@@ -57,6 +59,7 @@ static GLchar const *defaultFragmentSource =
 #define DEFAULT_SAMPLER "tex"
 
 static GLchar const fragmentHeader[] = 
+  "#version 100 \n "
   "precision mediump float;\n"
   "#define Image sampler2D\n"
   "#define Texel texture2D\n"
@@ -83,9 +86,15 @@ bool graphics_Shader_compileAndAttachShaderRaw(graphics_Shader *program, GLenum 
   int infolen;
   glGetShaderiv(shader, GL_COMPILE_STATUS, &state);
   glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infolen);
-
+  
   char *info = malloc(infolen);
   glGetShaderInfoLog(shader, infolen, 0, info);
+
+  printf("%s\n",info);
+
+  if(state != GL_TRUE)
+    printf("couldn't compile and attach the shader");
+  
   switch(shaderType) {
   case GL_VERTEX_SHADER:
     free(program->warnings.vertex);

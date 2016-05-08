@@ -65,6 +65,7 @@ DIST_DIR := $(shell mktemp -d /tmp/glew.XXXXXX)/$(DIST_NAME)
 #   - use LN= on gmake command-line
 
 AR      ?= ar
+ARFLAGS ?= cr
 INSTALL ?= install
 STRIP   ?= strip
 RM      ?= rm -f
@@ -104,7 +105,11 @@ lib:
 	mkdir lib
 
 lib/$(LIB.STATIC): $(LIB.OBJS)
-	$(AR) cr $@ $^
+ifneq ($(AR),)
+	$(AR) $(ARFLAGS) $@ $^
+else ifneq ($(LIBTOOL),)
+	$(LIBTOOL) $@ $^
+endif
 ifneq ($(STRIP),)
 	$(STRIP) -x $@
 endif
@@ -125,7 +130,7 @@ tmp/$(SYSTEM)/default/static/glew.o: src/glew.c include/GL/glew.h include/GL/wgl
 
 tmp/$(SYSTEM)/default/shared/glew.o: src/glew.c include/GL/glew.h include/GL/wglew.h include/GL/glxew.h
 	@mkdir -p $(dir $@)
-	$(CC) -DGLEW_NO_GLU $(CFLAGS) $(CFLAGS.SO) -o $@ -c $<
+	$(CC) -DGLEW_NO_GLU -DGLEW_BUILD $(CFLAGS) $(CFLAGS.SO) -o $@ -c $<
 
 # Force re-write of glew.pc, GLEW_DEST can vary
 
@@ -148,7 +153,14 @@ glew.pc: glew.pc.in
 glew.lib.mx:  lib lib/$(LIB.SHARED.MX) lib/$(LIB.STATIC.MX) glewmx.pc
 
 lib/$(LIB.STATIC.MX): $(LIB.OBJS.MX)
-	$(AR) cr $@ $^
+ifneq ($(AR),)
+	$(AR) $(ARFLAGS) $@ $^
+else ifneq ($(LIBTOOL),)
+	$(LIBTOOL) $@ $^
+endif
+ifneq ($(STRIP),)
+	$(STRIP) -x $@
+endif
 
 lib/$(LIB.SHARED.MX): $(LIB.SOBJS.MX)
 	$(LD) $(LDFLAGS.SO.MX) -o $@ $^ $(LIB.LDFLAGS) $(LIB.LIBS)
@@ -166,7 +178,7 @@ tmp/$(SYSTEM)/mx/static/glew.o: src/glew.c include/GL/glew.h include/GL/wglew.h 
 
 tmp/$(SYSTEM)/mx/shared/glew.o: src/glew.c include/GL/glew.h include/GL/wglew.h include/GL/glxew.h
 	@mkdir -p $(dir $@)
-	$(CC) -DGLEW_NO_GLU -DGLEW_MX $(CFLAGS) $(CFLAGS.SO) -o $@ -c $<
+	$(CC) -DGLEW_NO_GLU -DGLEW_MX -DGLEW_BUILD $(CFLAGS) $(CFLAGS.SO) -o $@ -c $<
 
 # Force re-write of glewmx.pc, GLEW_DEST can vary
 

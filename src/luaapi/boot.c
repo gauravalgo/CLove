@@ -13,7 +13,7 @@
 static char const bootScript[] =
   "package.path = '?.lua;?/init.lua'\n"
   "love.update = function(dt) if love.keyboard.isDown('esc') then love.event.quit() end end\n"
-  "love.draw = function() end \n"
+  "love.draw = function() love.graphics.rectangle('fill',100,100,100,100) end \n"
   "love.load = function() end \n"
   "love.mousepressed = function() end\n"
   "love.mousereleased = function() end\n"
