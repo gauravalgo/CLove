@@ -62,9 +62,17 @@ void graphics_init(int width, int height) {
 #ifdef EMSCRIPTEN
   moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
 #else
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);                                 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);   
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  
   moduleData.width = width;
   moduleData.height = height;
   moduleData.x = SDL_WINDOWPOS_UNDEFINED;
@@ -74,16 +82,13 @@ void graphics_init(int width, int height) {
   if(moduleData.window == NULL) 
     printf("Could not create window :O");
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
-  moduleData.surface = SDL_GetWindowSurface(moduleData.window);
+  //moduleData.surface = SDL_GetWindowSurface(moduleData.window);
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
 
   printf("Debug, OpenGL version: %s \n", glGetString(GL_VERSION));
   printf("Debug, GLSL version %s \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
   
 #endif
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
   glewExperimental = true;
   GLenum res = glewInit();
   if(res != GLEW_OK){

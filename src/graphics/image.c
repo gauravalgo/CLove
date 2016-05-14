@@ -74,11 +74,10 @@ void graphics_Image_refresh(graphics_Image *img, image_ImageData const *data) {
   // Create the OpenGL texture
   glGenTextures(1, &img->texID);
   glBindTexture(GL_TEXTURE_2D, img->texID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+  
+  graphics_Image_setFilter(img, &defaultFilter);
+  graphics_Image_setWrap(img, &defaultWrap);
+  
   img->width = data->w;
   img->height = data->h;
  
@@ -89,7 +88,6 @@ void graphics_Image_free(graphics_Image *obj) {
   glDeleteTextures(1, &obj->texID);
   glDeleteBuffers(1, &moduleData.ibo);
   glDeleteBuffers(1, &moduleData.vbo);
-
 }
 
 void graphics_Image_setFilter(graphics_Image *img, graphics_Filter const* filter) {
@@ -116,13 +114,14 @@ void graphics_Image_draw(graphics_Image const* image, graphics_Quad const* quad,
                          float x, float y, float r, float sx, float sy,
                          float ox, float oy, float kx, float ky) {
   
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, image->texID);
-  
   mat4x4 tr2d; 
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
   m4x4_newTransform2d(&tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
-
+  
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, image->texID);
+  
  graphics_drawArray(quad, &tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                     graphics_getColor(), image->width * quad->w, image->height * quad->h);
 

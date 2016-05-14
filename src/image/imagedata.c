@@ -15,8 +15,9 @@
 
 int image_ImageData_new_with_filename(image_ImageData *dst, char const* filename) {
   int n;
-  dst->surface = stbi_load(filename, &dst->w, &dst->h, &n, 4);
-  if(dst->surface == 0) //image could not be loaded
+  dst->surface = stbi_load(filename, &dst->w, &dst->h, &n, STBI_rgb_alpha);
+  //printf("%i \n",n);
+  if(dst->surface == 0 || dst->surface == NULL) //image could not be loaded
     return 0;
   return 1;
 }

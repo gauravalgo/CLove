@@ -32,6 +32,7 @@ GLchar const *defaultVertexSource =
   "}\n";
 
 static GLchar const vertexHeader[] =
+  "#version 120\n"
   "uniform   mat4 transform;\n"  
   "uniform   mat4 projection;\n"
   "uniform   mat2 textureRect;\n"
@@ -53,12 +54,13 @@ static GLchar const vertexFooter[] =
 
 static GLchar const *defaultFragmentSource =
   "vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ) {\n"
-  "  return Texel(texture, texture_coords) * color;\n"
+  "  return Texel(texture, texture_coords) * color;//vec4(1,1,1,1);\n"
   "}\n";
 
 #define DEFAULT_SAMPLER "tex"
 
 static GLchar const fragmentHeader[] = 
+  "#version 120\n"
   //"precision mediump float;\n"
   "#define Image sampler2D\n"
   "#define Texel texture2D\n"
@@ -71,7 +73,7 @@ static GLchar const fragmentHeader[] =
 
 static GLchar const fragmentFooter[] =
   "void main() {\n"
-  "  gl_FragColor = effect(color * fColor, tex, fUV, vec2(0.0, 0.0));\n"
+  "  gl_FragColor = effect(color, tex, fUV, vec2(0.0, 0.0));\n"
   "}\n";
 
 bool graphics_Shader_compileAndAttachShaderRaw(graphics_Shader *program, GLenum shaderType, char const* code) {
@@ -264,15 +266,17 @@ static void readShaderUniforms(graphics_Shader *shader) {
   }
 
   qsort(shader->uniforms, shader->uniformCount, sizeof(graphics_ShaderUniformInfo), (int(*)(void const*,void const*))compareUniformInfo);
+  
 }
 
 
 static void allocateTextureUnits(graphics_Shader *shader) {
+  
   shader->textureUnitCount = 0;
   for(int i = 0; i < shader->uniformCount; ++i) {
     if(shader->uniforms[i].type == GL_SAMPLER_2D) {
       if(strcmp(shader->uniforms[i].name, DEFAULT_SAMPLER)) {
-        ++shader->textureUnitCount;
+       ++shader->textureUnitCount;
       }
     }
   }  
@@ -292,6 +296,7 @@ static void allocateTextureUnits(graphics_Shader *shader) {
       }
     }
   }
+  
 }
 
 
@@ -325,7 +330,7 @@ graphics_ShaderCompileStatus graphics_Shader_new(graphics_Shader *shader, char c
   glBindAttribLocation(shader->program, 1, "vUV");
   glBindAttribLocation(shader->program, 2, "vColor");
   glLinkProgram(shader->program);
-
+   
   int linkState;
   int linkInfoLen;
   glGetProgramiv(shader->program, GL_LINK_STATUS, &linkState);
