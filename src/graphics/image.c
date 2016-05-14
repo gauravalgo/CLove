@@ -13,6 +13,7 @@
 #include "graphics.h"
 #include "vertex.h"
 #include "shader.h"
+#include <stdio.h>
 
 static struct {
   mat4x4 tr2d;
@@ -29,19 +30,15 @@ static graphics_Vertex const imageVertices[] = {
 };
 static unsigned char const imageIndices[] = { 0, 1, 2, 3 };
 
-void graphics_image_init(void) {
-  
-  
-#ifdef __MACH__ 
-  glGenVertexArrays(1, &moduleData.vao);
-  glBindVertexArray(moduleData.vao);
-#endif
+void graphics_image_init(void) {  
+
 
   glGenBuffers(1, &moduleData.vbo);
+  glGenBuffers(1, &moduleData.ibo);
+  
   glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
 
-  glGenBuffers(1, &moduleData.ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(imageIndices), imageIndices, GL_STATIC_DRAW);
 
@@ -51,6 +48,7 @@ void graphics_image_init(void) {
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(2*sizeof(float)));
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(graphics_Vertex), (GLvoid const*)(4*sizeof(float)));
+
 }
 
 static const graphics_Wrap defaultWrap = {
@@ -67,29 +65,31 @@ static const graphics_Filter defaultFilter = {
 };
 
 void graphics_Image_new_with_ImageData(graphics_Image *dst, image_ImageData *data) {
-  glGenTextures(1, &dst->texID);
-  glBindTexture(GL_TEXTURE_2D, dst->texID);
-  graphics_Image_setFilter(dst, &defaultFilter);
-
-  graphics_Image_setWrap(dst, &defaultWrap);
-
-  graphics_Image_refresh(dst, data);
+  graphics_Image_refresh(dst,data);
 }
 
 void graphics_Image_refresh(graphics_Image *img, image_ImageData const *data) {
+  
+
+  // Create the OpenGL texture
+  glGenTextures(1, &img->texID);
   glBindTexture(GL_TEXTURE_2D, img->texID);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->w, data->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data->surface);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
   img->width = data->w;
   img->height = data->h;
+ 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->w, data->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data->surface);
 }
 
 void graphics_Image_free(graphics_Image *obj) {
   glDeleteTextures(1, &obj->texID);
   glDeleteBuffers(1, &moduleData.ibo);
   glDeleteBuffers(1, &moduleData.vbo);
-#ifdef __MACH__ 
-  glDeleteBuffers(1, &moduleData.vao);
-#endif
+
 }
 
 void graphics_Image_setFilter(graphics_Image *img, graphics_Filter const* filter) {
@@ -115,17 +115,15 @@ void graphics_Image_getWrap(graphics_Image *img, graphics_Wrap *wrap) {
 void graphics_Image_draw(graphics_Image const* image, graphics_Quad const* quad,
                          float x, float y, float r, float sx, float sy,
                          float ox, float oy, float kx, float ky) {
-
+  
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, image->texID);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_DYNAMIC_DRAW);
-  m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
-#ifdef __MACH__ 
-  graphics_drawArrayVAO(quad, &moduleData.tr2d,  moduleData.ibo, moduleData.vao, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                     graphics_getColor(), image->width * quad->w, image->height * quad->h);
-#else
-  graphics_drawArray(quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                     graphics_getColor(), image->width * quad->w, image->height * quad->h);
-#endif
+  
+  mat4x4 tr2d; 
+  glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
+  m4x4_newTransform2d(&tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
+
+ graphics_drawArray(quad, &tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
+                    graphics_getColor(), image->width * quad->w, image->height * quad->h);
 
 }

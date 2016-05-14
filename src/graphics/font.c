@@ -73,11 +73,6 @@ int graphics_font_init(void) {
       return 1;
     }
 
-  
-#ifdef __MACH__ 
-  glGenVertexArrays(1, &moduleData.vao);
-  glBindVertexArray(moduleData.vao);
-#endif
   glGenBuffers(1, &moduleData.vbo);
   glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(imageVertices), imageVertices, GL_STATIC_DRAW);
@@ -102,9 +97,6 @@ void graphics_Font_free(graphics_Font* font) {
   glDeleteTextures(1,&font->tex);
   glDeleteBuffers(1, &moduleData.ibo);
   glDeleteBuffers(1, &moduleData.vbo);
-#ifdef __MACH__ 
-  glDeleteBuffers(1, &moduleData.vao);
-#endif
 }
 
 static void graphics_Font_newTexture(graphics_Font* font) {
@@ -124,13 +116,12 @@ static void graphics_Font_newTexture(graphics_Font* font) {
         }
       row += b.pitch;
     }
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0,
-               GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, buf);
-
+  
   graphics_Font_setWrap(font, &defaultWrap);
   graphics_Font_setFilter(font, &defaultFilter);
 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, moduleData.g->bitmap.width, moduleData.g->bitmap.rows, 0,
+               GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, buf);
   free(buf);
 }
 
@@ -221,13 +212,8 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
         }
 
       m4x4_newTransform2d(&moduleData.tr2d, moduleData.x, moduleData.y, r, sx, sy, ox, oy, kx, ky);
-#ifdef __MACH__ 
-      graphics_drawArrayVAO(&quad, &moduleData.tr2d,  font->ibo, moduleData.vao, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                         graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
-#else
       graphics_drawArray(&quad, &moduleData.tr2d,  font->ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                          graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
-#endif
 
       font->w = (int )&font->glyph->bitmap.width;
       font->w = font->w >> 6;
@@ -265,13 +251,8 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
         }
 
       m4x4_newTransform2d(&moduleData.tr2d, moduleData.x, moduleData.y, r, sx, sy, ox, oy, kx, ky);
-#ifdef __MACH__
-      graphics_drawArrayVAO(&quad, &moduleData.tr2d,  moduleData.ibo, moduleData.vao, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
-                         graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
-#else
       graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_TRIANGLE_STRIP, GL_UNSIGNED_BYTE,
                          graphics_getColor(), quad.w * font->ch.sizex , quad.h * font->ch.sizey);
-#endif
 
       font->w = (int )&font->glyph->bitmap.width;
       font->w = font->w >> 6;

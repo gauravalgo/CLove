@@ -54,9 +54,7 @@ void graphics_batch_init(void) {
 
 void graphics_Batch_new(graphics_Batch* batch, graphics_Image const* texture, int maxSize, graphics_BatchUsage usage) {
   
-#ifdef __MACH__ 
-  glGenVertexArrays(1, &batch->vao);
-#endif
+
   batch->texture = texture;
   batch->vertexData = calloc(4*maxSize, sizeof(graphics_Vertex));
   glGenBuffers(1, &batch->vbo);
@@ -88,9 +86,7 @@ void graphics_Batch_new(graphics_Batch* batch, graphics_Image const* texture, in
 void graphics_Batch_free(graphics_Batch* batch) {
   glDeleteBuffers(1, &batch->vbo);
   glDeleteBuffers(1, &moduleData.sharedIndexBuffer);
-#ifdef __MACH__
-  glDeleteBuffers(1, &batch->vao);
-#endif
+
   free(batch->vertexData);
 }
 
@@ -151,13 +147,10 @@ void graphics_Batch_draw(graphics_Batch const* batch,
   m4x4_newTransform2d(&moduleData.tr2d, x, y, r, sx, sy, ox, oy, kx, ky);
   float const * color = batch->colorUsed ? defaultColor : graphics_getColor();
   
-#ifdef __MACH__ 
-  graphics_drawArrayVAO(&fullQuad, &moduleData.tr2d, moduleData.sharedIndexBuffer, batch->vao, batch->insertPos*6, GL_TRIANGLES,
-                     GL_UNSIGNED_SHORT,  color, 1.0f, 1.0f);
-#else 
+
   graphics_drawArray(&fullQuad, &moduleData.tr2d, moduleData.sharedIndexBuffer, batch->insertPos*6, GL_TRIANGLES,
                      GL_UNSIGNED_SHORT,  color, 1.0f, 1.0f);
-#endif
+
 }
 
 void graphics_Batch_bind(graphics_Batch *batch) {

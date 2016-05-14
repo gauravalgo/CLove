@@ -55,16 +55,16 @@ SDL_Window* graphics_getWindow(void) {
 
 void graphics_init(int width, int height) {
  
-  if (SDL_Init(SDL_INIT_EVERYTHING) == 0) 
-    printf("Could not init SDL");
+  if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+    printf("Error: Could not init SDL \n");
   
   moduleData.isCreated = 0;
 #ifdef EMSCRIPTEN
   moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
 #else
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);                                               
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);                                 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);   
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   moduleData.width = width;
   moduleData.height = height;
   moduleData.x = SDL_WINDOWPOS_UNDEFINED;
@@ -76,7 +76,14 @@ void graphics_init(int width, int height) {
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   moduleData.surface = SDL_GetWindowSurface(moduleData.window);
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
+
+  printf("Debug, OpenGL version: %s \n", glGetString(GL_VERSION));
+  printf("Debug, GLSL version %s \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+  
 #endif
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
   glewExperimental = true;
   GLenum res = glewInit();
   if(res != GLEW_OK){
@@ -134,25 +141,6 @@ void graphics_swap(void) {
 #else
   SDL_GL_SwapWindow(moduleData.window);
 #endif
-}
-
-void graphics_drawArrayVAO(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint vao, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
-  
-  mat4x4 tr;
-  m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
-
-  graphics_Shader_activate(
-        &moduleData.projectionMatrix,
-        &tr,
-        quad,
-        useColor,
-        ws,
-        hs
-        );
-  
-  glBindVertexArray(vao);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-  glDrawElements(type, count, indexType, (GLvoid const*)0);
 }
 
 void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {

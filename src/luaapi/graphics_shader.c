@@ -106,12 +106,8 @@ int static l_graphics_newShader(lua_State* state) {
   }
 
   l_graphics_Shader * shader = lua_newuserdata(state, sizeof(l_graphics_Shader));
-  graphics_ShaderCompileStatus status = graphics_Shader_new(&shader->shader, vertexSrc, fragmentSrc);
-  if(status != graphics_ShaderCompileStatus_okay) {
-    pushShaderInfoLog(state, &shader->shader);
-    return lua_error(state);
-  }
-
+  graphics_Shader_new(&shader->shader, vertexSrc, fragmentSrc);
+  
   lua_rawgeti(state, LUA_REGISTRYINDEX, moduleData.shaderMT);
   lua_setmetatable(state, -2);
 
@@ -239,14 +235,14 @@ static void sendFloatMatrices(lua_State *state, l_graphics_Shader* shader, graph
     }
   }
 
-  graphics_Shader_sendFloatMatrices(&shader->shader, info, count, numbers);
+  //graphics_Shader_sendFloatMatrices(&shader->shader, info, count, numbers);
 }
 
 static void referenceAndSendTexture(lua_State *state, l_graphics_Shader* shader, graphics_ShaderUniformInfo const* info, GLuint texture) {
   int index = (graphics_ShaderTextureUnitInfo*) info->extra - shader->shader.textureUnits;
   lua_settop(state, 3);
   shader->referencedTextures[index] = luaL_ref(state, LUA_REGISTRYINDEX);
-  graphics_Shader_sendTexture(&shader->shader, info, texture);
+  //graphics_Shader_sendTexture(&shader->shader, info, texture);
 }
 
 static void sendSamplers(lua_State *state, l_graphics_Shader* shader, graphics_ShaderUniformInfo const* info) {
@@ -265,82 +261,14 @@ static int l_graphics_Shader_send(lua_State *state) {
 
   char const* name = l_tools_toStringOrError(state, 2);
 
-  graphics_ShaderUniformInfo const* info = graphics_Shader_getUniform(&shader->shader, name);
-
-  switch(info->type) {
-  case GL_INT:
-    sendIntegers(state, shader, info);
-    break;
-
-  case GL_FLOAT:
-    sendFloats(state, shader, info);
-    break;
-
-  case GL_BOOL:
-    sendBooleans(state, shader, info);
-    break;
-
-  case GL_INT_VEC2:
-  case GL_INT_VEC3:
-  case GL_INT_VEC4:
-    sendIntegerVectors(state, shader, info);
-    break;
-
-  case GL_FLOAT_VEC2:
-  case GL_FLOAT_VEC3:
-  case GL_FLOAT_VEC4:
-    sendFloatVectors(state, shader, info);
-    break;
-
-  case GL_BOOL_VEC2:
-  case GL_BOOL_VEC3:
-  case GL_BOOL_VEC4:
-    sendBooleanVectors(state, shader, info);
-    break;
-
-  case GL_FLOAT_MAT2:
-  case GL_FLOAT_MAT3:
-  case GL_FLOAT_MAT4:
-    sendFloatMatrices(state, shader, info);
-    break;
-
-  case GL_SAMPLER_2D:
-    sendSamplers(state, shader, info);
-    break;
-
-  };
-
   return 0;
 }
-
-static const l_tools_Enum l_graphics_ShaderUniformType[] = {
-  {"int",   graphics_ShaderUniformType_int},
-  {"float", graphics_ShaderUniformType_float},
-  {"bool",  graphics_ShaderUniformType_bool},
-  {"image", graphics_ShaderUniformType_sampler}
-};
 
 static int l_graphics_Shader_getExternVariable(lua_State* state) {
   l_assertType(state, 1, l_graphics_isShader); 
   l_graphics_Shader const* shader = l_graphics_toShader(state, 1);
 
   char const* name = l_tools_toStringOrError(state, 2);
-
-  graphics_ShaderUniformInfo const* info = graphics_Shader_getUniform(&shader->shader, name);
-
-  if(!info) {
-    goto errout;
-  }
-  
-  graphics_ShaderUniformType type =  graphics_shader_toLoveType(info->type);
-  if(type == graphics_ShaderUniformType_none) {
-    goto errout;
-  }
-
-  l_tools_pushEnum(state, type, l_graphics_ShaderUniformType);
-  lua_pushnumber(state, graphics_shader_toLoveComponents(info->type));
-  lua_pushnumber(state, info->elements);
-
   return 3;
 
 errout:
@@ -408,3 +336,4 @@ void l_graphics_shader_register(lua_State *state) {
   slre_compile(&moduleData.fragmentSingleShaderDetectRegex, fragmentSingleShaderDetectRegexSrc);
   slre_compile(&moduleData.vertexShaderDetectRegex, vertexShaderDetectRegexSrc);
 }
+
