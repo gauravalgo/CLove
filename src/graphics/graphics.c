@@ -84,7 +84,7 @@ void graphics_init(int width, int height) {
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   //moduleData.surface = SDL_GetWindowSurface(moduleData.window);
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
-
+  
   printf("Debug, OpenGL version: %s \n", glGetString(GL_VERSION));
   printf("Debug, GLSL version %s \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
   
@@ -200,17 +200,24 @@ int graphics_setMode(int width, int height){
   moduleData.height = height;
   SDL_SetWindowSize(moduleData.window, width, height);
 #else
-  moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
+  //moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
+  SDL_SetWindowSize(moduleData.window,width,height);
 #endif
   return 1;
 }
 
 int graphics_getWidth(void) {
-  return moduleData.surface->w;
+  int w;
+  int h;
+  SDL_GetWindowSize(moduleData.window,&w,&h);
+  return w;
 }
 
 int graphics_getHeight(void) {
-  return moduleData.surface->h;
+  int w;
+  int h;
+  SDL_GetWindowSize(moduleData.window,&w,&h);
+  return h;
 }
 
 const char* graphics_getTitle()
