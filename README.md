@@ -5,4 +5,5 @@ My implementation of Love2d inside C using Opengl ES 2. This means that Love run
 In the future I hope I can add android and 3D.
 This framework is not made to be a fully copy of Love.
 ![Image 1:](data/1.png?raw=true "Web")
-![Image 2:](data/2.png?raw=true "Desktop")
+![Image 2:](data/2.png?raw=true "Linux")
+![Image 2:](data/2.png?raw=true "Os X")
