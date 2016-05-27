@@ -74,8 +74,18 @@ FILE(
     src/math/*.c
     src/timer/*.h
     src/timer/*.c
+    src/physics/*.c
+    src/physics/*.h
     src/*.c
     src/*.h
+  
+    #3rdparty "small" libs
+    src/3rdparty/stb/*.c
+    src/3rdparty/stb/*.h
+    src/3rdparty/noise/*.c
+    src/3rdparty/noise/*.h
+    src/3rdparty/slre/*.c
+    src/3rdparty/slre/*.h
     )
 
 set(love_package "love")
@@ -85,15 +95,12 @@ set(love_copyright "Copyright (c) 2015-2016, ${love_creator}.")
 add_executable(
     love
     ${SOURCE_FILES}
-    src/3rdparty/stb/stb_image.c
-    src/3rdparty/stb/stb_vorbis.c
-    src/3rdparty/stb/stb_vorbis.h
-    src/3rdparty/noise/simplexnoise.c
-    src/3rdparty/noise/simplexnoise.h
-    src/3rdparty/slre/slre.c
-    src/3rdparty/slre/slre.h
-    )
+  )
 INCLUDE_DIRECTORIES(src/3rdparty/stb)
+
+#chipmunk(physics)
+add_subdirectory(src/3rdparty/chipmunk/)
+set(CHIPMUNK_INCLUDE_DIR src/3rdparty/chipmunk/include/)
 
 #freetype
 add_subdirectory(src/3rdparty/freetype)
@@ -106,29 +113,28 @@ set(OPENAL_INCLUDE_DIR src/3rdparty/openal/include/)
 #lua
 add_subdirectory(src/3rdparty/lua)
 set(LUA_INCLUDE_DIR src/3rdparty/lua/)
-SET(LUA_LIBRARIES lua)
+set(LUA_LIBRARIES lua)
 
 #glew
 add_subdirectory(src/3rdparty/glew/)
-SET(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
+set(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
 
 #sdl
-ADD_SUBDIRECTORY(src/3rdparty/SDL2/)
+add_subdirectory(src/3rdparty/SDL2/)
 include_directories(src/3rdparty/SDL2/include/)
-SET(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
-
-#chipmunk(physics)
-add_subdirectory(src/3rdparty/chipmunk/)
-include_directories(src/3rdparty/chipmunk/include/)
+set(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
 
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
 add_definitions(-DFT2_BUILD_LIBRARY)
 
-SET(FREETYPE_LIBRARIES freetype)
+set(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
-SET(SDL_LIBRARIES SDL2)
-SET(GLEW_LIBRARIES libglew_static)
+
+set(CHIPMUNK_LIBRARIES chipmunk_static)
+#add_library(chipmunk_static STATIC
+set(SDL_LIBRARIES SDL2)
+set(GLEW_LIBRARIES libglew_static)
 
 if(MINGW)
 SET(OPENAL_LIBRARIES OpenAL32)
@@ -136,6 +142,7 @@ endif()
 if(UNIX)
 SET(OPENAL_LIBRARIES openal)
 endif()
+
 if(MINGW)
     target_link_libraries(love ws2_32.lib
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
@@ -145,7 +152,7 @@ endif()
 
 if(APPLE)
     target_link_libraries(love
-    	 ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+      ${SDL_LIBRARIES} ${GLEW_LIBRARIES} ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()

@@ -6,7 +6,7 @@
 #include "../3rdparty/SDL2/include/SDL.h"
 
 static int l_system_get_os(lua_State* state) {
-  lua_pushstring (state,SDL_GetPlatform ());
+  lua_pushstring (state, SDL_GetPlatform ());
  return 1;
 }
 

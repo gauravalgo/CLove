@@ -29,6 +29,7 @@
 #include "luaapi/timer.h"
 #include "luaapi/math.h"
 #include "luaapi/system.h"
+#include "luaapi/physics.h"
 
 #include "graphics/graphics.h"
 #include "filesystem/filesystem.h"
@@ -194,6 +195,7 @@ int main(int argc, char* argv[]) {
   l_timer_register(lua);
   l_math_register(lua);
   l_system_register(lua);
+  l_physics_register(lua);
 
   l_boot(lua, &config);
 
