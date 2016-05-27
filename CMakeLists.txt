@@ -117,6 +117,10 @@ ADD_SUBDIRECTORY(src/3rdparty/SDL2/)
 include_directories(src/3rdparty/SDL2/include/)
 SET(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
 
+#chipmunk(physics)
+add_subdirectory(src/3rdparty/chipmunk/)
+include_directories(src/3rdparty/chipmunk/include/)
+
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
 add_definitions(-DFT2_BUILD_LIBRARY)
