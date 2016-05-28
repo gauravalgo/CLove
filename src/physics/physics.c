@@ -48,3 +48,51 @@ float physics_getBodyX(physics_Body* body) {
 float physics_getBodyY(physics_Body* body) { 
  return cpBodyGetPosition(body->body).y; 
 }
+
+
+void physics_setAngle(physics_Body* body,float angle) {
+  cpBodySetAngle(body->body, angle);
+}
+
+float physics_getAngle(physics_Body* body) {
+  return cpBodyGetAngle(body->body);
+}
+
+void physics_setBodyVel(physics_Body* body, float x, float y) {
+  cpVect v = cpv(x,y);
+  cpBodySetVelocity(body->body, v);
+}
+
+void physics_setBodyMomentum(physics_Body* body, float momentum) {
+  cpBodySetMoment(body->body, momentum);
+}
+
+
+//float physics_getBodyVelX(physics_Body* body) {
+ //return body->body->v.x; 
+//}
+
+//float physics_getBodyVelY(physics_Body* body) { 
+ //return body->body->v.y; 
+//}
+
+//garbage collection
+void physics_freeBody(physics_Body* body) {
+  if (body->body != NULL && body != NULL) { 
+    //cpBodyFree(body->body);
+    //free(body);
+  }
+}
+
+void physics_freeWorld(physics_World* world) {
+  if (world->space != NULL && world != NULL) { 
+    //cpSpaceFree(world->space);
+    //free(world);
+  }
+}
+
+void physics_freeShape(physics_Shape* shape) {
+  //cpShapeFree();
+  //free(shape);
+}
+

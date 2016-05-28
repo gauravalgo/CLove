@@ -97,23 +97,27 @@ void graphics_geometry_fillCircle(float x, float y, float radius, int segments) 
   drawBuffer(segments+1, segments+2, GL_TRIANGLE_FAN);
 }
 
-void graphics_geometry_fillRectangle(float x, float y, float w, float h) {
+//TODO merge them into one function?
+void graphics_geometry_fillRectangle(float x, float y, float w, float h, float rotation, 
+    float sx, float sy, float ox, float oy) {
   graphics_Shader *shader = graphics_getShader();
-
-  graphics_Image img = {
-    0, w, h
-  };
   graphics_setShader(&moduleData.plainColorShader);
-  graphics_Image_draw(&img, &quad, x, y, 0, 1, 1, 0, 0, 0, 0);
+
+  m4x4_newTransform2d(&moduleData.tr2d, x, y, rotation, sx, sy, ox, oy, 0, 0);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_DYNAMIC_DRAW);
+
+  graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_TRIANGLE_FAN, GL_UNSIGNED_BYTE,
+                     graphics_getColor(), w * quad.w, h * quad.h);
 
   graphics_setShader(shader);
 }
 
-void graphics_geometry_drawRectangle(float x, float y, float w, float h) {
+void graphics_geometry_drawRectangle(float x, float y, float w, float h, float rotation, 
+    float sx, float sy, float ox, float oy) {
   graphics_Shader *shader = graphics_getShader();
   graphics_setShader(&moduleData.plainColorShader);
 
-  m4x4_newTransform2d(&moduleData.tr2d, x, y, 0, 1, 1, 0, 0, 0, 0);
+  m4x4_newTransform2d(&moduleData.tr2d, x, y, rotation, sx, sy, ox, oy, 0, 0);
   glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_DYNAMIC_DRAW);
 
     graphics_drawArray(&quad, &moduleData.tr2d,  moduleData.ibo, 4, GL_LINE_LOOP, GL_UNSIGNED_BYTE,

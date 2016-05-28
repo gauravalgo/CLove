@@ -32,11 +32,21 @@ static int l_geometry_rectangle(lua_State* state) {
   float y = l_tools_toNumberOrError(state, 3);
   float w = l_tools_toNumberOrError(state, 4);
   float h = l_tools_toNumberOrError(state, 5);
+  float r = 0; 
+   if (lua_tonumber(state, 6)) r = luaL_checknumber(state, 6);
+  float sx = 1; 
+   if (lua_tonumber(state, 7)) sx = luaL_checknumber(state, 7);
+  float sy = 1; 
+   if (lua_tonumber(state, 8)) sy = luaL_checknumber(state, 8);
+ float ox = 0; 
+   if (lua_tonumber(state, 9)) ox = luaL_checknumber(state, 9);
+ float oy = 0; 
+   if (lua_tonumber(state, 10)) oy = luaL_checknumber(state, 10);
 
   if (strncmp(type,"line",4) == 0)
-    graphics_geometry_drawRectangle(x, y, w, h);
+    graphics_geometry_drawRectangle(x, y, w, h, r, sx, sy, ox, oy);
   else if(strncmp(type,"fill", 4) == 0)
-    graphics_geometry_fillRectangle(x, y, w, h);
+    graphics_geometry_fillRectangle(x, y, w, h, r, sx, sy, ox, oy);
 
   return 1;
 }
