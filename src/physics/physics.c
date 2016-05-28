@@ -8,22 +8,43 @@
 */
 #include <stdio.h>
 #include "physics.h"
-#include "../3rdparty/chipmunk/include/chipmunk/chipmunk.h"
 
-static struct { 
-  cpVect gravity;
-  cpSpace* space;
-  cpShape* shape;
-  cpBody* body;
-  int sleep;
-    
-}moduleData;
+//TODO garbage collector
 
-void physics_newWorld(float x, float y, int sleep) { 
+void physics_init() {
+
+}
+
+//WORLD
+void physics_newWorld(physics_World* world, float x, float y, float sleep) { 
+  world->space = cpSpaceNew(); //create a new world
   
-  moduleData.space = cpSpaceNew(); //create a new world
-  
-  moduleData.gravity = cpv(x, y); //init gravity 
-  cpSpaceSetGravity(moduleData.space, moduleData.gravity); //use the new world that has been created 
-  
+  //init gravity 
+  world->gravity = cpv(x,y);
+  cpSpaceSetGravity(world->space, world->gravity); //use the new world that has been created 
+ 
+  cpSpaceSetSleepTimeThreshold(world->space, sleep); //after how many seconds to sleep 
+}
+
+void physics_updateWorld(physics_World* world, float dt) {
+  cpSpaceStep(world->space, dt);  
+}
+
+//BODY
+void physics_newBody(physics_World* world, physics_Body* body, float mass, float momentum) {
+  body->body = cpBodyNew(mass, momentum);
+  cpSpaceAddBody(world->space, body->body);
+}
+
+void physics_setBodyPosition(physics_Body* body, float x, float y) {
+  cpVect pos = cpv(x,y);
+  cpBodySetPosition(body->body, pos);
+}
+
+float physics_getBodyX(physics_Body* body) {
+ return cpBodyGetPosition(body->body).x; 
+}
+
+float physics_getBodyY(physics_Body* body) { 
+ return cpBodyGetPosition(body->body).y; 
 }

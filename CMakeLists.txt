@@ -145,7 +145,7 @@ endif()
 
 if(MINGW)
     target_link_libraries(love ws2_32.lib
-        ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+        ${SDL_LIBRARIES} ${GLEW_LIBRARIES} ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
@@ -159,7 +159,7 @@ endif()
 
 if(UNIX)
     target_link_libraries(love
-    	 ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+    	 ${SDL_LIBRARIES} ${GLEW_LIBRARIES} ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
