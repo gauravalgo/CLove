@@ -202,6 +202,8 @@ int main(int argc, char* argv[]) {
   keyboard_init();
   graphics_init(config.window.width, config.window.height);
   audio_init();
+  
+  printf("%s \n", "Love: Modules are inited, Lua 5.1 is up and running"); 
 
   if(luaL_dofile(lua, "main.lua")){
       printf("Error: %s\n", lua_tostring(lua, -1));
@@ -235,5 +237,6 @@ int main(int argc, char* argv[]) {
     quit_function(lua);
 #endif
   audio_close ();
+  lua_close(lua);
   return 0;
 }
