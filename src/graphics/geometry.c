@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include "../math/util.h"
-#include <tgmath.h>
+#include <math.h>
 #include <stdlib.h>
 #include "geometry.h"
 #include "graphics.h"
@@ -22,11 +22,10 @@ static struct {
   mat4x4 tr2d;
   GLuint vbo;
   GLuint ibo;
-  GLuint vao;
   int currentDataSize;
   int currentIndexSize;
   float *data;
-  uint16_t *index;
+  GLubyte *index;
 } moduleData;
 
 void graphics_geometry_init(void) {
@@ -38,12 +37,9 @@ void graphics_geometry_init(void) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
  
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (GLvoid const*)(2*sizeof(float)));
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6*sizeof(float), 0);
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (GLvoid const*)(4*sizeof(float)));
-
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(2*sizeof(float)));
   graphics_Shader_new(&moduleData.plainColorShader, NULL,
                       "vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_cords ) {\n"
                       "  return color;\n"
@@ -58,7 +54,7 @@ void graphics_geometry_free () {
 }
 
 static void growBuffers(int vertices, int indices) {
-  int datasize = vertices * 8 * sizeof(float);
+  int datasize = vertices * 6 * sizeof(float);
   if(moduleData.currentDataSize < datasize) {
     free(moduleData.data);
     moduleData.data = (float*)malloc(datasize);
@@ -68,7 +64,7 @@ static void growBuffers(int vertices, int indices) {
   int indexsize = indices * sizeof(uint16_t);
   if(moduleData.currentIndexSize < indexsize) {
     free(moduleData.index);
-    moduleData.index = (uint16_t*)malloc(indexsize);
+    moduleData.index = (GLubyte*)malloc(indexsize);
     moduleData.currentIndexSize = indexsize;
   }
 }
@@ -82,7 +78,8 @@ static void drawBuffer(float x, float y, float w, float h, float rot, float sx, 
   graphics_Shader *shader = graphics_getShader();
   graphics_setShader(&moduleData.plainColorShader);
   mat4x4 tr;
-  m4x4_newTransform2d(&tr, x, y, rot, sx, sy, ox, oy, 0, 0);
+  m4x4_newIdentity(&tr);
+  //m4x4_newTransform2d(&tr, x, y, rot, sx, sy, ox, oy, 0, 0);
  
   graphics_Quad quad = {0,0,1,1};
 
@@ -90,47 +87,61 @@ static void drawBuffer(float x, float y, float w, float h, float rot, float sx, 
   graphics_setShader(shader);
 }
 
+//This piece of shit does not want to work
 void graphics_geometry_drawCircle(float x, float y, float radius, int segments) {
-  growBuffers(segments*2, segments*2+2);
+  
+  int datasize = (segments+1) * 6 * sizeof(float);
+  if(moduleData.currentDataSize < datasize) {
+    free(moduleData.data);
+    moduleData.data = (float*)malloc(datasize);
+    moduleData.currentDataSize = datasize;
+  }
+
+  int indexsize = (segments + 2) * sizeof(GLubyte);
+  if(moduleData.currentIndexSize < indexsize) {
+    free(moduleData.index);
+    moduleData.index = (GLubyte*)malloc(indexsize);
+    moduleData.currentIndexSize = indexsize;
+  }
+	 
+	mat4x4 tr;
+   m4x4_newIdentity(&tr);
+
+  #define PI 3.14159265  
+  int step = PI*2 / segments;
+  int ang = 0;
+  moduleData.index[0] = 0;
+  moduleData.index[segments+1] = 1;
+  
+  for(int i = 0; i < segments; i++, ang -= step) {
+    moduleData.data[6*(i)  ] = sin(ang)* radius + x;
+    moduleData.data[6*(i)+1] = cos(ang) * radius + y;
+    moduleData.data[6*(i)+2] = 0.0f;
+    moduleData.data[6*(i)+3] = 0.0f;
+    moduleData.data[6*(i)+4] = 0.0f;
+    moduleData.data[6*(i)+5] = 0.0f;
     
- float step = 2*3.14f / segments;
-  float ang = 0;
-  moduleData.index[2*segments  ] = 0;
-  moduleData.index[2*segments+1] = 1;
-  float lwh = 0.0f / 2.0f;
-  for(int i = 0; i < segments; ++i, ang += step) {
-    float s = sin(ang);
-    float c = cos(ang);
-    float * base = moduleData.data + 12*i;
+	 moduleData.index[i] = i;
+		 //m4x4_rotateZ(&tr,sin(ang*(PI/180)));
+  }
+  	
+	glBindBuffer(GL_ARRAY_BUFFER, moduleData.vbo);
+   glBufferData(GL_ARRAY_BUFFER, datasize, moduleData.data, GL_DYNAMIC_DRAW);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.ibo);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexsize, moduleData.index, GL_DYNAMIC_DRAW);
+ 	
+	graphics_Shader *shader = graphics_getShader();
+   graphics_setShader(&moduleData.plainColorShader);
 
-    // outer vertex
-    base[0] = s * (radius+lwh);
-    base[1] = c * (radius+lwh);
-    base[2]  = 1.0f;
-    base[3]  = 1.0f;
-    base[4]  = 1.0f;
-    base[5]  = 1.0f;
+  	graphics_Quad quad = {0,0,1,1};
+	
 
-    // inner vertex
-    base[6] = s * (radius-lwh);
-    base[7] = c * (radius-lwh);
-    base[8]  = 1.0f;
-    base[9]  = 1.0f;
-    base[10] = 1.0f;
-    base[11] = 1.0f;
-
-    moduleData.index[2*i] = 2*i;
-    moduleData.index[2*i+1] = 2*i+1;
-  }  
-  drawBuffer(x,y,radius, radius, 0, 1, 1, 0, 0,segments*2, segments*2+2, GL_TRIANGLE_STRIP);
-}
+   graphics_drawArray(&quad, &tr,moduleData.ibo, segments, GL_LINE_LOOP, GL_UNSIGNED_BYTE, graphics_getColor(), radius, radius);
+  	graphics_setShader(shader);
+ }
 
 
 void graphics_geometry_fillCircle(float x, float y, float radius, int segments) {
-  growBuffers(segments+1, segments+2);
-
- 
-  drawBuffer(x,y,radius, radius, 0, 1, 1, 0, 0,segments*2, segments*2+2, GL_TRIANGLE_FAN);
 }
 
 void graphics_geometry_fillRectangle(int type, float x, float y, float w, float h, float rotation, 
