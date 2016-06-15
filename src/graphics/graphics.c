@@ -96,11 +96,9 @@ void graphics_init(int width, int height) {
   glViewport(0,0,width,height);
 
   matrixstack_init();
-  m4x4_newTranslation(&moduleData.projectionMatrix, -1.0f, -1.0f, 0.0f);
-  m4x4_scale(&moduleData.projectionMatrix, 2.0f / width, 2.0f / height, 0.0f);
+  
   m4x4_newTranslation(&moduleData.projectionMatrix, -1.0f, 1.0f, 0.0f);
   m4x4_scale(&moduleData.projectionMatrix, 2.0f / width, -2.0f / height, 0.0f);
-
   moduleData.isCreated = 1;
 
   graphics_setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -164,7 +162,6 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   
   	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   	glDrawElements(type, count, indexType, (GLvoid const*)0);
-	glDrawArrays(type, 0, count);
 }
 
 

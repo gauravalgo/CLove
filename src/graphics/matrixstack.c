@@ -15,7 +15,7 @@ const static int stackSize = 32;
 
 static struct {
   int head;
-  mat4x4 stack[32];
+  mat4x4 stack[stackSize];
 } moduleData;
 
 inline mat4x4* matrixstack_head() {
@@ -67,3 +67,4 @@ void matrixstack_multiply(mat4x4 const* matrix) {
   memcpy(&m, matrixstack_head(), sizeof(mat4x4));
   m4x4_mulM4x4(matrixstack_head(), matrix, &m);
 }
+

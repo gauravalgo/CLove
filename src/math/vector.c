@@ -7,7 +7,7 @@
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
 #include "vector.h"
-#include <math.h>
+#include <tgmath.h>
 
 void m4x4_scale(mat4x4 *inout, float x, float y, float z) {
   for(int i = 0; i < 3; ++i) {
@@ -168,9 +168,11 @@ void m4x4_newTranslation(mat4x4 *out, float x, float y, float z) {
 }
 
 void m4x4_newRotationX(mat4x4 *out, float a) {
+  // TODO
 }
 
 void m4x4_newRotationY(mat4x4 *out, float a) {
+  // TODO
 }
 
 void m4x4_newRotationZ(mat4x4 *out, float a) {
@@ -196,6 +198,8 @@ void m4x4_newRotationZ(mat4x4 *out, float a) {
 }
 
 void m4x4_mulM4x4(mat4x4 *out, mat4x4 const* a, mat4x4 const* b) {
+  // TODO pretty naive approach. Someday I'll have to check whether
+  // a more cache friendly version is required
   for(int i = 0; i < 4; ++i) {
     for(int j = 0; j < 4; ++j) {
       out->m[i][j] = 0.0f;
@@ -207,9 +211,11 @@ void m4x4_mulM4x4(mat4x4 *out, mat4x4 const* a, mat4x4 const* b) {
 }
 
 void m4x4_mulV4(vec4 *out, mat4x4 const* m, vec4 const* v) {
+  // TODO
 }
 
 void m3x3_mulV2(vec2 *out, mat3x3 const* m, vec2 const* v) {
   out->x = m->m[0][0] * v->x + m->m[1][0] * v->y + m->m[2][0];
   out->y = m->m[0][1] * v->x + m->m[1][1] * v->y + m->m[2][1];
 }
+
