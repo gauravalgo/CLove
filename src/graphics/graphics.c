@@ -93,7 +93,7 @@ void graphics_init(int width, int height) {
   GLenum res = glewInit();
   if(res != GLEW_OK)
       printf("Could not init glew.Something must be very wrong, no gpu drivers?");
-  glViewport(0,0,width,height);
+  glViewport(0, 0, width, height);
 
   matrixstack_init();
   
@@ -146,11 +146,21 @@ void graphics_swap(void) {
 #endif
 }
 
+
 void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
   
   mat4x4 tr;
   m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
+	
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
 
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(2*sizeof(float)));
+
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(4*sizeof(float)));
+  
   graphics_Shader_activate(
         &moduleData.projectionMatrix,
         &tr,
@@ -162,6 +172,11 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   
   	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   	glDrawElements(type, count, indexType, (GLvoid const*)0);
+	//glDrawArrays(type,0,count);
+	
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(0);
 }
 
 

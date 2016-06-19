@@ -73,7 +73,7 @@ static GLchar const fragmentHeader[] =
 
 static GLchar const fragmentFooter[] =
   "void main() {\n"
-  "  gl_FragColor = effect(color, tex, fUV, vec2(0.0, 0.0));\n"
+  "  gl_FragColor = effect(color * fColor, tex, fUV, vec2(0.0, 0.0));\n"
   "}\n";
 
 bool graphics_Shader_compileAndAttachShaderRaw(graphics_Shader *program, GLenum shaderType, char const* code) {
