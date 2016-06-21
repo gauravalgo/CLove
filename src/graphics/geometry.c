@@ -38,8 +38,10 @@ void graphics_geometry_init(void) {
 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(2*sizeof(float)));
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(2*sizeof(float)));
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(4*sizeof(float)));
 
   graphics_Shader_new(&moduleData.plainColorShader, NULL,
     "vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_cords ) {\n"
@@ -214,11 +216,42 @@ void graphics_geometry_fillRectangle(int type, float x, float y, float w, float 
 	
 	}
 
+
 void graphics_geometry_points(float x, float y) {
+	growBuffers(8,1);
+	float* buf = moduleData.data;
+	buf[0] = x;
+	buf[1] = y;
+	buf[2] = 0.0f;
+	buf[3] = 0.0f;
+	buf[4] = 1.0f;
+	buf[5] = 1.0f;
+	buf[6] = 1.0f;
+	buf[7] = 1.0f;
+	moduleData.index[0] = 0;
+	drawBuffer(8,1, GL_POINTS);
 }
 
-void graphics_geometry_vertex(float x, float y, int vertices[], int count) {
-  
+void graphics_geometry_vertex(int type, float x, float y, int vertices[], int count) {
+ growBuffers(count,count);
+ float* buf = moduleData.data;
+
+ for(int i = 0; i < count; i++) {
+	 buf[8*i+0] = x + vertices[i];
+	 buf[8*i+1] = y + vertices[i+1];
+	 buf[8*i+2] = 0.0f;
+	 buf[8*i+3] = 0.0f;
+ 	 buf[8*i+4] = 1.0f;
+ 	 buf[8*i+5] = 1.0f;
+ 	 buf[8*i+6] = 1.0f;
+ 	 buf[8*i+7] = 1.0f; 
+ 	 moduleData.index[i] = i;
+ }
+ 
+ if (type == 1)
+	 drawBuffer(count,count,GL_TRIANGLE_FAN); 
+ if(type == 0)
+	 drawBuffer(count,count,GL_LINE_STRIP);
 }
 
 

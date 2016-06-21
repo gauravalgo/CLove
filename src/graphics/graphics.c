@@ -154,12 +154,10 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
 	
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), 0);
-
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(2*sizeof(float)));
-
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (const void*)(2*sizeof(float)));
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(4*sizeof(float)));
+  glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (const void*)(4*sizeof(float)));
   
   graphics_Shader_activate(
         &moduleData.projectionMatrix,
@@ -174,9 +172,11 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   	glDrawElements(type, count, indexType, (GLvoid const*)0);
 	//glDrawArrays(type,0,count);
 	
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(0);
+  /*glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(2); 
+  This piece of code does not seem to do anything. Untill proven other 
+  whise I'll comment it
+  glDisableVertexAttribArray(0);*/
 }
 
 

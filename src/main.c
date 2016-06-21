@@ -30,6 +30,7 @@
 #include "luaapi/math.h"
 #include "luaapi/system.h"
 #include "luaapi/physics.h"
+#include "love.h"
 
 #include "graphics/graphics.h"
 #include "filesystem/filesystem.h"
@@ -202,13 +203,15 @@ int main(int argc, char* argv[]) {
   keyboard_init();
   graphics_init(config.window.width, config.window.height);
   audio_init();
-  
-  printf("%s \n", "Love: Modules are inited, Lua 5.1 is up and running"); 
 
   if(luaL_dofile(lua, "main.lua")){
       printf("Error: %s\n", lua_tostring(lua, -1));
       l_no_game(lua,&config);
     }
+  
+  love_Version const * version = love_getVersion();
+  printf("%s %s %i %i %i \n", "Love code name: ",version->codename,version->major,version->minor,version->revision);
+
   lua_pushcfunction(lua, lua_errorhandler);
   lua_getglobal(lua, "love");
   lua_pushstring(lua, "load");

@@ -66,19 +66,22 @@ static int l_geometry_points(lua_State* state) {
 }
 
 static int l_geometry_vertex(lua_State* state) {
-  float x = l_tools_toNumberOrError(state, 1);
-  float y = l_tools_toNumberOrError(state, 2);
-  int vertices[100] = {};
+  const char* type = l_tools_toStringOrError(state, 1);
+  float x = l_tools_toNumberOrError(state, 2);
+  float y = l_tools_toNumberOrError(state, 3);
   int _i = 0;
   int count = 1;
-  if (lua_tonumber(state, 4)) count = luaL_checknumber(state, 4);
-    
+  
+  if (lua_tonumber(state, 5)) 
+	  count = luaL_checknumber(state, 5);
+  
+  int vertices[100] = {};
   //Check if we need to draw points of lines
-  if (lua_istable(state, 3)) { //in this case draw lines
+  if (lua_istable(state, 4)) { //in this case draw lines
     // Push another reference to the table on top of the stack (so we know
     // where it is, and this function can work for negative, positive and
     // pseudo indices
-    lua_pushvalue(state, 3);
+    lua_pushvalue(state, 4);
     // stack now contains: -1 => table
     lua_pushnil(state);
     // stack now contains: -1 => nil; -2 => table
@@ -94,13 +97,9 @@ static int l_geometry_vertex(lua_State* state) {
         int i = atoi(key);
         
         //Put the key and the value of the table into an array
-       // _i += 1;
-       // vertices[_i] = i; // first insert the key 
-        //_i += 1;
         vertices[_i] = v; // second insert the value of the key
-          _i += 1;
+         _i ++;
    
-        //printf("%d\n", px);
         // pop value + copy of key, leaving original key
         lua_pop(state, 2);
         // stack now contains: -1 => key; -2 => table
@@ -110,13 +109,11 @@ static int l_geometry_vertex(lua_State* state) {
     // Pop table
     lua_pop(state, 1);
     // Stack is now the same as it was on entry to this function
-    //
-    graphics_geometry_vertex(x,y,vertices,count);
-
   } 
-  
-  graphics_geometry_vertex(x,y,vertices,count);
-  
+   if (strncmp(type,"line",4) == 0)
+ 		 graphics_geometry_vertex(0,x,y,vertices,count);
+	 else if (strncmp(type, "fill",4) == 0)
+		 graphics_geometry_vertex(1,x,y,vertices,count);	
   return 1;
 }
 
