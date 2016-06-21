@@ -14,6 +14,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static struct {
+int currentDataSize;
+int* vertices;
+}moduleData;
+
 static int l_geometry_circle(lua_State* state) {
   const char* type = l_tools_toStringOrError(state, 1);
   float x = l_tools_toNumberOrError(state, 2);
@@ -75,7 +80,15 @@ static int l_geometry_vertex(lua_State* state) {
   if (lua_tonumber(state, 5)) 
 	  count = luaL_checknumber(state, 5);
   
-  int vertices[100] = {};
+  int dataSize = sizeof(int) * count;
+	
+  if(moduleData.currentDataSize < dataSize){
+	  free(moduleData.vertices);
+ 	  moduleData.vertices = (int*)malloc(dataSize);
+	  moduleData.currentDataSize = dataSize;
+  }
+  if(moduleData.vertices == 0)
+	  printf("Error: Could not allocate memory for l_geometry_vertex \n");
   //Check if we need to draw points of lines
   if (lua_istable(state, 4)) { //in this case draw lines
     // Push another reference to the table on top of the stack (so we know
@@ -97,7 +110,7 @@ static int l_geometry_vertex(lua_State* state) {
         int i = atoi(key);
         
         //Put the key and the value of the table into an array
-        vertices[_i] = v; // second insert the value of the key
+        moduleData.vertices[_i] = v; // second insert the value of the key
          _i ++;
    
         // pop value + copy of key, leaving original key
@@ -111,10 +124,12 @@ static int l_geometry_vertex(lua_State* state) {
     // Stack is now the same as it was on entry to this function
   } 
    if (strncmp(type,"line",4) == 0)
- 		 graphics_geometry_vertex(0,x,y,vertices,count);
+ 		 graphics_geometry_vertex(0,x,y,moduleData.vertices,count);
 	 else if (strncmp(type, "fill",4) == 0)
-		 graphics_geometry_vertex(1,x,y,vertices,count);	
-  return 1;
+		 graphics_geometry_vertex(1,x,y,moduleData.vertices,count);	
+ 
+ 	 //free(vertices);
+	return 1;
 }
 
 static int l_geometry_setLineWidth(lua_State* state) {

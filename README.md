@@ -17,7 +17,7 @@ Features
 - Image loader & drawing
 - Sound loader & playing (Vorbis and Wav)
 - Primitive drawing
-- Filsystem functions
+- Filesystem functions
 - OpenGL ES 2.0 
 - Font loading & drawing
 - Keyboard & Mouse functions
