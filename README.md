@@ -20,8 +20,7 @@ Features
 - Filsystem functions
 - OpenGL ES 2.0 
 - Font loading & drawing
-- Almost the same functions names as in Love2D
-- Keybaord & Mouse functions
+- Keyboard & Mouse functions
 - Physics system thanks to ChipMunk
 
 Examples

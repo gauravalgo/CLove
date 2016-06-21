@@ -61,7 +61,6 @@ static int l_graphics_setColor(lua_State* state) {
   int red   = lua_tointeger(state, 1);
   int green = lua_tointeger(state, 2);
   int blue  = lua_tointeger(state, 3);
-  //int alpha = lua_tointeger(state, 4);
   int alpha = luaL_optinteger(state, 4, 255);
 
   float scale = 1.0f / 255.0f;
