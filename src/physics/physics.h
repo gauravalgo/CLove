@@ -42,6 +42,7 @@ void physics_newBody(physics_World* world, physics_Body* body, const char* type)
 
 void physics_setBodyMass(physics_Body* body, float v);
 void physics_setBodyMoment(physics_Body* body, float v);
+bool physics_getBodyIsSleeping(physics_Body* body);
 
 // position
 void physics_setBodyPosition(physics_Body* body, float x, float y);

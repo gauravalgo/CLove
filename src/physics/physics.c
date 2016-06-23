@@ -44,7 +44,7 @@ void physics_updateWorld(physics_World* world, float dt) {
 void physics_newShape(physics_World* world, physics_Body* body,
  	  	physics_Shape* shape, float w, float h) {
 	shape->shape = cpSpaceAddShape(world->space, cpBoxShapeNew(body->body, w, h, 0.0f));
-	cpShapeSetFilter(shape->shape, NOT_GRABBABLE_FILTER);
+		
 }
 
 //TODO find a way to make this work 0_o
@@ -95,6 +95,11 @@ float physics_getBodyX(physics_Body* body) {
 
 float physics_getBodyY(physics_Body* body) { 
  return cpBodyGetPosition(body->body).y; 
+}
+
+//TODO ADD THIS IN LUA
+bool physics_getBodyIsSleeping(physics_Body* body) {
+	return cpBodyIsSleeping(body->body);
 }
 
 void physics_setAngle(physics_Body* body,float angle) {
