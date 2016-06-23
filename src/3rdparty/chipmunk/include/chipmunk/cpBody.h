@@ -56,6 +56,8 @@ CP_EXPORT cpBody* cpBodyNew(cpFloat mass, cpFloat moment);
 CP_EXPORT cpBody* cpBodyNewKinematic(void);
 /// Allocate and initialize a cpBody, and set it as a static body.
 CP_EXPORT cpBody* cpBodyNewStatic(void);
+// Make a new dynamic object(hopefully)
+CP_EXPORT cpBody* cpBodyNewDynamic(void);
 
 /// Destroy a cpBody.
 CP_EXPORT void cpBodyDestroy(cpBody *body);

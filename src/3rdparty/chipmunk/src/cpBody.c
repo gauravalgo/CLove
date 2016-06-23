@@ -89,6 +89,15 @@ cpBodyNewStatic()
 	return body;
 }
 
+cpBody* 
+cpBodyNewDynamic()
+{
+	cpBody *body = cpBodyNew(0.0f, 0.0f);
+	cpBodySetType(body, CP_BODY_TYPE_DYNAMIC);
+	
+	return body;
+}
+
 void cpBodyDestroy(cpBody *body){}
 
 void

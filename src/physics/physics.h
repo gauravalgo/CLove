@@ -25,15 +25,25 @@ typedef struct {
 
 void physics_init();
 
-//scene functions
+// scene functions
 void physics_newWorld(physics_World* world, float x, float y, float sleep);
 void physics_setIterations(int number);
 void physics_updateWorld(physics_World* world, float dt);
 
-//body functions
-void physics_newBody(physics_World* world, physics_Body* body, float mass, float momentum);
+//  shape functions
+void physics_newShape(physics_World* world, physics_Body* body, physics_Shape* shape, float w, float h);
+void physics_setShapeElasticity(physics_Shape* shape, float v);
+void physics_setShapeFriction(physics_Shape* shape, float v);
+void physics_setFilter(physics_Shape* shape, const char* name);
+void physics_setShapeMass(physics_Shape* shape, float v);
 
-//position
+// body functions
+void physics_newBody(physics_World* world, physics_Body* body, const char* type);
+
+void physics_setBodyMass(physics_Body* body, float v);
+void physics_setBodyMoment(physics_Body* body, float v);
+
+// position
 void physics_setBodyPosition(physics_Body* body, float x, float y);
 float physics_getBodyX(physics_Body* body);
 float physics_getBodyY(physics_Body* body);
@@ -41,16 +51,16 @@ float physics_getBodyY(physics_Body* body);
 float physics_getAngle(physics_Body* body);
 void physics_setAngle(physics_Body* body, float angle);
 
-//velocity
+// velocity
 void physics_setBodyVel(physics_Body* body, float x, float y);
 
 float physics_getBodyVelX(physics_Body* body);
 float physics_getBodyVelY(physics_Body* body);
 
-//momentu
+// momentu
 void physics_setBodyMomentum(physics_Body* body, float momentum);
 
-//garbage collection
+// garbage collection
 void physics_freeBody(physics_Body* body);
 void physics_freeWorld(physics_World* world);
 void physics_freeShape(physics_Shape* shape);
