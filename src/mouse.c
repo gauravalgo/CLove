@@ -41,6 +41,7 @@ static int buttonEnum(const char *str) {
 void mouse_mousewheel(int y) {
   moduleData.wheel = y;
   moduleData.buttons[y] = 1;
+  l_mouse_wheelmoved(moduleData.wheel);
 }
 
 int mouse_getwheel() {

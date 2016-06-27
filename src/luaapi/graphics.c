@@ -87,11 +87,11 @@ static int l_graphics_draw(lua_State* state) {
   int baseidx = 1;
 
   if(l_graphics_isImage(state, 1)) {
+    image = l_graphics_toImage(state, 1);
     if(l_graphics_isQuad(state, 2)) {
       quad = l_graphics_toQuad(state, 2);
       baseidx = 2;
     }
-    image = l_graphics_toImage(state, 1);
   } else if(l_graphics_isBatch(state, baseidx)) {
     batch = l_graphics_toBatch(state, baseidx);
   } else {

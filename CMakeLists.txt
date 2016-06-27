@@ -98,6 +98,9 @@ add_executable(
   )
 INCLUDE_DIRECTORIES(src/3rdparty/stb)
 
+#libmpg123
+add_subdirectory(src/3rdparty/libmpg123/)
+
 #chipmunk(physics)
 add_subdirectory(src/3rdparty/chipmunk/)
 set(CHIPMUNK_INCLUDE_DIR src/3rdparty/chipmunk/include/)
@@ -128,11 +131,12 @@ add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
 add_definitions(-DFT2_BUILD_LIBRARY)
 
+#freetype
 set(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
 
 set(CHIPMUNK_LIBRARIES chipmunk_static)
-#add_library(chipmunk_static STATIC
+set(MPG123 mpg123-static)
 set(SDL_LIBRARIES SDL2)
 set(GLEW_LIBRARIES libglew_static)
 
