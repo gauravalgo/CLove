@@ -11,8 +11,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// loaders
 #include "wav_decoder.h"
 #include "vorbis_decoder.h"
+#include "mp3_decoder.h"
 
 static const char* get_filename_ext(const char *filename) {
   const char *dot = strrchr(filename, '.');
@@ -28,6 +31,8 @@ int audio_loadStatic(audio_StaticSource *source, char const * filename) {
     loaded = audio_wav_load(source->buffer, filename);
   }else if((strncmp(get_filename_ext(filename), "ogg", 3)) == 0){
     loaded = audio_vorbis_load(source->buffer, filename);
+  }else if((strncmp(get_filename_ext(filename), "mp3", 3)) == 0) {
+  	 loaded = audio_mp3_load(source->buffer, filename);
   }else
     return -1; //Unknow file type :(
 
