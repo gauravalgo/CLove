@@ -1,5 +1,6 @@
 
---local image = love.graphics.newImage("IMAGENAME.extension")
+local image = love.graphics.newImage("hey.png")
+image:setFilter("nearest","nearest")
 
 function love.load()
 	love.window.setTitle("simple example 1")
@@ -25,7 +26,8 @@ function love.draw()
 	love.graphics.circle("line", 270, 200, 64, 12)
 	
 
-	--love.graphics.draw(image, 40, 40)
+	love.graphics.draw(image, 40, 40, 125)
+	love.graphics.draw(image, 420, 10, 0, 2, 2)	
 
 end
 
