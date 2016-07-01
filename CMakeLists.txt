@@ -98,18 +98,6 @@ add_executable(
   )
 INCLUDE_DIRECTORIES(src/3rdparty/stb)
 
-#libmpg123
-add_subdirectory(src/3rdparty/libmpg123/)
-if(APPLE)
-	set(MPG123_INCLUDE_DIR src/3rdparty/libmpg123/config/mac/x64/)
-endif()
-if(UNIX)
-	set(MPG123_INCLUDE_DIR src/3rdparty/libmpg123/config/linux/x64/)	
-endif()
-if(MINGW)
-	set(MPG123_INCLUDE_DIR src/3rdparty/libmpg123/config/windows/x64/)		
-endif()
-
 #chipmunk(physics)
 add_subdirectory(src/3rdparty/chipmunk/)
 set(CHIPMUNK_INCLUDE_DIR src/3rdparty/chipmunk/include/)
@@ -145,7 +133,6 @@ set(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
 
 set(CHIPMUNK_LIBRARIES chipmunk_static)
-set(MPG123_LIBRARIES mpg123)
 set(SDL_LIBRARIES SDL2)
 set(GLEW_LIBRARIES libglew_static)
 
@@ -159,7 +146,7 @@ endif()
 if(MINGW)
     target_link_libraries(love ws2_32.lib
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-        ${MPG123_LIBRARIES} ${CHIPMUNK_LIBRARIES}
+	${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
@@ -167,15 +154,15 @@ endif()
 if(APPLE)
     target_link_libraries(love
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-        ${MPG123_LIBRARIES} ${CHIPMUNK_LIBRARIES}
+	${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
 
 if(UNIX)
     target_link_libraries(love
-    	  ${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-    	  ${MPG123_LIBRARIES} ${CHIPMUNK_LIBRARIES}
+    	${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
+	${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
