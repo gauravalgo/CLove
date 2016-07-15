@@ -47,6 +47,34 @@ int l_image_newImageData(lua_State* state) {
   return 1;
 }
 
+static int l_image_ImageData_getWidth(lua_State* state) {
+   image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);	
+	lua_pushinteger(state, image_ImageData_getWidth(imagedata));
+	return 1;
+}
+
+static int l_image_ImageData_getHeight(lua_State* state) {
+   image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);	
+	lua_pushinteger(state, image_ImageData_getHeight(imagedata));
+	return 1;
+}
+
+static int l_image_ImageData_getDimensions(lua_State* state) {
+   image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);	
+	lua_pushinteger(state, image_ImageData_getWidth(imagedata));	
+	lua_pushinteger(state, image_ImageData_getHeight(imagedata));
+	return 2;
+}
+
+static int l_image_ImageData_getPixel(lua_State* state) {
+	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
+	int x = lua_tointeger(state, 2);
+	int y = lua_tointeger(state, 3);
+	
+	lua_pushinteger(state, image_ImageData_getPixel(imagedata, x, y));
+	return 1;
+}
+
 static int l_image_gcImageData(lua_State* state) {
   image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
   image_ImageData_free(imagedata);
@@ -62,6 +90,10 @@ l_checkTypeFn(l_image_isImageData, moduleData.imageDataMT)
 l_toTypeFn(l_image_toImageData, image_ImageData)
 
 static luaL_Reg const imageDataMetatableFuncs[] = {
+  {"getWidth", l_image_ImageData_getWidth},
+  {"getHeight", l_image_ImageData_getHeight},
+  {"getDimensions", l_image_ImageData_getDimensions},
+  {"getPixel", l_image_ImageData_getPixel},
   {"__gc", l_image_gcImageData},
   {NULL, NULL}
 };

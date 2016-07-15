@@ -58,7 +58,7 @@ static int l_graphics_Image_getPath(lua_State* state) {
   l_assertType(state, 1, l_graphics_isImage);
 
   l_graphics_Image* img = l_graphics_toImage(state, 1);
-  printf("%s \n",img->path);
+  
   lua_pushstring (state, img->path);
   return 1;
 }
