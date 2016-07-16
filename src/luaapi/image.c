@@ -66,12 +66,41 @@ static int l_image_ImageData_getDimensions(lua_State* state) {
 	return 2;
 }
 
+
 static int l_image_ImageData_getPixel(lua_State* state) {
 	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
 	int x = lua_tointeger(state, 2);
 	int y = lua_tointeger(state, 3);
+	int w = image_ImageData_getWidth(imagedata);
 	
-	lua_pushinteger(state, image_ImageData_getPixel(imagedata, x, y));
+	unsigned char* surface = image_ImageData_getSurface(imagedata);	
+	
+	int red = 0;
+   int green = 0;
+	int blue = 0;	
+	int alpha = 0;
+	
+	//TODO check what happens when the image is RGB not RGBA
+	int index = (y * image_ImageData_getWidth(imagedata) + x) * image_ImageData_getChannels(imagedata) - 1;
+	
+	//TODO make blue/alpha work
+	red = surface[index] & 255;
+	green = surface[++index] & 255;
+	blue = surface[++index] & 255;
+	alpha = surface[++index] & 255;
+	
+
+	lua_pushinteger(state, red);
+	lua_pushinteger(state, green);
+	lua_pushinteger(state, blue);
+	lua_pushinteger(state, alpha);
+	lua_pushinteger(state, image_ImageData_getPixel(imagedata,x,y));
+	return 4;
+}
+
+static int l_image_ImageData_getChannels(lua_State* state) {
+	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);	
+	lua_pushinteger(state, image_ImageData_getChannels(imagedata));
 	return 1;
 }
 
@@ -94,6 +123,7 @@ static luaL_Reg const imageDataMetatableFuncs[] = {
   {"getHeight", l_image_ImageData_getHeight},
   {"getDimensions", l_image_ImageData_getDimensions},
   {"getPixel", l_image_ImageData_getPixel},
+  {"getChannels", l_image_ImageData_getChannels},
   {"__gc", l_image_gcImageData},
   {NULL, NULL}
 };
