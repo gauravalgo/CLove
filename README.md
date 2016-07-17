@@ -1,3 +1,5 @@
+![Alt text](CLove_Logo.png?raw=true "CLove")
+
 CLove
 =====
 CLove is a simple and easy to learn and use game framework tested on
