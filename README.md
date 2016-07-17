@@ -1,4 +1,4 @@
-![Alt text](CLove_Logo.png?raw=true "CLove")
+![Alt text](CLoveLogo.png?raw=true "CLove")
 
 CLove
 =====
