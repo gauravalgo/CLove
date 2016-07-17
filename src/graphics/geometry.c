@@ -100,8 +100,7 @@ static void drawBufferSpecial(int vertices, int indices, float x, float y, float
   
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, moduleData.dataIBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, moduleData.currentIndexSize, moduleData.index, GL_STREAM_DRAW);
-
-  
+ 
   graphics_Shader *shader = graphics_getShader();
   graphics_setShader(&moduleData.plainColorShader);
   
