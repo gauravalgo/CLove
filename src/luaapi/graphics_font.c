@@ -25,14 +25,22 @@ static struct {
   graphics_Font defaultFont;
 } moduleData;
 
+static void l_graphics_loadDefaultFont() {
+  graphics_Font_new(&moduleData.defaultFont, NULL, 12);
+  moduleData.currentFont = &moduleData.defaultFont;
+}
 
 static int l_graphics_setFont(lua_State* state) {
-  l_assertType(state, 1, l_graphics_isFont);
-
   lua_settop(state, 1);
-
-  graphics_Font* font = l_graphics_toFont(state, 1);
-
+	
+  graphics_Font* font;
+  
+  if (lua_isnumber(state,1)) {
+	  graphics_Font_new(&moduleData.defaultFont, NULL, lua_tonumber(state,1));
+	  font = &moduleData.defaultFont;
+  } else {
+ 	  font = l_graphics_toFont(state, 1); 	 
+  }
   // Release current font in Lua, so it can be GCed if needed
   if(moduleData.currentFont) {
       luaL_unref(state, LUA_REGISTRYINDEX, moduleData.currentFontRef);
@@ -57,12 +65,6 @@ static const l_tools_Enum l_graphics_AlignMode[] = {
   {"justify", graphics_TextAlign_justify},
   {NULL, 0}
 };
-
-static void l_graphics_loadDefaultFont() {
-  graphics_Font_new(&moduleData.defaultFont, NULL, 12);
-  moduleData.currentFont = &moduleData.defaultFont;
-}
-
 
 static int l_graphics_printf(lua_State* state) {
   if(!moduleData.currentFont) {
