@@ -16,7 +16,6 @@
 #include <stdio.h>
 
 static struct {
-  mat4x4 tr2d;
   GLuint vbo;
   GLuint ibo;
   GLuint vao;

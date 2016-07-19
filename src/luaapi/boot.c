@@ -13,7 +13,7 @@
 static char const bootScript[] =
   "package.path = '?.lua;?/init.lua'\n"
   "love.update = function(dt) if love.keyboard.isDown('esc') then love.event.quit() end end\n"
-  "love.draw = function() love.graphics.rectangle('fill',100,100,100,100) end \n"
+  "love.draw = function() end \n"
   "love.load = function() end \n"
   "love.mousepressed = function() end\n"
   "love.mousereleased = function() end\n"
@@ -60,7 +60,7 @@ int l_boot(lua_State* state, love_Config *config) {
 
 static char const no_game_Script[] =
   "package.path = '?.lua;?/init.lua'\n"
-  "love.update = function(dt) end\n"
+  "love.update = function(dt) if love.keyboard.isDown('esc') then love.event.quit end  end\n"
   "love.draw = function() love.graphics.setBackgroundColor(0x84, 0xca, 0xff) "
   "love.graphics.print('No main.lua found',love.window.getWidth()/2 - 190,love.window.getHeight()/2) end \n"
   "love.load = function() end \n"

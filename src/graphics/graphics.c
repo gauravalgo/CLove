@@ -206,11 +206,24 @@ int graphics_setFocus(int value){
   return 1;
 }
 
+int graphics_setPosition(int x, int y)
+{
+#ifndef EMSCRIPTEN
+  if(x <= -1) // center x
+    x = SDL_WINDOWPOS_CENTERED;
+  if(y <= -1) // center y
+    y = SDL_WINDOWPOS_CENTERED;
+  SDL_SetWindowPosition(moduleData.window, x, y);
+#endif
+  return 1;
+}
+
 int graphics_setMode(int width, int height){
 #ifndef EMSCRIPTEN
   moduleData.width = width;
   moduleData.height = height;
   SDL_SetWindowSize(moduleData.window, width, height);
+  graphics_setPosition(-1, -1);
 #else
   //moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
   SDL_SetWindowSize(moduleData.window,width,height);
@@ -235,18 +248,6 @@ int graphics_getHeight(void) {
 const char* graphics_getTitle()
 {
   return moduleData.title;
-}
-
-int graphics_setPosition(int x, int y)
-{
-#ifndef EMSCRIPTEN
-  if(x <= -1) // center x
-    x = SDL_WINDOWPOS_UNDEFINED;
-  if(y <= -1) // center y
-    y = SDL_WINDOWPOS_UNDEFINED;
-  SDL_SetWindowPosition(moduleData.window, x, y);
-#endif
-  return 1;
 }
 
 int graphics_setFullscreen(int value, const char* mode){
