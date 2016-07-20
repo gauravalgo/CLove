@@ -3,7 +3,7 @@
 CLove
 =====
 CLove is a simple and easy to learn and use game framework tested on
-Mac/Linux/PC, made in C with OpenGLES 2 which uses Lua as a scripting langauge.
+Mac/Linux/PC, made in C with OpenGLES 2 which uses Lua as scripting langauge.
 
 How to build
 ============
@@ -16,16 +16,16 @@ Features
 - Lua scripting language 
 - Cross Platform 
 - Powerful Batch system
-- Image loader & drawing
+- Image loader & manipulation & drawing
 - Sound loader & playing (Vorbis and Wav)
-- Primitive drawing
+- Primitives drawing
 - Filesystem functions
 - OpenGL ES 2.0 
 - Font loading & drawing
 - Keyboard & Mouse functions
 - Physics system thanks to ChipMunk
 
-Examples
+Examples (see examples folder)
 --------
 ```lua
 local image = love.graphics.newImage("image.png")
