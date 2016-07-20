@@ -24,6 +24,11 @@ int image_ImageData_new_with_filename(image_ImageData *dst, char const* filename
   return 1;
 }
 
+void image_ImageData_new_with_size(image_ImageData *dst, int width, int height) {
+  dst->surface = malloc(width*height*4);
+  memset(dst->surface, 0, width*height*4);
+}
+
 // return rgba(4) or rgb(3) depending on the image type
 int image_ImageData_getChannels(image_ImageData *dst) {
 	return dst->c;
@@ -31,6 +36,11 @@ int image_ImageData_getChannels(image_ImageData *dst) {
 
 int image_ImageData_getPixel(image_ImageData *dst, int x, int y) {
 	return dst->surface[y * dst->w + x];
+}
+
+int image_ImageData_setPixel(image_ImageData *dst, int x, int y, unsigned char r, unsigned char g, unsigned char	b, unsigned char a) {
+	unsigned char color[] = {r,g,b,a};
+	return dst->surface[y * dst->w + x] = color;
 }
 
 unsigned char* image_ImageData_getSurface(image_ImageData *dst) {
@@ -47,11 +57,6 @@ int image_ImageData_getHeight(image_ImageData *dst) {
 
 const char* image_error(void){
   return stbi_failure_reason();
-}
-
-void image_ImageData_new_with_size(image_ImageData *dst, int width, int height) {
-  dst->surface = malloc(width*height*4);
-  memset(dst->surface, 0, width*height*4);
 }
 
 void image_ImageData_free(image_ImageData *data) {
