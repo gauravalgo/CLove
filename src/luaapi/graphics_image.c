@@ -29,7 +29,6 @@ int l_graphics_newImage(lua_State* state) {
       return lua_error(state);
     }
 
-  lua_settop(state, 1);
   image_ImageData * imageData = (image_ImageData*)lua_touserdata(state, 1);
 
   int ref = luaL_ref(state, LUA_REGISTRYINDEX);

@@ -35,6 +35,7 @@ int l_image_newImageData(lua_State* state) {
           return lua_error(state);
         }
     } else if(s1type == LUA_TNUMBER && lua_type(state, 2) == LUA_TNUMBER) {
+		 printf("%s","called");
       image_ImageData_new_with_size(moduleData.imageData, lua_tointeger(state, 1), lua_tointeger(state, 2));
     } else {
       lua_pushstring(state, "need filename or size for imagedata");
@@ -71,14 +72,13 @@ static int l_image_ImageData_setPixel(lua_State* state) {
 	int x = lua_tointeger(state, 2);
 	int y = lua_tointeger(state, 3);
 	pixel p;
-	p.r = luaL_checkint(state, 4);
-	p.g = luaL_checkint(state, 5);
-	p.b = luaL_checkint(state, 6);
-	p.a = luaL_checkint(state, 7);
+	p.r = lua_tointeger(state, 4);
+	p.g = lua_tointeger(state, 5);
+	p.b = lua_tointeger(state, 6);
+	p.a = lua_tointeger(state, 7);
 	
 	image_ImageData_setPixel(imagedata,x,y,p);
-
-	return 0;
+	return 1;
 }
 
 static int l_image_ImageData_getPixel(lua_State* state) {

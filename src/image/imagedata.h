@@ -23,7 +23,6 @@ typedef struct {
 
 typedef struct 
 {
-	// Red, green, blue, alpha.
 	unsigned char r, g, b, a;
 } pixel;
 
@@ -41,7 +40,7 @@ int image_ImageData_getChannels(image_ImageData *dst);
 
 int image_ImageData_getPixel(image_ImageData *dst, int x, int y);
 
-int image_ImageData_setPixel(image_ImageData *dst, int x, int y,pixel p); 
+int image_ImageData_setPixel(image_ImageData *dst, int x, int y, pixel p); 
 
 unsigned char* image_ImageData_getSurface(image_ImageData *dst);
 

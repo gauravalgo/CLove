@@ -27,6 +27,7 @@ static graphics_Vertex const imageVertices[] = {
   {{0.0f, 1.0f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}},
   {{1.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 1.0f, 1.0f, 1.0f}}
 };
+
 static unsigned char const imageIndices[] = { 0, 1, 2, 3 };
 
 void graphics_image_init(void) {  
