@@ -21,6 +21,9 @@ int image_ImageData_new_with_filename(image_ImageData *dst, char const* filename
   
   if(dst->surface == 0 || dst->surface == NULL) //image could not be loaded
     return 0;
+
+  if (n != 4) printf("%s %s %s \n", "Attention: the loaded image named: " , filename , " does not have the color format of RGBA, this may cause unexpected problems! ");
+
   return 1;
 }
 
@@ -38,9 +41,10 @@ int image_ImageData_getPixel(image_ImageData *dst, int x, int y) {
 	return dst->surface[y * dst->w + x];
 }
 
-int image_ImageData_setPixel(image_ImageData *dst, int x, int y, unsigned char r, unsigned char g, unsigned char	b, unsigned char a) {
-	unsigned char color[] = {r,g,b,a};
-	return dst->surface[y * dst->w + x] = color;
+int image_ImageData_setPixel(image_ImageData *dst, int x, int y, pixel p) {
+	pixel *pixels = (pixel*) dst->surface;
+	pixels[y * dst->w + x] = p;
+	return 1;
 }
 
 unsigned char* image_ImageData_getSurface(image_ImageData *dst) {

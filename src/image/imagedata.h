@@ -21,6 +21,12 @@ typedef struct {
   unsigned char *surface;
 } image_ImageData;
 
+typedef struct 
+{
+	// Red, green, blue, alpha.
+	unsigned char r, g, b, a;
+} pixel;
+
 char const* image_error(void);
 
 void image_ImageData_new_with_size(image_ImageData *dst, int width, int height);
@@ -35,7 +41,7 @@ int image_ImageData_getChannels(image_ImageData *dst);
 
 int image_ImageData_getPixel(image_ImageData *dst, int x, int y);
 
-int image_ImageData_setPixel(image_ImageData *dst, int x, int y, unsigned char r, unsigned char g, unsigned char	b, unsigned char a); 
+int image_ImageData_setPixel(image_ImageData *dst, int x, int y,pixel p); 
 
 unsigned char* image_ImageData_getSurface(image_ImageData *dst);
 

@@ -70,14 +70,15 @@ static int l_image_ImageData_setPixel(lua_State* state) {
 	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
 	int x = lua_tointeger(state, 2);
 	int y = lua_tointeger(state, 3);
-	int r = lua_tointeger(state, 4);
-	int g = lua_tointeger(state, 5);
-	int b = lua_tointeger(state, 6);
-	int a = lua_tointeger(state, 7);
+	pixel p;
+	p.r = luaL_checkint(state, 4);
+	p.g = luaL_checkint(state, 5);
+	p.b = luaL_checkint(state, 6);
+	p.a = luaL_checkint(state, 7);
 	
-	image_ImageData_setPixel(imagedata,x,y,r,g,b,a);
+	image_ImageData_setPixel(imagedata,x,y,p);
 
-	return 1;
+	return 0;
 }
 
 static int l_image_ImageData_getPixel(lua_State* state) {
