@@ -13,10 +13,12 @@ Windows then you'll need CMake GUI.
 
 Features
 ========
-- Lua scripting language 
+- Lua scripting language
+- Easy to learn and use api 
 - Cross Platform 
 - Powerful Batch system
-- Image loader & manipulation & drawing
+- Image loader & drawing
+- Image creation from scratch or from a template & save(png,bmp,tga)
 - Sound loader & playing (Vorbis and Wav)
 - Primitives drawing
 - Filesystem functions
