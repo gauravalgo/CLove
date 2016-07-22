@@ -67,6 +67,21 @@ static int l_image_ImageData_getDimensions(lua_State* state) {
 	return 2;
 }
 
+static int l_image_ImageData_getPath(lua_State* state) {
+	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
+	lua_pushstring(state,imagedata->path);
+	return 1;
+}
+
+// named save in imagedata.h and .c
+static int l_image_ImageData_encode(lua_State* state) {
+   image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);	
+	const char* format = lua_tostring(state, 2);
+	const char* filename = lua_tostring(state, 3);
+	image_ImageData_save(imagedata, format, filename);	
+	return 1;
+}
+
 static int l_image_ImageData_setPixel(lua_State* state) {
 	image_ImageData* imagedata = (image_ImageData*)lua_touserdata(state, 1);
 	int x = lua_tointeger(state, 2);
@@ -139,6 +154,8 @@ static luaL_Reg const imageDataMetatableFuncs[] = {
   {"getPixel", l_image_ImageData_getPixel},
   {"setPixel", l_image_ImageData_setPixel},
   {"getChannels", l_image_ImageData_getChannels},
+  {"encode", l_image_ImageData_encode},
+  {"getPath", l_image_ImageData_getPath},
   {"__gc", l_image_gcImageData},
   {NULL, NULL}
 };

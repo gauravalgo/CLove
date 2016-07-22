@@ -11,6 +11,11 @@
 
 #include <stdint.h>
 
+typedef struct 
+{
+	unsigned char r, g, b, a;
+} pixel;
+
 typedef struct {
   int w;
   int h;
@@ -19,12 +24,8 @@ typedef struct {
   int c;
   const char* path;
   unsigned char *surface;
+  pixel *pixels;
 } image_ImageData;
-
-typedef struct 
-{
-	unsigned char r, g, b, a;
-} pixel;
 
 char const* image_error(void);
 
@@ -41,6 +42,9 @@ int image_ImageData_getChannels(image_ImageData *dst);
 int image_ImageData_getPixel(image_ImageData *dst, int x, int y);
 
 int image_ImageData_setPixel(image_ImageData *dst, int x, int y, pixel p); 
+
+//named encode in Love
+int image_ImageData_save(image_ImageData *dst, const char* format, const char* filename);
 
 unsigned char* image_ImageData_getSurface(image_ImageData *dst);
 
