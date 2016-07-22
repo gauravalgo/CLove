@@ -5,14 +5,16 @@
 --Read the pixels informations form an image and do stuff with it ;)
 --
 --]]
-
+--
 local t = {}
 function spawn(x,y)
 	table.insert(t,{x=x,y=y})
 end
+
 local dr = nil
 function love.load()
-		
+	--love.graphics.scale(2.4)
+
 	--read the pixels color and do stuff based on that
 	local im = love.image.newImageData("map.png")
 	
@@ -29,13 +31,21 @@ function love.load()
 	
 	-- set the pixels to a custom color
 	local data = love.image.newImageData(132,132)
-	for i=1,131 do   
-		for k=1,131 do 
-   		data:setPixel(i, k, math.random(1,155), math.random(1,155), math.random(1,255), 255)
+	for i=1,data:getHeight() do   
+		for k=1,data:getWidth() do 
+			data:setPixel(i,k,155,255,355,255)
 		end
 	end
-	
-	
+
+	data:setPixel(60,60,255,0,0,255)
+	data:setPixel(61,60,255,0,0,255)
+	data:setPixel(60,61,255,0,0,255)
+	data:setPixel(61,61,255,0,0,255)
+		
+	data:encode("tga","testga.tga")
+	data:encode("png","testpng.png")
+	data:encode("bmp","testbmp.bmp")
+	data:encode("hdr","testhdr.hdr")
 	--load the new made texture with custom colors and size and draw it in
 	--love.draw
 	dr = love.graphics.newImage(data)
@@ -56,9 +66,9 @@ end
 function love.draw()
 	
 	for i,v in ipairs(t) do 
-		--love.graphics.rectangle("fill",v.x*16,v.y*16,16,16)
+		love.graphics.rectangle("fill",v.x*16,v.y*16,16,16)
 	end
-	love.graphics.draw(dr,200,200)
+	love.graphics.draw(dr,200,100)
 	love.graphics.print(""..love.timer.getFPS(),10,10)
 end
 
@@ -77,4 +87,6 @@ end
 function love.wheelmoved(y)
 	
 end
+
+
 
