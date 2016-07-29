@@ -14,71 +14,64 @@ project(love)
 if (UNIX)
     add_definitions(-std=gnu99 -O3)
 endif()
-if (MINGW)
-    add_definitions(-std=c99 -O3)
-endif()
+#if (MINGW)
+# add_definitions(-std=c99 -O3)
+#endif()
 
-IF(WIN32)
-  FIND_PACKAGE(OpenGL REQUIRED)
-  SET(MTCL_BUILD_FLAGS "")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MOE_BUILD_FLAGS} /EHsc /nologo /GR /FC /DWIN32 /D_MBCS")
-  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7 /W4 /Od /MDd /D_DEBUG /D__Debug__")
-  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /W1 /Ox /Ot /MD /DNDEBUG")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MARATIS_BUILD_FLAGS} /EHsc /nologo /GR /FC /DWIN32 /D_MBCS")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Z7 /W4 /Od /MDd /D_DEBUG /D__Debug__")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /W1 /Ox /Ot /MD /DNDEBUG")
-  SET(OS_SPECIFIC_LIBRARIES)
-ENDIF(WIN32)
+IF(MINGW)
+FIND_PACKAGE(OpenGL REQUIRED)
+SET(MTCL_BUILD_FLAGS "")
+SET(OS_SPECIFIC_LIBRARIES)
+ENDIF(MINGW)
 
 IF(UNIX AND NOT APPLE)
-  FIND_PACKAGE(OpenGL REQUIRED)
-  SET(MTCL_BUILD_FLAGS "")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MTCL_BUILD_FLAGS} -fPIC -DLINUX -ldl")
-  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__Debug__")
-  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MTCL_BUILD_FLAGS} -fPIC -DLINUX -ldl")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D__Debug__")
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-  SET(CMAKE_SHARED_LINKER_FLAGS "-ldl -Wl,--as-needed,--allow-multiple-definition,--build-id")
-  SET(OS_SPECIFIC_LIBRARIES pthread Xxf86vm X11 Xrandr Xi)
+FIND_PACKAGE(OpenGL REQUIRED)
+SET(MTCL_BUILD_FLAGS "")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MTCL_BUILD_FLAGS} -fPIC -DLINUX -ldl")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__Debug__")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MTCL_BUILD_FLAGS} -fPIC -DLINUX -ldl")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D__Debug__")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+SET(CMAKE_SHARED_LINKER_FLAGS "-ldl -Wl,--as-needed,--allow-multiple-definition,--build-id")
+SET(OS_SPECIFIC_LIBRARIES pthread Xxf86vm X11 Xrandr Xi)
 ENDIF(UNIX AND NOT APPLE)
 
 if (APPLE)
-  
-  add_definitions(-std=gnu99 -O3)
-  SET(MACOSX_RPATH 1)
-  # use, i.e. don't skip the full RPATH for the build tree
-  SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    add_definitions(-std=gnu99 -O3)
+    SET(MACOSX_RPATH 1)
+    # use, i.e. don't skip the full RPATH for the build tree
+    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
-  # when building, don't use the install RPATH already
-  # (but later on when installing)
-  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+    # when building, don't use the install RPATH already
+    # (but later on when installing)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
-  SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
-  # add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    # add the automatically determined parts of the RPATH
+    # which point to directories outside the build tree to the install RPATH
+    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 
-  # the RPATH to be used when installing, but only if it's not a system directory
-  LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-  IF("${isSystemDir}" STREQUAL "-1")
-   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  ENDIF("${isSystemDir}" STREQUAL "-1")
+    # the RPATH to be used when installing, but only if it's not a system directory
+    LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+    IF("${isSystemDir}" STREQUAL "-1")
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    ENDIF("${isSystemDir}" STREQUAL "-1")
 
-  FIND_PACKAGE(OpenGL REQUIRED)
-  FIND_LIBRARY(COCOA_LIB Cocoa)
-  FIND_LIBRARY(CORE_SERVICES_LIB CoreServices)
-  FIND_LIBRARY(FOUNDATION_LIB Foundation)
-  FIND_LIBRARY(IOKIT_LIB IOKit)
-  SET(MTCL_BUILD_FLAGS "-mmacosx-version-min=10.6")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MTCL_BUILD_FLAGS} -O3 -DOSX")
-  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__Debug__")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MTCL_BUILD_FLAGS} -O3 -DOSX")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D__Debug__")
-  SET(CMAKE_SHARED_LINKER_FLAGS "-Wl")
-  SET(OS_SPECIFIC_LIBRARIES ${COCOA_LIB} ${CORE_SERVICES_LIB} ${FOUNDATION_LIB} ${IOKIT_LIB})
+    FIND_PACKAGE(OpenGL REQUIRED)
+    FIND_LIBRARY(COCOA_LIB Cocoa)
+    FIND_LIBRARY(CORE_SERVICES_LIB CoreServices)
+    FIND_LIBRARY(FOUNDATION_LIB Foundation)
+    FIND_LIBRARY(IOKIT_LIB IOKit)
+    SET(MTCL_BUILD_FLAGS "-mmacosx-version-min=10.6")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MTCL_BUILD_FLAGS} -O3 -DOSX")
+    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -D__Debug__")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MTCL_BUILD_FLAGS} -O3 -DOSX")
+    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D__Debug__")
+    SET(CMAKE_SHARED_LINKER_FLAGS "-Wl")
+    SET(OS_SPECIFIC_LIBRARIES ${COCOA_LIB} ${CORE_SERVICES_LIB} ${FOUNDATION_LIB} ${IOKIT_LIB})
 endif()
 
 FILE(
@@ -103,7 +96,7 @@ FILE(
     src/physics/*.h
     src/*.c
     src/*.h
-  
+
     #3rdparty "small" libs
     src/3rdparty/stb/*.c
     src/3rdparty/stb/*.h
@@ -120,7 +113,7 @@ set(love_copyright "Copyright (c) 2015-2016, ${love_creator}.")
 add_executable(
     love
     ${SOURCE_FILES}
-  )
+    )
 INCLUDE_DIRECTORIES(src/3rdparty/stb)
 
 #chipmunk(physics)
@@ -144,10 +137,19 @@ set(LUA_LIBRARIES lua)
 add_subdirectory(src/3rdparty/glew/)
 set(GLEW_INCLUDE_DIR src/3rdparty/glew/include/GL/)
 
-#sdl
-add_subdirectory(src/3rdparty/SDL2/)
-include_directories(src/3rdparty/SDL2/include/)
-set(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
+#sdl on Windows is stupid so we'll use glfw
+if(UNIX)
+    add_subdirectory(src/3rdparty/SDL2/)
+    include_directories(src/3rdparty/SDL2/include/)
+    set(SDL_INCLUDE_DIR src/3rdparty/SDL2/include/)
+    set(SDL_LIBRARIES SDL2)
+endif()
+if(MINGW) 
+    add_subdirectory(src/3rdparty/glfw)
+    include_directories(src/3rdparty/glfw/include)
+    set(GLFW_LIBRARY "glfw")
+endif()
+#end sdl
 
 add_definitions(-DAL_LIBTYPE_STATIC)
 add_definitions(-DGLEW_STATIC)
@@ -158,36 +160,35 @@ set(FREETYPE_LIBRARIES freetype)
 include_directories(src/3rdparty/freetype/include)
 
 set(CHIPMUNK_LIBRARIES chipmunk_static)
-set(SDL_LIBRARIES SDL2)
 set(GLEW_LIBRARIES libglew_static)
 
 if(MINGW)
-SET(OPENAL_LIBRARIES OpenAL32)
+    SET(OPENAL_LIBRARIES OpenAL32)
 endif()
 if(UNIX)
-SET(OPENAL_LIBRARIES openal)
+    SET(OPENAL_LIBRARIES openal)
 endif()
 
 if(MINGW)
     target_link_libraries(love ws2_32.lib
-        ${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-	${CHIPMUNK_LIBRARIES}
+        ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}
+        ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
 
 if(APPLE)
     target_link_libraries(love
-        ${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-	${CHIPMUNK_LIBRARIES}
+        ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+        ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()
 
 if(UNIX)
     target_link_libraries(love
-    	${SDL_LIBRARIES} ${GLEW_LIBRARIES} 
-	${CHIPMUNK_LIBRARIES}
+        ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
+        ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
         ${FREETYPE_LIBRARIES} ${LUA_LIBRARIES})
 endif()

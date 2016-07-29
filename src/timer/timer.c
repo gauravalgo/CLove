@@ -6,12 +6,17 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
-#ifdef EMSCRIPTEN
-# include <emscripten.h>
-#else
-#include "../3rdparty/SDL2/include/SDL.h"
+#include "../graphics/graphics.h"
 
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#else
+
+#ifdef UNIX
+#include "../3rdparty/SDL2/include/SDL.h"
 #endif
+#endif
+
 #include "timer.h"
 
 static float const FpsUpdateTimeout = 1.0f;
@@ -29,7 +34,9 @@ float timer_getTime(void) {
 #ifdef EMSCRIPTEN
   return emscripten_get_now() / 1000.0f;
 #else
+#ifdef UNIX
   return SDL_GetTicks() / 1000.0f;
+#endif
 #endif
 }
 

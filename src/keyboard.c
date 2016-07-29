@@ -12,11 +12,16 @@
 #include "luaapi/keyboard.h"
 
 typedef struct {
+#ifdef UNIX
   SDL_Keycode keycode;
+#else
+  int32_t keycode;
+#endif
   char const * name;
 } KeyName;
 
 static const KeyName keynames[] = {
+  #ifdef UNIX
   {SDLK_UNKNOWN,      "unknown"},
   {SDLK_RETURN,       "return"},
   {SDLK_ESCAPE,       "escape"},
@@ -172,6 +177,7 @@ static const KeyName keynames[] = {
   {SDLK_AC_STOP,      "appstop"},
   {SDLK_AC_REFRESH,   "apprefresh"},
   {SDLK_AC_BOOKMARKS, "appbookmarks"},
+  #endif
 };
 
 static struct {
@@ -215,10 +221,7 @@ void keyboard_init(void) {
   keyboard_startText();
 }
 
-char const * keyboard_getKeyName(SDL_Keycode key) {
-  return moduleData.keynames[normalizeKeyCode(key)];
-}
-
+#ifdef UNIX
 SDL_Keycode keyboard_getKeycode(char const* name) {
   for(int i = 0; i < moduleData.numKeys; ++i) {
     if(!strcmp(name, keynames[i].name)) {
@@ -226,6 +229,10 @@ SDL_Keycode keyboard_getKeycode(char const* name) {
     }
   }
   return 0;
+}
+
+char const * keyboard_getKeyName(SDL_Keycode key) {
+  return moduleData.keynames[normalizeKeyCode(key)];
 }
 
 void keyboard_keypressed(SDL_Keycode key) {
@@ -249,14 +256,19 @@ bool keyboard_ispressed(SDL_Keycode key) {
   int nk = normalizeKeyCode(key);
   return nk < moduleData.numKeys && moduleData.keystate[nk];
 }
+#endif
 
 void keyboard_startText(void) {
+#ifdef UNIX
   SDL_StartTextInput();
+#endif
   moduleData.textActive = true;
 }
 
 void keyboard_stopText(void) {
+#ifdef UNIX
   SDL_StopTextInput();
+#endif
   moduleData.textActive = false;
 }
 

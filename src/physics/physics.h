@@ -8,6 +8,7 @@
 */
 #pragma once 
 #include "../3rdparty/chipmunk/include/chipmunk/chipmunk.h"
+#include <stdbool.h>
 
 typedef struct {
   cpBody* body;

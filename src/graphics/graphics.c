@@ -1,11 +1,19 @@
 #include <stdint.h>
+
+#ifdef UNIX
 #include "../3rdparty/SDL2/include/SDL.h"
+#endif
+
 #include "graphics.h"
 
 #ifdef EMSCRIPTEN
 #include <GLES2/gl2.h>
 #else
 #include "../3rdparty/glew/include/GL/glew.h"
+#endif
+
+#ifdef WINDOWS
+#include "../3rdparty/glfw/include/GLFW/glfw3.h"
 #endif
 
 #include "../math/vector.h"
@@ -26,10 +34,14 @@ typedef struct {
 
 static struct {
 #ifndef EMSCRIPTEN
+ #ifndef WINDOWS
   SDL_Window* window;
   SDL_GLContext context;
 #endif
+#endif
+#ifndef WINDOWS
   SDL_Surface* surface;
+#endif
   graphics_Color backgroundColor;
   graphics_Color foregroundColor;
 
@@ -48,20 +60,25 @@ static struct {
 } moduleData;
 
 #ifndef EMSCRIPTEN
+#ifndef WINDOWS
 SDL_Window* graphics_getWindow(void) {
   return moduleData.window;
 }
 #endif
+#endif
 
 void graphics_init(int width, int height) {
  
+ #ifndef WINDOWS
   if (SDL_Init(SDL_INIT_VIDEO) != 0) 
     printf("Error: Could not init SDL \n");
-  
+#endif
+
   moduleData.isCreated = 0;
 #ifdef EMSCRIPTEN
   moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
 #else
+  #ifndef WINDOWS
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);                                 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);   
@@ -84,7 +101,7 @@ void graphics_init(int width, int height) {
   moduleData.context = SDL_GL_CreateContext(moduleData.window);
   //moduleData.surface = SDL_GetWindowSurface(moduleData.window);
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
-  
+#endif
   printf("Debug, OpenGL version: %s \n", glGetString(GL_VERSION));
   printf("Debug, GLSL version %s \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
   
@@ -140,9 +157,13 @@ void graphics_clear(void) {
 
 void graphics_swap(void) {
 #ifdef EMSCRIPTEN
+  #ifndef WINDOWS
   SDL_GL_SwapBuffers();
+  #endif
 #else
+#ifndef WINDOWS
   SDL_GL_SwapWindow(moduleData.window);
+#endif
 #endif
 }
 
@@ -168,8 +189,8 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
         hs
         );
   
-  	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-  	glDrawElements(type, count, indexType, (GLvoid const*)0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  glDrawElements(type, count, indexType, (GLvoid const*)0);
 	
   /*glDisableVertexAttribArray(3);
   glDisableVertexAttribArray(2); 
@@ -183,7 +204,9 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
 int graphics_setTitle(const char* title){
 #ifndef EMSCRIPTEN
   moduleData.title = title;
+  #ifndef WINDOWS
   SDL_SetWindowTitle(moduleData.window,title);
+  #endif
 #endif
   return 1;
 }
@@ -209,11 +232,13 @@ int graphics_setFocus(int value){
 int graphics_setPosition(int x, int y)
 {
 #ifndef EMSCRIPTEN
+  #ifndef WINDOWS
   if(x <= -1) // center x
     x = SDL_WINDOWPOS_CENTERED;
   if(y <= -1) // center y
     y = SDL_WINDOWPOS_CENTERED;
   SDL_SetWindowPosition(moduleData.window, x, y);
+#endif
 #endif
   return 1;
 }
@@ -222,7 +247,9 @@ int graphics_setMode(int width, int height){
 #ifndef EMSCRIPTEN
   moduleData.width = width;
   moduleData.height = height;
+  #ifndef WINDOWS
   SDL_SetWindowSize(moduleData.window, width, height);
+  #endif
   graphics_setPosition(-1, -1);
 #else
   //moduleData.surface = SDL_SetVideoMode(width, height, 0, SDL_OPENGL);
@@ -234,14 +261,18 @@ int graphics_setMode(int width, int height){
 int graphics_getWidth(void) {
   int w;
   int h;
+  #ifndef WINDOWS
   SDL_GetWindowSize(moduleData.window,&w,&h);
+  #endif
   return w;
 }
 
 int graphics_getHeight(void) {
   int w;
   int h;
+  #ifndef WINDOWS
   SDL_GetWindowSize(moduleData.window,&w,&h);
+  #endif
   return h;
 }
 
@@ -253,8 +284,10 @@ const char* graphics_getTitle()
 int graphics_setFullscreen(int value, const char* mode){
 
 #ifndef EMSCRIPTEN
+  #ifndef WINDOWS
   if ((strncmp(mode,"desktop", 7) == 0) && value == 1)
     SDL_SetWindowFullscreen(moduleData.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
 #endif
   return 1;
 }

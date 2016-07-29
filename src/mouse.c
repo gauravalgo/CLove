@@ -6,7 +6,14 @@
         #   This project is free software; you can redistribute it and/or modify it
         #   under the terms of the MIT license. See LICENSE.md for details.
         */
+
+#ifdef UNIX
 #include "3rdparty/SDL2/include/SDL.h"
+#endif
+
+#ifdef WINDOWS
+#include "3rdparty/glfw/include/GLFW/glfw3.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +21,9 @@
 #include "luaapi/mouse.h"
 
 #ifndef EMSCRIPTEN
+#ifdef UNIX
 extern SDL_Window* graphics_getWindow(void);
+#endif
 #endif
 
 static struct {
@@ -26,15 +35,16 @@ static struct {
   int wheel;
 } moduleData;
 
-
 static int buttonEnum(const char *str) {
   int res = 0;
+#ifdef UNIX
   if (strncmp (str,"l",1) == 0)
     res = SDL_BUTTON_LEFT;
   if (strncmp (str,"r",1) == 0)
     res = SDL_BUTTON_RIGHT;
   if (strncmp (str,"m",1) == 0)
     res = SDL_BUTTON_MIDDLE;
+#endif
   return res;
 }
 
@@ -60,6 +70,7 @@ void mouse_mousemoved(int x, int y) {
 }
 
 void mouse_mousepressed(int x, int y, int button) {
+#ifdef UNIX
   if (button == SDL_BUTTON_WHEEL_UP || button == SDL_BUTTON_WHEEL_DOWN) {
       l_mouse_pressed(moduleData.x, moduleData.y, button);
       mouse_mousemoved(moduleData.x, moduleData.y);
@@ -67,7 +78,7 @@ void mouse_mousepressed(int x, int y, int button) {
       l_mouse_pressed(x, y, button);
       mouse_mousemoved(x, y);
     }
-
+#endif
   moduleData.buttons[button] = 1;
 }
 
@@ -107,20 +118,26 @@ void mouse_setPosition(int x, int y) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(x, y);
 #else
+#ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), x, y);
+#endif
 #endif
 }
 
 void mouse_setVisible(int b) {
   moduleData.visible = !!b;
+#ifdef UNIX
   SDL_ShowCursor(b ? SDL_ENABLE : SDL_DISABLE);
+#endif
 }
 
 void mouse_setX(int x) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(x, moduleData.y);
 #else
+#ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), x, moduleData.y);
+#endif
 #endif
 }
 
@@ -128,6 +145,8 @@ void mouse_setY(int y) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(moduleData.x, y);
 #else
+#ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), moduleData.x, y);
+#endif
 #endif
 }

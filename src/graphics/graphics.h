@@ -9,6 +9,14 @@
 
 #pragma once
 
+#ifdef _WIN32
+#define WINDOWS
+#endif
+
+#ifdef __unix__
+#define UNIX
+#endif
+
 #include "image.h"
 #include "quad.h"
 #include "../math/vector.h"

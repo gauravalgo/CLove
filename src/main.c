@@ -81,7 +81,6 @@ void main_loop(void *data) {
 
   lua_rawget(loopData->luaState, -2);
   lua_pushnumber(loopData->luaState, timer_getDelta());
-    
   if (swap_At == 1){
       if(luaL_dofile(loopData->luaState, "main.lua")) {
           printf("Error: %s\n", lua_tostring(loopData->luaState, -1));
@@ -118,6 +117,7 @@ void main_loop(void *data) {
 
   lua_pop(loopData->luaState, 1);
 
+  #ifdef UNIX
   SDL_Event event;
   while(SDL_PollEvent(&event)) {
       if (event.type == SDL_WINDOWEVENT) {
@@ -177,6 +177,7 @@ void main_loop(void *data) {
 #endif
         }
     }
+#endif
 }
 
 int main(int argc, char* argv[]) {
