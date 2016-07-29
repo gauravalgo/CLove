@@ -11,9 +11,11 @@
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 #else
-
 #ifdef UNIX
 #include "../3rdparty/SDL2/include/SDL.h"
+#endif
+#ifdef WINDOWS
+#include "../3rdparty/glfw/include/GLFW/glfw3.h"
 #endif
 #endif
 
@@ -36,6 +38,9 @@ float timer_getTime(void) {
 #else
 #ifdef UNIX
   return SDL_GetTicks() / 1000.0f;
+#endif
+#ifdef WINDOWS
+    return glfwGetTime();
 #endif
 #endif
 }

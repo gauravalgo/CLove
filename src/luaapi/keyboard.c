@@ -28,6 +28,7 @@ int l_keyboard_setKeyRepeat(lua_State* state) {
 }
 
 int l_keyboard_isDown(lua_State* state) {
+  /*
   bool any = false;
   int top = lua_gettop(state); 
   for(int i = 0; i < top; ++i) {
@@ -39,7 +40,8 @@ int l_keyboard_isDown(lua_State* state) {
   }
 
   lua_pushboolean(state, any);
-  return 1;
+*/
+return 1;
 }
 
 int l_keyboard_setTextInput(lua_State* state) {
@@ -81,7 +83,7 @@ void l_keyboard_keypressed(SDL_Keycode key, bool isrepeat) {
   lua_getglobal(moduleData.luaState, "love");
   lua_pushstring(moduleData.luaState, "keypressed");
   lua_rawget(moduleData.luaState, -2);
-  lua_pushstring(moduleData.luaState, keyboard_getKeyName(key));
+  //lua_pushstring(moduleData.luaState, keyboard_getKeyName(key));
   lua_pushboolean(moduleData.luaState, isrepeat);
   lua_call(moduleData.luaState, 2, 0);
 }
@@ -90,7 +92,7 @@ void l_keyboard_keyreleased(SDL_Keycode key) {
   lua_getglobal(moduleData.luaState, "love");
   lua_pushstring(moduleData.luaState, "keyreleased");
   lua_rawget(moduleData.luaState, -2);
-  lua_pushstring(moduleData.luaState, keyboard_getKeyName(key));
+  //lua_pushstring(moduleData.luaState, keyboard_getKeyName(key));
   lua_call(moduleData.luaState, 1, 0);
 }
 

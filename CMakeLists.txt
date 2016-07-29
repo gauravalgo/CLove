@@ -146,8 +146,8 @@ if(UNIX)
 endif()
 if(MINGW) 
     add_subdirectory(src/3rdparty/glfw)
-    include_directories(src/3rdparty/glfw/include)
-    set(GLFW_LIBRARY "glfw")
+    include_directories(src/3rdparty/glfw/include/)
+    set(GLFW_LIBRARIES "glfw")
 endif()
 #end sdl
 
@@ -170,7 +170,7 @@ if(UNIX)
 endif()
 
 if(MINGW)
-    target_link_libraries(love ws2_32.lib
+    target_link_libraries(love ws2_32.lib glfw
         ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}
         ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}

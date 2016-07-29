@@ -117,7 +117,7 @@ void main_loop(void *data) {
 
   lua_pop(loopData->luaState, 1);
 
-  #ifdef UNIX
+#ifdef UNIX
   SDL_Event event;
   while(SDL_PollEvent(&event)) {
       if (event.type == SDL_WINDOWEVENT) {
@@ -241,6 +241,7 @@ int main(int argc, char* argv[]) {
     quit_function(lua);
 #endif
   audio_close ();
+  graphics_free();
   lua_close(lua);
   return 0;
 }
