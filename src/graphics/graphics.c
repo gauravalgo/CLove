@@ -118,13 +118,25 @@ void graphics_init(int width, int height) {
   SDL_GL_SetSwapInterval(1); //limit FPS to 60, this may not work on all drivers
 #endif
 #ifdef WINDOWS
+  glfwWindowHint(GLFW_RED_BITS, 8);
+  glfwWindowHint(GLFW_GREEN_BITS, 8);
+  glfwWindowHint(GLFW_BLUE_BITS, 8);
+  glfwWindowHint(GLFW_ALPHA_BITS, 8);
+  glfwWindowHint(GLFW_DEPTH_BITS, 16);
+  glfwWindowHint(GLFW_SAMPLES, 2); //antialasing x2
+  glfwWindowHint(GLFW_OPENGL_PROFILE,  GLFW_OPENGL_ANY_PROFILE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
   moduleData.title = "Untitled";
   moduleData.x = -1;
   moduleData.y = -1;
   moduleData.width = width;
   moduleData.height = height;
 
+#ifndef EMSCRIPTEN
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+#endif
 
   moduleData.window = glfwCreateWindow(width, height, moduleData.title, NULL, NULL);
   graphics_setPosition(-1, -1);
@@ -193,7 +205,9 @@ void graphics_setColor(float red, float green, float blue, float alpha) {
 
 void graphics_clear(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#ifdef WINDOWS
   glfwSwapInterval(1);
+#endif
 }
 
 void graphics_swap(void) {
@@ -210,7 +224,7 @@ void graphics_swap(void) {
 #ifdef WINDOWS
 #ifndef EMSCRIPTEN
   if(glfwWindowShouldClose(moduleData.window))
-    graphics_free();
+    glfwDestroyWindow(moduleData.window);
 #endif
   glfwSwapBuffers(moduleData.window);
   glfwPollEvents();
@@ -279,7 +293,12 @@ int graphics_setMouseFocus(int value){
 }
 
 int graphics_hasFocus(){
+#ifdef UNIX
   return focus;
+#endif
+#ifdef WINDOWS
+  return glfwGetWindowAttrib(moduleData.window, GLFW_FOCUSED);
+#endif
 }
 
 int graphics_setFocus(int value){
@@ -373,6 +392,7 @@ int graphics_setFullscreen(int value, const char* mode){
   if ((strncmp(mode,"desktop", 7) == 0) && value == 1)
     SDL_SetWindowFullscreen(moduleData.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 #endif
+
 #endif
   return 1;
 }
@@ -486,6 +506,14 @@ bool graphics_getScissor(int *x, int *y, int *w, int *h) {
   *h = moduleData.scissorBox[3];
 
   return true;
+}
+
+int graphics_stop_windows(void) {
+#ifdef WINDOWS
+  if(glfwWindowShouldClose(moduleData.window))
+    return 0;
+#endif
+  return 1;
 }
 
 void graphics_reset(void) {

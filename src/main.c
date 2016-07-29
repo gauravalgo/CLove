@@ -114,9 +114,9 @@ void main_loop(void *data) {
     }
 
   graphics_swap();
+  l_running = graphics_stop_windows(); //This will be affected only on Windows
 
   lua_pop(loopData->luaState, 1);
-
 #ifdef UNIX
   SDL_Event event;
   while(SDL_PollEvent(&event)) {
@@ -241,7 +241,6 @@ int main(int argc, char* argv[]) {
     quit_function(lua);
 #endif
   audio_close ();
-  graphics_free();
   lua_close(lua);
   return 0;
 }
