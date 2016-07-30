@@ -1,6 +1,6 @@
 --[[
 --
---Read the pixels informations form an image and do stuff with it ;)
+--Read pixel information from an image and do something with it ;)
 --
 --]]
 --
@@ -13,12 +13,12 @@ local dr = nil
 function love.load()
 	--love.graphics.scale(2.4)
 
-	--read the pixels color and do stuff based on that
+	--read each pixel color and something based on that
 	local im = love.image.newImageData("map.png")
 
 	for y = 1, im:getHeight() do
 		for x = 1, im:getWidth() do
-			-- Pixel coordinates range from 0 to image width - 1 / height - 1.
+			-- pixel coordinates range from 0 to image width - 1 / height - 1
 			local r, g, b, a, pixel= im:getPixel( x, y)
 			if r == 55 and g == 50 and b == 227 then
 				--print(x .. " " .. y)
@@ -27,7 +27,7 @@ function love.load()
 		end
 	end
 
-	-- set the pixels to a custom color
+	-- set pixels to a custom color
 	local data = love.image.newImageData(132,132)
 	for i=1,data:getHeight() do
 		for k=1,data:getWidth() do
@@ -44,7 +44,7 @@ function love.load()
 	data:encode("png","testpng.png")
 	data:encode("bmp","testbmp.bmp")
 	data:encode("hdr","testhdr.hdr")
-	--load the new made texture with custom colors and size and draw it in
+	--load the newly made texture with custom colors and size and draw to it
 	--love.draw
 	dr = love.graphics.newImage(data)
 	dr:setFilter("nearest","nearest")
