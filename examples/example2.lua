@@ -19,14 +19,14 @@ function love.load()
 	local im = love.image.newImageData("map.png")
 
 	for y = 1, im:getHeight() do
-    for x = 1, im:getWidth() do
-        -- Pixel coordinates range from 0 to image width - 1 / height - 1.
-        local r, g, b, a, pixel= im:getPixel( x, y)
-        if r == 55 and g == 50 and b == 227 then
-        	  --print(x .. " " .. y)
-        	  spawn(x,y)
-        end
-      end
+		for x = 1, im:getWidth() do
+			-- Pixel coordinates range from 0 to image width - 1 / height - 1.
+			local r, g, b, a, pixel= im:getPixel( x, y)
+			if r == 55 and g == 50 and b == 227 then
+				--print(x .. " " .. y)
+				spawn(x,y)
+			end
+		end
 	end
 
 	-- set the pixels to a custom color
