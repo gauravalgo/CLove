@@ -15,9 +15,17 @@
 #endif
 
 #ifdef WINDOWS
+
 #include "3rdparty/glfw/include/GLFW/glfw3.h"
 
 void mouse_setcallback();
+
+#define MAX_MOUSE 32
+
+// Don't know if this is the best approach but I don't care at this point
+static bool mousePressed[MAX_MOUSE];
+static bool mouseRelased[MAX_MOUSE];
+static int mouseButton;
 
 #endif
 

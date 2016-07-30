@@ -213,6 +213,10 @@ void graphics_swap(void) {
       glfwTerminate();
     }
 #endif
+  //Update love.mousepressed / released(x,y,button)
+  mouse_mousepressed(mouse_getX(), mouse_getY(), mouseButton);
+  mouse_mousereleased(mouse_getX(), mouse_getY(), mouseButton);
+
   glfwSwapBuffers(moduleData.window);
   glfwPollEvents();
 #endif

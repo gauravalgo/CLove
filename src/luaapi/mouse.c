@@ -8,8 +8,6 @@
 */
 #include "../mouse.h"
 #include "tools.h"
-#include "../3rdparty/SDL2/include/SDL.h"
-
 
 static struct {
   lua_State *luaState;
@@ -99,6 +97,7 @@ void l_mouse_register(lua_State* state) {
 
 static const char *buttonStr(int x) {
   switch (x) {
+#ifdef UNIX
     case SDL_BUTTON_LEFT:
       return "l";
       break;
@@ -114,6 +113,27 @@ static const char *buttonStr(int x) {
     case SDL_BUTTON_WHEEL_DOWN:
       return "wd";
       break;
+#endif
+
+#ifdef WINDOWS
+    case GLFW_MOUSE_BUTTON_LEFT:
+      return "l";
+      break;
+    case GLFW_MOUSE_BUTTON_RIGHT:
+      return "r";
+      break;
+    case GLFW_MOUSE_BUTTON_MIDDLE:
+      return "m";
+      break;
+      /* TODO
+    case GLFW_MOUSE_BUTTON_WHEEL_UP:
+      return "wu";
+      break;
+    case GLFW_MOUSE_BUTTON_DOWN:
+      return "wd";
+      break;
+      */
+#endif
 
     }
   return "?";
@@ -136,16 +156,16 @@ void l_mouse_released(int x, int y, int button){
   lua_rawget(moduleData.luaState, -2);
   lua_pushinteger(moduleData.luaState, x);
   lua_pushinteger(moduleData.luaState, y);
-  lua_pushstring(moduleData.luaState, buttonStr(button));
+  lua_pushstring(moduleData.luaState, buttonStr(0));
   lua_call(moduleData.luaState, 3, 0);
   lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
 }
 
 void l_mouse_wheelmoved(int y) {
-	lua_getglobal(moduleData.luaState, "love");
-   lua_pushstring(moduleData.luaState, "wheelmoved");
-   lua_rawget(moduleData.luaState, -2);
-	lua_pushinteger(moduleData.luaState, mouse_getwheel());
-	lua_call(moduleData.luaState, 1, 0);
-   lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
+  lua_getglobal(moduleData.luaState, "love");
+  lua_pushstring(moduleData.luaState, "wheelmoved");
+  lua_rawget(moduleData.luaState, -2);
+  lua_pushinteger(moduleData.luaState, mouse_getwheel());
+  lua_call(moduleData.luaState, 1, 0);
+  lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
 }

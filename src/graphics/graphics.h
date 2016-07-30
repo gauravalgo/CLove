@@ -21,6 +21,14 @@
 #include "quad.h"
 #include "../math/vector.h"
 
+#ifdef __linux__
+#define LINUX
+#endif
+
+#ifdef __APPLE__
+#define APPLE
+#endif
+
 #ifdef UNIX
 #include "../3rdparty/SDL2/include/SDL.h"
 #endif

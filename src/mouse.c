@@ -8,6 +8,7 @@
         */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include "mouse.h"
@@ -75,14 +76,15 @@ void mouse_mousemoved(int x, int y) {
 
 #ifdef WINDOWS
 
-#define MAX_MOUSE 32
-static bool mousePressed[MAX_MOUSE];
-static bool mouseRelased[MAX_MOUSE];
-
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
   mousePressed[button] = action != GLFW_RELEASE;
   mouseRelased[button] = action != GLFW_PRESS;
+  mouseButton = button;
+}
+
+void mouse_setcallback() {
+  glfwSetMouseButtonCallback(graphics_getWindow(), mouse_button_callback);
 }
 
 int mouse_getmousepressedGLFW(int v)
@@ -94,8 +96,13 @@ int mouse_getmousepressedGLFW(int v)
   return -1;
 }
 
-void mouse_setcallback() {
-  glfwSetMouseButtonCallback(graphics_getWindow(), mouse_button_callback);
+int mouse_getmousereleasedGLFW(int v)
+{
+  if(v <= MAX_MOUSE)
+    return mouseRelased[v];
+  else
+    printf("%s \n","You're trying to get an unknow button");
+  return -1;
 }
 
 #endif
@@ -113,6 +120,19 @@ int mouse_isDown(const char *str) {
 #endif
 }
 
+void mouse_mousereleased(int x, int y, int button) {
+  mouse_mousemoved(x, y);
+#ifdef UNIX
+  moduleData.buttons[button] = 0;
+  l_mouse_released(x, y, button);
+#endif
+#ifdef WINDOWS
+  if (mouse_getmousereleasedGLFW(button)){
+      l_mouse_released(x, y, button);
+    }
+#endif
+}
+
 void mouse_mousepressed(int x, int y, int button) {
 #ifdef UNIX
   if (button == SDL_BUTTON_WHEEL_UP || button == SDL_BUTTON_WHEEL_DOWN) {
@@ -122,19 +142,15 @@ void mouse_mousepressed(int x, int y, int button) {
       l_mouse_pressed(x, y, button);
       mouse_mousemoved(x, y);
     }
+  moduleData.buttons[button] = 1;
 #endif
 #ifdef WINDOWS
-  //TODO Wheel up/down
-
+  if (mouse_getmousepressedGLFW(button)){
+      l_mouse_pressed(x, y, button);
+      mouse_mousemoved(x, y);
+    }
 #endif
-  moduleData.buttons[button] = 1;
-}
 
-
-void mouse_mousereleased(int x, int y, int button) {
-  mouse_mousemoved(x, y);
-  moduleData.buttons[button] = 0;
-  l_mouse_released(x, y, button);
 }
 
 void mouse_getPosition(int *x, int *y) {
@@ -147,11 +163,31 @@ int mouse_isVisible(void) {
 }
 
 int mouse_getX(void) {
+#ifdef UNIX
   return moduleData.x;
+#endif
+#ifdef WINDOWS
+  double x;
+  double y;
+  glfwGetCursorPos(graphics_getWindow(),&x, &y);
+  moduleData.x = x;
+  moduleData.y = y;
+  return x;
+#endif
 }
 
 int mouse_getY(void) {
+#ifdef UNIX
   return moduleData.y;
+#endif
+#ifdef WINDOWS
+  double y;
+  double x;
+  moduleData.x = x;
+  moduleData.y = y;
+  glfwGetCursorPos(graphics_getWindow(),&x, &y);
+  return y;
+#endif
 }
 
 void mouse_setPosition(int x, int y) {
