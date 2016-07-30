@@ -33,14 +33,14 @@ static void l_graphics_loadDefaultFont() {
 
 static int l_graphics_setFont(lua_State* state) {
   lua_settop(state, 1);
-	
+
   graphics_Font* font;
-  
+
   if (lua_isnumber(state,1)) {
 	  graphics_Font_new(&moduleData.defaultFont, NULL, lua_tonumber(state,1));
 	  font = &moduleData.defaultFont;
   } else {
- 	  font = l_graphics_toFont(state, 1); 	 
+ 	  font = l_graphics_toFont(state, 1);
   }
   // Release current font in Lua, so it can be GCed if needed
   if(moduleData.currentFont) {

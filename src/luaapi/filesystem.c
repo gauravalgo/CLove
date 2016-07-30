@@ -13,7 +13,7 @@
 #include "tools.h"
 #include "../filesystem/filesystem.h"
 
-  
+
 static int l_filesystem_read(lua_State* state) {
   // TODO implement max length
   char const* filename = l_tools_toStringOrError(state, 1);

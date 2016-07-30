@@ -39,13 +39,13 @@ static int l_mouse_getPosition(lua_State *state) {
 static int l_mouse_getX(lua_State *state) {
   lua_pushinteger(state, mouse_getX());
   return 1;
-} 
+}
 
 
 static int l_mouse_getY(lua_State *state) {
   lua_pushinteger(state, mouse_getY());
   return 1;
-} 
+}
 
 
 static int l_mouse_setPosition(lua_State *state) {
@@ -53,7 +53,7 @@ static int l_mouse_setPosition(lua_State *state) {
   int y = luaL_checknumber(state, 2);
   mouse_setPosition(x, y);
   return 0;
-} 
+}
 
 static int l_mouse_isVisible(lua_State *state) {
   lua_pushboolean(state, mouse_isVisible());
@@ -69,13 +69,13 @@ static int l_mouse_setX(lua_State *state) {
   int x = luaL_checknumber(state, 1);
   mouse_setX(x);
   return 0;
-} 
+}
 
 static int l_mouse_setY(lua_State *state) {
   int y = luaL_checknumber(state, 1);
   mouse_setY(y);
   return 0;
-} 
+}
 
 static luaL_Reg const regFuncs[] = {
   { "isDown",         l_mouse_isDown        },

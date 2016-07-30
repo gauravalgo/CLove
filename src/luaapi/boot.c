@@ -49,7 +49,7 @@ int l_boot(lua_State* state, love_Config *config) {
 
   config->window.width = lua_tointeger(state, -1);
   lua_pop(state, 1);
-  
+
   lua_pushstring(state, "height");
   lua_rawget(state, -2);
   config->window.height = lua_tointeger(state, -1);

@@ -41,31 +41,31 @@ static int l_geometry_rectangle(lua_State* state) {
   float y = l_tools_toNumberOrError(state, 3);
   float w = l_tools_toNumberOrError(state, 4);
   float h = l_tools_toNumberOrError(state, 5);
-  float r = 0; 
+  float r = 0;
    if (lua_tonumber(state, 6)) r = luaL_checknumber(state, 6);
-  float sx = 1; 
+  float sx = 1;
    if (lua_tonumber(state, 7)) sx = luaL_checknumber(state, 7);
-  float sy = 1; 
+  float sy = 1;
    if (lua_tonumber(state, 8)) sy = luaL_checknumber(state, 8);
- float ox = 0; 
+ float ox = 0;
    if (lua_tonumber(state, 9)) ox = luaL_checknumber(state, 9);
- float oy = 0; 
+ float oy = 0;
    if (lua_tonumber(state, 10)) oy = luaL_checknumber(state, 10);
 
   if (strncmp(type,"line",4) == 0)
     graphics_geometry_fillRectangle(0, x, y, w, h, r, sx, sy, ox, oy);
   else if(strncmp(type,"fill", 4) == 0)
     graphics_geometry_fillRectangle(1, x, y, w, h, r, sx, sy, ox, oy);
-  else 
+  else
     printf("%s \n", "Error: Only 'line' and 'fill' modes are correct");
-  
+
   return 1;
 }
 
 static int l_geometry_points(lua_State* state) {
   float x = l_tools_toNumberOrError(state, 1);
-  float y = l_tools_toNumberOrError(state, 2);  
-  
+  float y = l_tools_toNumberOrError(state, 2);
+
   graphics_geometry_points(x,y);
 
   return 1;
@@ -77,12 +77,12 @@ static int l_geometry_vertex(lua_State* state) {
   float y = l_tools_toNumberOrError(state, 3);
   int _i = 0;
   int count = 1;
-  
-  if (lua_tonumber(state, 5)) 
+
+  if (lua_tonumber(state, 5))
 	  count = luaL_checknumber(state, 5);
-  
+
   int dataSize = sizeof(int) * count;
-	
+
   if(moduleData.currentDataSize < dataSize){
 	  free(moduleData.vertices);
  	  moduleData.vertices = (int*)malloc(dataSize);
@@ -109,11 +109,11 @@ static int l_geometry_vertex(lua_State* state) {
         const char * value = lua_tostring(state, -2);
         int v = atoi(value);
         int i = atoi(key);
-        
+
         //Put the key and the value of the table into an array
         moduleData.vertices[_i] = v; // second insert the value of the key
          _i ++;
-   
+
         // pop value + copy of key, leaving original key
         lua_pop(state, 2);
         // stack now contains: -1 => key; -2 => table
@@ -123,12 +123,12 @@ static int l_geometry_vertex(lua_State* state) {
     // Pop table
     lua_pop(state, 1);
     // Stack is now the same as it was on entry to this function
-  } 
+  }
    if (strncmp(type,"line",4) == 0)
  		 graphics_geometry_vertex(0,x,y,moduleData.vertices,count);
 	 else if (strncmp(type, "fill",4) == 0)
-		 graphics_geometry_vertex(1,x,y,moduleData.vertices,count);	
- 
+		 graphics_geometry_vertex(1,x,y,moduleData.vertices,count);
+
  	 //free(vertices);
 	return 1;
 }

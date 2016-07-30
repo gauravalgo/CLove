@@ -97,7 +97,7 @@ void graphics_init(int width, int height) {
   SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-  
+
   moduleData.width = width;
   moduleData.height = height;
   moduleData.x = SDL_WINDOWPOS_UNDEFINED;
@@ -158,7 +158,7 @@ void graphics_init(int width, int height) {
   glViewport(0, 0, width, height);
 
   matrixstack_init();
-  
+
   m4x4_newTranslation(&moduleData.projectionMatrix, -1.0f, 1.0f, 0.0f);
   m4x4_scale(&moduleData.projectionMatrix, 2.0f / width, -2.0f / height, 0.0f);
 
@@ -179,7 +179,7 @@ void graphics_init(int width, int height) {
   graphics_setBlendMode(graphics_BlendMode_alpha);
   glEnable(GL_BLEND);
   graphics_clearScissor();
-  
+
 }
 
 void graphics_setBackgroundColor(float red, float green, float blue, float alpha) {
@@ -238,7 +238,7 @@ void graphics_free(void) {
 }
 
 void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ibo, GLuint count, GLenum type, GLenum indexType, float const* useColor, float ws, float hs) {
-  
+
   mat4x4 tr;
   m4x4_mulM4x4(&tr, tr2d, matrixstack_head());
 
@@ -248,7 +248,7 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (const void*)(2*sizeof(float)));
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 8*sizeof(float), (const void*)(4*sizeof(float)));
-  
+
   graphics_Shader_activate(
         &moduleData.projectionMatrix,
         &tr,
@@ -257,7 +257,7 @@ void graphics_drawArray(graphics_Quad const* quad, mat4x4 const* tr2d, GLuint ib
         ws,
         hs
         );
-  
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   glDrawElements(type, count, indexType, (GLvoid const*)0);
 
