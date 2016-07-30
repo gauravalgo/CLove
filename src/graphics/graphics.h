@@ -21,6 +21,22 @@
 #include "quad.h"
 #include "../math/vector.h"
 
+#ifdef UNIX
+#include "../3rdparty/SDL2/include/SDL.h"
+#endif
+
+#include "graphics.h"
+
+#ifdef EMSCRIPTEN
+#include <GLES2/gl2.h>
+#else
+#include "../3rdparty/glew/include/GL/glew.h"
+#endif
+
+#ifdef WINDOWS
+#include "../3rdparty/glfw/include/GLFW/glfw3.h"
+#endif
+
 void graphics_init(int width, int height);
 
 typedef enum {
@@ -59,6 +75,15 @@ int graphics_setFullscreen(int value, const char* mode);
 int graphics_isCreated();
 const char* graphics_getTitle();
 int graphics_setPosition(int x, int y);
+
+#ifndef EMSCRIPTEN
+#ifndef WINDOWS
+SDL_Window* graphics_getWindow(void);
+#endif
+#ifdef WINDOWS
+GLFWwindow* graphics_getWindow(void);
+#endif
+#endif
 
 void graphics_setColorMask(bool r, bool g, bool b, bool a);
 void graphics_getColorMask(bool *r, bool *g, bool *b, bool *a);

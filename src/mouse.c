@@ -7,6 +7,8 @@
         #   under the terms of the MIT license. See LICENSE.md for details.
         */
 
+#include "graphics/graphics.h"
+
 #ifdef UNIX
 #include "3rdparty/SDL2/include/SDL.h"
 #endif
@@ -45,6 +47,14 @@ static int buttonEnum(const char *str) {
   if (strncmp (str,"m",1) == 0)
     res = SDL_BUTTON_MIDDLE;
 #endif
+#ifdef WINDOWS
+  if (strncmp(str,"l",1) == 0)
+    res = GLFW_MOUSE_BUTTON_LEFT;
+  if (strncmp(str,"r",1) == 0)
+    res = GLFW_MOUSE_BUTTON_RIGHT;
+  if (strncmp(str,"m",1) == 0)
+    res = GLFW_MOUSE_BUTTON_MIDDLE;
+#endif
   return res;
 }
 
@@ -78,6 +88,11 @@ void mouse_mousepressed(int x, int y, int button) {
       l_mouse_pressed(x, y, button);
       mouse_mousemoved(x, y);
     }
+#endif
+#ifdef WINDOWS
+  //TODO
+  l_mouse_pressed(x, y, button);
+  mouse_mousemoved(x, y);
 #endif
   moduleData.buttons[button] = 1;
 }
@@ -118,9 +133,15 @@ void mouse_setPosition(int x, int y) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(x, y);
 #else
+
 #ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), x, y);
 #endif
+
+#ifdef WINDOWS
+  glfwSetCursorPos(graphics_getWindow(), x, y);
+#endif
+
 #endif
 }
 
@@ -129,15 +150,26 @@ void mouse_setVisible(int b) {
 #ifdef UNIX
   SDL_ShowCursor(b ? SDL_ENABLE : SDL_DISABLE);
 #endif
+#ifdef WINDOWS
+  GLFWcursor* cursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+  if (b == 0) glfwDestroyCursor(cursor);
+  if (b == 1) glfwSetCursor(graphics_getWindow(), cursor);
+#endif
 }
 
 void mouse_setX(int x) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(x, moduleData.y);
 #else
+
 #ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), x, moduleData.y);
 #endif
+
+#ifdef WINDOWS
+  glfwSetCursorPos(graphics_getWindow(), x, moduleData.y);
+#endif
+
 #endif
 }
 
@@ -145,8 +177,14 @@ void mouse_setY(int y) {
 #ifdef EMSCRIPTEN
   SDL_WarpMouse(moduleData.x, y);
 #else
+
 #ifdef UNIX
   SDL_WarpMouseInWindow(graphics_getWindow(), moduleData.x, y);
 #endif
+
+#ifdef WINDOWS
+  glfwSetCursorPos(graphics_getWindow(), moduleData.x, y);
+#endif
+
 #endif
 }

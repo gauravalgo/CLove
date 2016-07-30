@@ -1,21 +1,4 @@
 #include <stdint.h>
-
-#ifdef UNIX
-#include "../3rdparty/SDL2/include/SDL.h"
-#endif
-
-#include "graphics.h"
-
-#ifdef EMSCRIPTEN
-#include <GLES2/gl2.h>
-#else
-#include "../3rdparty/glew/include/GL/glew.h"
-#endif
-
-#ifdef WINDOWS
-#include "../3rdparty/glfw/include/GLFW/glfw3.h"
-#endif
-
 #include "../math/vector.h"
 #include "matrixstack.h"
 #include "font.h"
