@@ -156,7 +156,7 @@ void l_mouse_released(int x, int y, int button){
   lua_rawget(moduleData.luaState, -2);
   lua_pushinteger(moduleData.luaState, x);
   lua_pushinteger(moduleData.luaState, y);
-  lua_pushstring(moduleData.luaState, buttonStr(0));
+  lua_pushstring(moduleData.luaState, buttonStr(button));
   lua_call(moduleData.luaState, 3, 0);
   lua_settop(moduleData.luaState, lua_gettop(moduleData.luaState));
 }
