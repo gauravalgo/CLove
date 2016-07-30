@@ -1,5 +1,3 @@
-
-
 --[[
 --
 --Read the pixels informations form an image and do stuff with it ;)
@@ -56,15 +54,12 @@ function love.update(dt)
 	local mx = love.mouse.getX()
 	local my = love.mouse.getY()
 
-
 	if love.keyboard.isDown("esc") then
 		love.event.quit()
 	end
-
 end
 
 function love.draw()
-
 	for i,v in ipairs(t) do
 		love.graphics.rectangle("fill",v.x*16,v.y*16,16,16)
 	end
@@ -73,20 +68,13 @@ function love.draw()
 end
 
 function love.keypressed(k)
-
 end
 
 function love.quit()
-
 end
 
 function love.mousepressed(x,y,b)
-
 end
 
 function love.wheelmoved(y)
-
 end
-
-
-
