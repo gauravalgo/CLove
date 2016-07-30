@@ -35,7 +35,7 @@ Examples (see examples folder)
 local image = love.graphics.newImage("image.png")
 
 function love.draw()
-   --draw the loaded image named "image" at the postion X:200, Y:200
+	--draw the loaded image named "image" at the postion X:200, Y:200
 	love.graphics.draw(image, 200, 200)
 	--draw a circle at X:100 Y:100 with the radius of 32 and number of
 	--segments(points) of 24
