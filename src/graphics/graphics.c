@@ -16,6 +16,7 @@
 #include "quad.h"
 #include "shader.h"
 #include "geometry.h"
+#include "graphics.h"
 #include <stdio.h>
 
 typedef struct {
