@@ -1,5 +1,5 @@
 /*
-#   love
+#   clove
 #
 #   Copyright (C) 2016 Muresan Vlad
 #   Thanks to Florian Kesseler for some tricks for this class
