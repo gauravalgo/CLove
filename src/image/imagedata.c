@@ -21,7 +21,7 @@ int image_ImageData_new_with_filename(image_ImageData *dst, char const* filename
   dst->surface = stbi_load(filename, &dst->w, &dst->h, &n, STBI_rgb_alpha);
   dst->c = STBI_rgb_alpha;
   dst->path = filename;
-  
+
   if(!dst->surface){  //image could not be loaded
      printf("%s %s \n", "Error: No image data in file ", filename);
  	  return 0;
@@ -40,7 +40,7 @@ void image_ImageData_new_with_size(image_ImageData *dst, int width, int height) 
   dst->pixels = (pixel*) dst->surface;
 }
 
-// return rgba(4) 
+// return rgba(4)
 int image_ImageData_getChannels(image_ImageData *dst) {
 	return dst->c;
 }
@@ -52,7 +52,7 @@ int image_ImageData_getPixel(image_ImageData *dst, int x, int y) {
 int image_ImageData_setPixel(image_ImageData *dst, int x, int y, pixel p) {
 	pixel *pixels = (pixel*) dst->surface;
 	pixels[y * dst->w + x] = p;
-	
+
 	dst->pixels = (pixel*) dst->surface;
 	dst->pixels[y * dst->w + x] = p;
 	return 1;
@@ -63,12 +63,12 @@ int image_ImageData_save(image_ImageData *dst, const char* format, const char* f
 	if (strncmp(format, "png", 3) == 0)
 		succeded = stbi_write_png(filename, dst->w, dst->h, dst->c, (const float*)dst->pixels, 0);
 	else if (strncmp(format, "bmp", 3) == 0)
-     	succeded = stbi_write_bmp(filename, dst->w, dst->h, dst->c, (const float*)dst->surface);		
+     	succeded = stbi_write_bmp(filename, dst->w, dst->h, dst->c, (const float*)dst->surface);
 	else if (strncmp(format, "tga", 3) == 0)
      	succeded = stbi_write_tga(filename, dst->w, dst->h, dst->c, (const float*)dst->pixels);
 	else if (strncmp(format, "hdr", 3) == 0)
      	succeded = stbi_write_hdr(filename, dst->w, dst->h, dst->c, (const float*)dst->surface);
-	else 
+	else
 		printf("%s %s %s \n", "Error, format:", format,  " is not avalabile.Only png,bmp,tga and hdr image formats are possible");
 	if(succeded != 0)
 		return 1;

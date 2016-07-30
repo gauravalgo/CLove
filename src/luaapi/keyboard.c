@@ -30,7 +30,7 @@ int l_keyboard_setKeyRepeat(lua_State* state) {
 int l_keyboard_isDown(lua_State* state) {
   /*
   bool any = false;
-  int top = lua_gettop(state); 
+  int top = lua_gettop(state);
   for(int i = 0; i < top; ++i) {
     any = any || keyboard_ispressed(
                   keyboard_getKeycode(

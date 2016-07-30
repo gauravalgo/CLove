@@ -109,7 +109,7 @@ static void graphics_Font_newTexture(graphics_Font* font) {
         }
       row += b.pitch;
     }
-  
+
   graphics_Font_setWrap(font, &defaultWrap);
   graphics_Font_setFilter(font, &defaultFilter);
 
@@ -179,17 +179,17 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
   while((moduleData.cp = utf8_scan(&text))) {
       font->ch = font->characters[moduleData.cp];
       glBindTexture(GL_TEXTURE_2D,font->ch.textureid);
-	
-		
+
+
       if (moduleData.storeX == 0)
         moduleData.storeX = px ;//- font->ch.sizex;
       if (moduleData.storeY == 0)
         moduleData.storeY = py + font->ch.sizey + 1;
-				
+
       moduleData.x = px + font->ch.bearingx;
       moduleData.y = py - font->ch.bearingy;
-		
-		
+
+
       if ((wrapped == 0 && ++count >= limit)){
           px = moduleData.x - (((font->ch.advancex >> 6)) * (font->ch.sizex + font->ch.bearingx));
           px = moduleData.storeX;
@@ -200,7 +200,7 @@ void graphics_Font_printf(graphics_Font* font, char const* text, int px, int py,
 
       moduleData.x = px + font->ch.bearingx;
       moduleData.y = py - font->ch.bearingy;
-		
+
       if (moduleData.cp == '\n'){
           px = moduleData.x - (((font->ch.advancex >> 6)) * (font->ch.sizex + font->ch.bearingx));
           if (px < moduleData.storeX)
@@ -227,7 +227,7 @@ void graphics_Font_print(graphics_Font* font, char const* text, int px, int py, 
   moduleData.x = 0;
   moduleData.storeX = 0;
   moduleData.y = font->face->ascender;
-  
+
   graphics_Shader* shader = graphics_getShader();
   graphics_setDefaultShader();
 

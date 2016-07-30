@@ -50,7 +50,7 @@ int lua_errorhandler(lua_State *state) {
       lua_pushstring(state, "\n");
       ++level;
     }
-  
+
   lua_concat(state, 4*level+1);
   return 1;
 }
@@ -73,7 +73,7 @@ void quit_function(lua_State* state)
 
 void main_loop(void *data) {
   MainLoopData* loopData = (MainLoopData*)data;
-  
+
   timer_step();
   lua_rawgeti(loopData->luaState, LUA_REGISTRYINDEX, loopData->errhand);
   lua_getglobal(loopData->luaState, "love");
@@ -98,7 +98,7 @@ void main_loop(void *data) {
     }
 
   graphics_clear();
-  
+
   lua_pushstring(loopData->luaState, "draw");
   lua_rawget(loopData->luaState, -2);
 
@@ -209,7 +209,7 @@ int main(int argc, char* argv[]) {
       printf("Error: %s\n", lua_tostring(lua, -1));
       l_no_game(lua,&config);
     }
-  
+
   love_Version const * version = love_getVersion();
   printf("%s %s %i %i %i \n", "Love code name: ",version->codename,version->major,version->minor,version->revision);
 

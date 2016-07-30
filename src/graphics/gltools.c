@@ -59,10 +59,10 @@ void graphics_Texture_setFilter(GLuint texID, graphics_Filter const* filter) {
   }
 
   int magFilter = (filter->magMode == graphics_FilterMode_linear) ? GL_LINEAR : GL_NEAREST;
-  
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
-  
+
   // Not supported by WebGL, still interesting for native builds.
   // Accept GL_INVALID_ENUM on WebGL
   #ifndef EMSCRIPTEN
