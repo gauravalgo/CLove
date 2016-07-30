@@ -7,19 +7,10 @@
         #   under the terms of the MIT license. See LICENSE.md for details.
         */
 
-#include "graphics/graphics.h"
-
-#ifdef UNIX
-#include "3rdparty/SDL2/include/SDL.h"
-#endif
-
-#ifdef WINDOWS
-#include "3rdparty/glfw/include/GLFW/glfw3.h"
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "mouse.h"
 #include "luaapi/mouse.h"
 
 #ifndef EMSCRIPTEN
@@ -46,6 +37,7 @@ static int buttonEnum(const char *str) {
     res = SDL_BUTTON_RIGHT;
   if (strncmp (str,"m",1) == 0)
     res = SDL_BUTTON_MIDDLE;
+  return res;
 #endif
 #ifdef WINDOWS
   if (strncmp(str,"l",1) == 0)
@@ -54,8 +46,9 @@ static int buttonEnum(const char *str) {
     res = GLFW_MOUSE_BUTTON_RIGHT;
   if (strncmp(str,"m",1) == 0)
     res = GLFW_MOUSE_BUTTON_MIDDLE;
-#endif
   return res;
+#endif
+  return 0;
 }
 
 void mouse_mousewheel(int y) {
@@ -79,6 +72,47 @@ void mouse_mousemoved(int x, int y) {
   moduleData.y = y;
 }
 
+
+#ifdef WINDOWS
+
+#define MAX_MOUSE 32
+static bool mousePressed[MAX_MOUSE];
+static bool mouseRelased[MAX_MOUSE];
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+  mousePressed[button] = action != GLFW_RELEASE;
+  mouseRelased[button] = action != GLFW_PRESS;
+}
+
+int mouse_getmousepressedGLFW(int v)
+{
+  if(v <= MAX_MOUSE)
+    return mousePressed[v];
+  else
+    printf("%s \n", "You're trying to get an unknow button");
+  return -1;
+}
+
+void mouse_setcallback() {
+  glfwSetMouseButtonCallback(graphics_getWindow(), mouse_button_callback);
+}
+
+#endif
+
+int mouse_isDown(const char *str) {
+  int x = buttonEnum(str);
+  if(x < 0) {
+      return -1;
+    }
+#ifdef UNIX
+  return moduleData.buttons[x];
+#endif
+#ifdef WINDOWS
+  return mouse_getmousepressedGLFW(x);
+#endif
+}
+
 void mouse_mousepressed(int x, int y, int button) {
 #ifdef UNIX
   if (button == SDL_BUTTON_WHEEL_UP || button == SDL_BUTTON_WHEEL_DOWN) {
@@ -90,9 +124,8 @@ void mouse_mousepressed(int x, int y, int button) {
     }
 #endif
 #ifdef WINDOWS
-  //TODO
-  l_mouse_pressed(x, y, button);
-  mouse_mousemoved(x, y);
+  //TODO Wheel up/down
+
 #endif
   moduleData.buttons[button] = 1;
 }
@@ -107,14 +140,6 @@ void mouse_mousereleased(int x, int y, int button) {
 void mouse_getPosition(int *x, int *y) {
   *x = moduleData.x;
   *y = moduleData.y;
-}
-
-int mouse_isDown(const char *str) {
-  int x = buttonEnum(str);
-  if(x < 0) {
-      return -1;
-    }
-  return moduleData.buttons[x];
 }
 
 int mouse_isVisible(void) {

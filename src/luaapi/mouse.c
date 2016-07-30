@@ -19,6 +19,7 @@ static struct {
 static int l_mouse_isDown(lua_State *state) {
   const char *name = luaL_checkstring(state, 1);
   int res = mouse_isDown(name);
+
   if(res < 0) {
       luaL_error(state, "bad button name '%s'", name);
     }

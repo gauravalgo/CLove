@@ -8,6 +8,19 @@
 */
 #pragma once
 
+#include "graphics/graphics.h"
+
+#ifdef UNIX
+#include "3rdparty/SDL2/include/SDL.h"
+#endif
+
+#ifdef WINDOWS
+#include "3rdparty/glfw/include/GLFW/glfw3.h"
+
+void mouse_setcallback();
+
+#endif
+
 void mouse_mousemoved(int x, int y);
 int mouse_getwheel();
 void mouse_mousewheel(int y);

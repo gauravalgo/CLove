@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "../math/vector.h"
+#include "../mouse.h"
 #include "matrixstack.h"
 #include "font.h"
 #include "batch.h"
@@ -47,7 +48,7 @@ static struct {
 } moduleData;
 
 #ifndef EMSCRIPTEN
-#ifndef WINDOWS
+#ifdef UNIX
 SDL_Window* graphics_getWindow(void) {
   return moduleData.window;
 }
@@ -123,6 +124,7 @@ void graphics_init(int width, int height) {
 
   moduleData.window = glfwCreateWindow(width, height, moduleData.title, NULL, NULL);
   graphics_setPosition(-1, -1);
+  mouse_setcallback(); //glfw only
   if (!moduleData.window){
       printf("%s \n", "Error: Could not create window");
       glfwTerminate();
@@ -189,7 +191,7 @@ void graphics_setColor(float red, float green, float blue, float alpha) {
 void graphics_clear(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #ifdef WINDOWS
-  glfwSwapInterval(1);
+  glfwSwapInterval(1); // limit fps to monitor's refresh rate
 #endif
 }
 
@@ -206,8 +208,10 @@ void graphics_swap(void) {
 
 #ifdef WINDOWS
 #ifndef EMSCRIPTEN
-  if(glfwWindowShouldClose(moduleData.window))
-    glfwDestroyWindow(moduleData.window);
+  if(glfwWindowShouldClose(moduleData.window)){
+      glfwDestroyWindow(moduleData.window);
+      glfwTerminate();
+    }
 #endif
   glfwSwapBuffers(moduleData.window);
   glfwPollEvents();
