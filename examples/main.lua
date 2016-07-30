@@ -1,4 +1,3 @@
-
 local image = love.graphics.newImage("hey.png")
 image:setFilter("nearest","nearest")
 
@@ -17,7 +16,6 @@ function love.draw()
 	love.graphics.rectangle("fill", 300, 300, 32, 32)
 	love.graphics.rectangle("line", 420, 300, 64, 32)
 
-
 	love.graphics.setColor(math.random(0,255),math.random(0,255),math.random(0,255))
 	love.graphics.circle("fill", 200, 200, 16, 12)
 	love.graphics.circle("fill", 360, 200, 32, 7)
@@ -25,10 +23,8 @@ function love.draw()
 
 	love.graphics.circle("line", 270, 200, 64, 12)
 
-
 	love.graphics.draw(image, 40, 40, 125)
 	love.graphics.draw(image, 420, 10, 0, 2, 2)
-
 end
 
 function love.update(dt)
@@ -38,6 +34,5 @@ function love.update(dt)
 end
 
 function love.wheelmoved(y)
-
 	print("Wheel has been moved: " .. y)
 end

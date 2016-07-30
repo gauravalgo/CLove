@@ -1,4 +1,3 @@
-
 -- VERY IMPORTANT
 -- USE Spritebatches when you need to draw the same image more than 500 images
 -- or else you'll end up with bad performance
@@ -23,7 +22,6 @@ function love.update(dt)
 	local mx = love.mouse.getX()
 	local my = love.mouse.getY()
 
-
 	if love.keyboard.isDown("esc") then
 		love.event.quit()
 	end
@@ -41,7 +39,6 @@ function setupSpriteBatch()
 end
 
 function love.draw()
-
 	if not use_batch then
 		for i=1,how_much do
 			love.graphics.draw(image, math.random(0,love.window.getWidth()), math.random(0,love.window.getHeight()) )
@@ -54,17 +51,13 @@ function love.draw()
 end
 
 function love.keypressed(k)
-
 end
 
 function love.quit()
-
 end
 
 function love.mousepressed(x,y,b)
-
 end
 
 function love.wheelmoved(y)
-
 end
