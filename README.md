@@ -3,14 +3,14 @@
 CLove
 =====
 CLove is a simple and easy to learn and use game framework tested on
-Mac/Linux/PC, made in C with OpenGLES 2 which uses Lua as scripting langauge.
+Mac/Linux/PC, made in C with OpenGLES 2 which uses Lua as scripting language.
 
 How to build
 ============
 Download or clone CLove.
 - On Linux based systems : download cmake and make (sudo apt-get install cmake && make). Call "cmake ../ && make" from a new folder called "build". 
 - On Os X systems : download cmake and make (sudo brew install cmake && make). Call "cmake ../ && make" from a new folder called "build". 
-- On Windows : download https://www.microsoft.com/en-us/download/details.aspx?id=6812 (required by SDL) and QT Community and build CLove using it. 
+- On Windows : download MinGW,add gcc and g++ to system path.After that download QT Community and build CLove using it. 
 
 
 Features
