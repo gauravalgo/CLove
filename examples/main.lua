@@ -16,23 +16,23 @@ function love.draw()
 
 	love.graphics.rectangle("fill", 300, 300, 32, 32)
 	love.graphics.rectangle("line", 420, 300, 64, 32)
-	
+
 
 	love.graphics.setColor(math.random(0,255),math.random(0,255),math.random(0,255))
 	love.graphics.circle("fill", 200, 200, 16, 12)
-	love.graphics.circle("fill", 360, 200, 32, 7)	
+	love.graphics.circle("fill", 360, 200, 32, 7)
 	love.graphics.setColor(255,255,255,255)
 
 	love.graphics.circle("line", 270, 200, 64, 12)
-	
+
 
 	love.graphics.draw(image, 40, 40, 125)
-	love.graphics.draw(image, 420, 10, 0, 2, 2)	
+	love.graphics.draw(image, 420, 10, 0, 2, 2)
 
 end
 
-function love.update(dt)	
-	if love.keyboard.isDown("d","right","a","left","w","up") then 
+function love.update(dt)
+	if love.keyboard.isDown("d","right","a","left","w","up") then
 		print("d or right or a or left or w or up has been pressed :O")
 	end
 end
