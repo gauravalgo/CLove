@@ -13,7 +13,17 @@
 #define WINDOWS
 #endif
 
-#ifdef __unix__
+#ifdef _WIN32
+   #define WINDOWS32
+   #ifdef _WIN64
+      #define WINDOWS
+   #endif
+#endif
+
+#ifdef __APPLE__
+#define UNIX
+#endif
+#ifdef __linux__
 #define UNIX
 #endif
 
@@ -85,7 +95,7 @@ const char* graphics_getTitle();
 int graphics_setPosition(int x, int y);
 
 #ifndef EMSCRIPTEN
-#ifndef WINDOWS
+#ifdef UNIX
 SDL_Window* graphics_getWindow(void);
 #endif
 #ifdef WINDOWS
