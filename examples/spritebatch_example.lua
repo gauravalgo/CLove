@@ -13,8 +13,8 @@ local use_batch = true -- SWITCH THIS TO SEE THE DIFFERENCE
 function love.load()
 	image = love.graphics.newImage("hey.png")
 
-   if use_batch then
-   	batch = love.graphics.newSpriteBatch(image, how_much)
+	if use_batch then
+		batch = love.graphics.newSpriteBatch(image, how_much)
 		setupSpriteBatch()
 	end
 end
@@ -34,9 +34,9 @@ function love.update(dt)
 end
 
 function setupSpriteBatch()
-  batch:clear()
-  for i=1,how_much do
-	  batch:add( math.random(0,love.window.getWidth()), math.random(0,love.window.getHeight()) )
+	batch:clear()
+	for i=1,how_much do
+		batch:add( math.random(0,love.window.getWidth()), math.random(0,love.window.getHeight()) )
 	end
 end
 
@@ -47,7 +47,7 @@ function love.draw()
 			love.graphics.draw(image, math.random(0,love.window.getWidth()), math.random(0,love.window.getHeight()) )
 		end
 	else
-	  love.graphics.draw(batch)
+		love.graphics.draw(batch)
 	end
 
 	love.graphics.print(""..love.timer.getFPS(),10,10)
