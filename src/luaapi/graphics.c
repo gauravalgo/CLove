@@ -6,6 +6,7 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
+
 #include "../3rdparty/lua/lauxlib.h"
 #include "../3rdparty/lua/lua.h"
 
@@ -98,7 +99,7 @@ static int l_graphics_draw(lua_State* state) {
     lua_pushstring(state, "expected image or spritebatch");
     lua_error(state);
   }
-  
+
   float x  = luaL_optnumber(state, baseidx+1, 0.0f);
   float y  = luaL_optnumber(state, baseidx+2, 0.0f);
   float r  = luaL_optnumber(state, baseidx+3, 0.0f);
@@ -312,7 +313,7 @@ static luaL_Reg const regFuncs[] = {
 
 int l_graphics_register(lua_State* state) {
   l_tools_registerModule(state, "graphics", regFuncs);
-  
+
   l_graphics_shader_register(state);
   l_graphics_image_register(state);
   l_graphics_quad_register(state);

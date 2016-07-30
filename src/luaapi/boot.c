@@ -6,6 +6,7 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
+
 #include "../3rdparty/lua/lauxlib.h"
 
 #include "boot.h"
@@ -48,7 +49,7 @@ int l_boot(lua_State* state, love_Config *config) {
 
   config->window.width = lua_tointeger(state, -1);
   lua_pop(state, 1);
-  
+
   lua_pushstring(state, "height");
   lua_rawget(state, -2);
   config->window.height = lua_tointeger(state, -1);

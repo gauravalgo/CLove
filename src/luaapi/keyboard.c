@@ -6,6 +6,7 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
+
 #include "keyboard.h"
 #include "../keyboard.h"
 #include "tools.h"
@@ -30,7 +31,7 @@ int l_keyboard_setKeyRepeat(lua_State* state) {
 int l_keyboard_isDown(lua_State* state) {
   /*
   bool any = false;
-  int top = lua_gettop(state); 
+  int top = lua_gettop(state);
   for(int i = 0; i < top; ++i) {
     any = any || keyboard_ispressed(
                   keyboard_getKeycode(

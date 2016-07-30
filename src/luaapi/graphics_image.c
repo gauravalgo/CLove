@@ -6,6 +6,7 @@
 #   This project is free software; you can redistribute it and/or modify it
 #   under the terms of the MIT license. See LICENSE.md for details.
 */
+
 #include "../3rdparty/lua/lauxlib.h"
 #include "../3rdparty/lua/lualib.h"
 
@@ -23,7 +24,7 @@ int l_graphics_newImage(lua_State* state) {
       l_image_newImageData(state);
       lua_remove(state, 1);
     }
-  
+
   if(!l_image_isImageData(state, 1)) {
       lua_pushstring(state, "expected ImageData");
       return lua_error(state);
@@ -57,7 +58,7 @@ static int l_graphics_Image_getPath(lua_State* state) {
   l_assertType(state, 1, l_graphics_isImage);
 
   l_graphics_Image* img = l_graphics_toImage(state, 1);
-  
+
   lua_pushstring (state, img->path);
   return 1;
 }
