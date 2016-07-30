@@ -8,23 +8,23 @@ Mac/Linux/PC, made in C with OpenGLES 2 which uses Lua as scripting language.
 How to build
 ============
 Download or clone CLove.
-- On Linux based systems : download cmake and make (sudo apt-get install cmake && make). Call "cmake ../ && make" from a new folder called "build". 
-- On Os X systems : download cmake and make (sudo brew install cmake && make). Call "cmake ../ && make" from a new folder called "build". 
-- On Windows : download MinGW,add gcc and g++ to system path.After that download QT Community and build CLove using it. 
+- On Linux based systems : download cmake and make (sudo apt-get install cmake && make). Call "cmake ../ && make" from a new folder called "build".
+- On Os X systems : download cmake and make (sudo brew install cmake && make). Call "cmake ../ && make" from a new folder called "build".
+- On Windows : download MinGW,add gcc and g++ to system path.After that download QT Community and build CLove using it.
 
 
 Features
 ========
 - Lua scripting language
-- Easy to learn and use api 
-- Cross Platform 
+- Easy to learn and use api
+- Cross Platform
 - Powerful Batch system
 - Image loader & drawing
 - Image creation from scratch or from a template & save(png,bmp,tga)
 - Sound loader & playing (Vorbis and Wav)
 - Primitives drawing
 - Filesystem functions
-- OpenGL ES 2.0 
+- OpenGL ES 2.0
 - Font loading & drawing
 - Keyboard & Mouse functions
 - Physics system thanks to ChipMunk
