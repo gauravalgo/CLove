@@ -118,8 +118,8 @@ void main_loop(void *data) {
 
   // silly hack for love.event.quit()
 #ifdef WINDOWS
-  force_quit = graphics_stop_windows();
-  if(!force_quit)
+  event_force_quit = graphics_stop_windows();
+  if(!event_force_quit)
     l_running = 0;
 #endif //This will affect only Windows users
   //

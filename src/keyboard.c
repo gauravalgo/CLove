@@ -204,14 +204,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   DownKey[key] = action != GLFW_RELEASE;
   UpKey[key] = action != GLFW_PRESS;
   keyboardButton = key;
+  keyboardAction = action;
 }
 
 void keyboard_setcallback(void) {
   glfwSetKeyCallback(graphics_getWindow(), key_callback);
-}
-
-char const * keyboard_getKeyName(int key) {
-  return moduleData.keynames[(key)];
 }
 
 int keyboard_getDownKeyGLFW(int key)
@@ -343,8 +340,113 @@ const char* returnGLFWKey(int key) {
   return "unknown";
 }
 
+//translate the key code number into actual keys
+int returnGLFWStringToKey(const char* key) {
+  //NOTE: Lots of key tokens are missing on Windows because of GLFW, do not blame me! ^_^
+  if (strncmp(key,"unknown",7) == 0)  return GLFW_KEY_UNKNOWN;
+  if (strncmp(key,"return",5) == 0)  return GLFW_KEY_ENTER;
+  if (strncmp(key,"esc",3) == 0)  return GLFW_KEY_ESCAPE;
+  if (strncmp(key,"escape",6) == 0)  return GLFW_KEY_ESCAPE;
+  if (strncmp(key,"backspace",9) == 0)  return GLFW_KEY_BACKSPACE;
+  if (strncmp(key,"tab",3) == 0 )  return GLFW_KEY_TAB;
+  if (strncmp(key," ",1) == 0)  return GLFW_KEY_SPACE;
+  if (strncmp(key,"\"",1) == 0)  return GLFW_KEY_BACKSLASH;
+  if (strncmp(key,"\'",1) == 0)  return GLFW_KEY_SLASH;
+  if (strncmp(key,"+",1) == 0)  return GLFW_KEY_KP_ADD;
+  if (strncmp(key,",",1) == 0)  return GLFW_KEY_COMMA;
+  if (strncmp(key,"-",1) == 0)  return GLFW_KEY_MINUS;
+  if (strncmp(key,".",1) == 0)  return GLFW_KEY_PERIOD;
+  if (strncmp(key,"/",1) == 0)  return GLFW_KEY_SLASH;
+  if (strncmp(key,"0",1) == 0)  return GLFW_KEY_0;
+  if (strncmp(key,"1",1) == 0)  return GLFW_KEY_1;
+  if (strncmp(key,"2",1) == 0)  return GLFW_KEY_2;
+  if (strncmp(key,"3",1) == 0)  return GLFW_KEY_3;
+  if (strncmp(key,"4",1) == 0)  return GLFW_KEY_4;
+  if (strncmp(key,"5",1) == 0)  return GLFW_KEY_5;
+  if (strncmp(key,"6",1) == 0)  return GLFW_KEY_6;
+  if (strncmp(key,"7",1) == 0)  return GLFW_KEY_7;
+  if (strncmp(key,"8",1) == 0)  return GLFW_KEY_8;
+  if (strncmp(key,"9",1) == 0)  return GLFW_KEY_9;
+  if (strncmp(key,";",1) == 0)  return GLFW_KEY_SEMICOLON;
+  if (strncmp(key,"=",1) == 0)  return GLFW_KEY_KP_EQUAL;
+  if (strncmp(key,"a",1) == 0)  return GLFW_KEY_A;
+  if (strncmp(key,"b",1) == 0)  return GLFW_KEY_B;
+  if (strncmp(key,"c",1) == 0)  return GLFW_KEY_C;
+  if (strncmp(key,"d",1) == 0)  return GLFW_KEY_D;
+  if (strncmp(key,"e",1) == 0)  return GLFW_KEY_E;
+  if (strncmp(key,"f",1) == 0)  return GLFW_KEY_F;
+  if (strncmp(key,"g",1) == 0)  return GLFW_KEY_G;
+  if (strncmp(key,"h",1) == 0)  return GLFW_KEY_H;
+  if (strncmp(key,"i",1) == 0)  return GLFW_KEY_I;
+  if (strncmp(key,"j",1) == 0)  return GLFW_KEY_J;
+  if (strncmp(key,"k",1) == 0)  return GLFW_KEY_K;
+  if (strncmp(key,"l",1) == 0)  return GLFW_KEY_L;
+  if (strncmp(key,"m",1) == 0)  return GLFW_KEY_M;
+  if (strncmp(key,"n",1) == 0)  return GLFW_KEY_N;
+  if (strncmp(key,"o",1) == 0)  return GLFW_KEY_O;
+  if (strncmp(key,"p",1) == 0)  return GLFW_KEY_P;
+  if (strncmp(key,"q",1) == 0)  return GLFW_KEY_Q;
+  if (strncmp(key,"r",1) == 0)  return GLFW_KEY_R;
+  if (strncmp(key,"s",1) == 0)  return GLFW_KEY_S;
+  if (strncmp(key,"t",1) == 0)  return GLFW_KEY_T;
+  if (strncmp(key,"u",1) == 0)  return GLFW_KEY_U;
+  if (strncmp(key,"v",1) == 0)  return GLFW_KEY_V;
+  if (strncmp(key,"w",1) == 0)  return GLFW_KEY_W;
+  if (strncmp(key,"x",1) == 0)  return GLFW_KEY_X;
+  if (strncmp(key,"y",1) == 0)  return GLFW_KEY_Y;
+  if (strncmp(key,"z",1) == 0)  return GLFW_KEY_Z;
+  if (strncmp(key,"capslock",8) == 0)  return GLFW_KEY_CAPS_LOCK;
+  if (strncmp(key,"f1",2) == 0)  return GLFW_KEY_F1;
+  if (strncmp(key,"f2",2) == 0)  return GLFW_KEY_F2;
+  if (strncmp(key,"f3",2) == 0)  return GLFW_KEY_F3;
+  if (strncmp(key,"f4",2) == 0)  return GLFW_KEY_F4;
+  if (strncmp(key,"f5",2) == 0)  return GLFW_KEY_F5;
+  if (strncmp(key,"f6",2) == 0)  return GLFW_KEY_F6;
+  if (strncmp(key,"f7",2) == 0)  return GLFW_KEY_F7;
+  if (strncmp(key,"f8",2) == 0)  return GLFW_KEY_F8;
+  if (strncmp(key,"f9",2) == 0)  return GLFW_KEY_F9;
+  if (strncmp(key,"f10",3) == 0)  return GLFW_KEY_F10;
+  if (strncmp(key,"f11",3) == 0)  return GLFW_KEY_F11;
+  if (strncmp(key,"f12",3) == 0)  return GLFW_KEY_F12;
+  if (strncmp(key,"pause",5) == 0)  return GLFW_KEY_PAUSE;
+  if (strncmp(key,"insert",6) == 0)  return GLFW_KEY_INSERT;
+  if (strncmp(key,"home",4) == 0)  return GLFW_KEY_HOME;
+  if (strncmp(key,"pause",5) == 0)  return GLFW_KEY_PAGE_UP;
+  if (strncmp(key,"delete",6) == 0)  return GLFW_KEY_DELETE;
+  if (strncmp(key,"end",3) == 0)  return GLFW_KEY_END;
+  if (strncmp(key,"pagedown",8) == 0)  return GLFW_KEY_PAGE_DOWN;
+  if (strncmp(key,"right",5) == 0)  return GLFW_KEY_RIGHT;
+  if (strncmp(key,"left",4) == 0)  return GLFW_KEY_LEFT;
+  if (strncmp(key,"down",7) == 0)  return GLFW_KEY_DOWN;
+  if (strncmp(key,"up",2) == 0)  return GLFW_KEY_UP;
+  if (strncmp(key,"home",4) == 0)  return GLFW_KEY_LEFT_CONTROL;
+  if (strncmp(key,"lshift",6) == 0)  return GLFW_KEY_LEFT_SHIFT;
+  if (strncmp(key,"lalt",4) == 0)  return GLFW_KEY_LEFT_ALT;
+  if (strncmp(key,"rshift",6) == 0)  return GLFW_KEY_RIGHT_SHIFT;
+  if (strncmp(key,"ralt",4) == 0)  return GLFW_KEY_RIGHT_ALT;
+  if (strncmp(key,"printscreen",11) == 0)  return GLFW_KEY_PRINT_SCREEN;
+  if (strncmp(key,"scrolllock",10) == 0)  return GLFW_KEY_SCROLL_LOCK;
+  if (strncmp(key,"f13",3) == 0)  return GLFW_KEY_F13;
+  if (strncmp(key,"f14",3) == 0)  return GLFW_KEY_F14;
+  if (strncmp(key,"f15",3) == 0)  return GLFW_KEY_F15;
+  if (strncmp(key,"f16",3) == 0)  return GLFW_KEY_F16;
+  if (strncmp(key,"f17",3) == 0)  return GLFW_KEY_F17;
+  if (strncmp(key,"f18",3) == 0)  return GLFW_KEY_F18;
+  if (strncmp(key,"f19",3) == 0)  return GLFW_KEY_F19;
+  if (strncmp(key,"f20",3) == 0)  return GLFW_KEY_F20;
+  if (strncmp(key,"f21",3) == 0)  return GLFW_KEY_F21;
+  if (strncmp(key,"f22",3) == 0)  return GLFW_KEY_F22;
+  if (strncmp(key,"f23",3) == 0)  return GLFW_KEY_F23;
+  if (strncmp(key,"f24",3) == 0)  return GLFW_KEY_F24;
+  if (strncmp(key,"f25",3) == 0)  return GLFW_KEY_F25;
+  return 0;
+}
+
+
 void keyboard_keypressed(int key) {
-  if(keyboard_getDownKeyGLFW(key) && keyboardButton != -1) {
+  // In order to have a truly functional function for key pressed we need to make sure that the key is
+  // continuly repressed that's why we use GLFW_REPEAT otherwhise we get "ispressed" function from love.keyboard.isDown()
+  if(keyboard_getDownKeyGLFW(key) && keyboardButton != -1 && keyboardAction != GLFW_REPEAT ) {
       l_keyboard_keypressed(returnGLFWKey(key), false);
       key = 0;
       keyboardButton = -1;
@@ -352,7 +454,8 @@ void keyboard_keypressed(int key) {
 }
 
 void keyboard_keyreleased(int key) {
-  if(keyboard_getUpKeyGLFW(key) && keyboardButton != -1) {
+  // Same goes for this function like above, tricky GLFW ;)
+  if(keyboard_getUpKeyGLFW(key) && keyboardButton != -1 && keyboardAction != GLFW_REPEAT) {
       l_keyboard_keyreleased(returnGLFWKey(key));
       key = 0;
       keyboardButton = -1;
@@ -360,7 +463,12 @@ void keyboard_keyreleased(int key) {
 }
 
 bool keyboard_ispressed(int key) {
-  if(keyboard_getDownKeyGLFW(key)) return true;
+  // TODO: Check if keyboardAction == GLFW_REPEAT ???
+  if(keyboard_getDownKeyGLFW(normalizeKeyCode(key)) && keyboardButton != -1) {
+      key = 0;
+      keyboardButton = -1;
+      return true;
+    }
   return false;
 }
 

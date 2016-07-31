@@ -128,9 +128,7 @@ void mouse_mousereleased(int x, int y, int button) {
 #endif
 #ifdef WINDOWS
   /*
-   *  Mouse release on GLFW is a bit trick than with SDL because after you release the mouse button
-   *  it keeps tracking your last mouse button value and assumes it's released so because of that it will tell you
-   *  every frame that the mouse has been released so that had to be fixed.
+   * GLFW will register more than once the key that has been pressed, that has been fixed with a little "hack"
    */
   //printf("%i %s %i \n",mouseButton," ",mouse_getmousereleasedGLFW(button));
   if (mouse_getmousereleasedGLFW(button) && mouseButton == button){
@@ -154,7 +152,7 @@ void mouse_mousepressed(int x, int y, int button) {
   moduleData.buttons[button] = 1;
 #endif
 #ifdef WINDOWS
-  //Same hacks have been done here too beacuse otherwhise GLFW will register more than once they key that has been pressed
+  //Same hacks have been done here too beacuse otherwhise GLFW will register more than once the key that has been pressed
   if (mouse_getmousepressedGLFW(button) && mouseButton == button){
       l_mouse_pressed(x, y, button);
       mouse_mousemoved(x, y);

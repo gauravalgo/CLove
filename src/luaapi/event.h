@@ -15,6 +15,7 @@
 int l_event_register(lua_State* state);
 int l_event_running();
 
+//TODO rename these using event_ as the prefix
 int l_running;
-bool force_quit;
+bool event_force_quit;
 float swap_At;

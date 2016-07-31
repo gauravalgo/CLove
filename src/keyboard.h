@@ -28,7 +28,7 @@ void keyboard_setcallback(void);
 bool DownKey[MAX_KEYS];
 bool UpKey[MAX_KEYS];
 int keyboardButton; // the current key that has been pressed
-
+int keyboardAction; // is the key pressed,released or continu/repeatly pressed?
 #endif
 
 void keyboard_init(void);
@@ -42,6 +42,7 @@ SDL_Keycode keyboard_getKeycode(char const* name);
 #endif
 #ifdef WINDOWS
 char const * keyboard_getKeyName(int key);
+int returnGLFWStringToKey(const char* key);
 void keyboard_keypressed(int key);
 void keyboard_keyreleased(int key);
 bool keyboard_ispressed(int key);

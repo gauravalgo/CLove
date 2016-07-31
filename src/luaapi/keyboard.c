@@ -68,7 +68,7 @@ int l_keyboard_isDown(lua_State* state) {
   bool any = false;
   int top = lua_gettop(state);
   for(int i = 0; i < top; ++i) {
-      keyboard_ispressed(i);
+      any = any || keyboard_ispressed(returnGLFWStringToKey(l_tools_toStringOrError(state, i+1)));
       if(any)
         break;
     }

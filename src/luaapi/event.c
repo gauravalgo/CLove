@@ -35,7 +35,7 @@ int l_event_running()
 int l_event_register(lua_State* state)
 {
   l_running = 1;
-  force_quit = false;
+  event_force_quit = false;
   l_tools_registerModule(state, "event", regFuncs);
   return 0;
 }
