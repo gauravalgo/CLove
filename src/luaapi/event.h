@@ -9,10 +9,12 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include "../3rdparty/lua/lua.h"
 
 int l_event_register(lua_State* state);
 int l_event_running();
 
 int l_running;
+bool force_quit;
 float swap_At;

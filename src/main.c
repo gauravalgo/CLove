@@ -115,7 +115,14 @@ void main_loop(void *data) {
     }
 
   graphics_swap();
-  l_running = graphics_stop_windows(); //This will be affected only on Windows
+
+  // silly hack for love.event.quit()
+#ifdef WINDOWS
+  force_quit = graphics_stop_windows();
+  if(!force_quit)
+    l_running = 0;
+#endif //This will affect only Windows users
+  //
 
   lua_pop(loopData->luaState, 1);
 #ifdef UNIX

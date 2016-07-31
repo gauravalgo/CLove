@@ -8,8 +8,11 @@
 */
 
 #include <stdint.h>
+
 #include "../math/vector.h"
 #include "../mouse.h"
+#include "../keyboard.h"
+
 #include "matrixstack.h"
 #include "font.h"
 #include "batch.h"
@@ -134,7 +137,11 @@ void graphics_init(int width, int height) {
 
   moduleData.window = glfwCreateWindow(width, height, moduleData.title, NULL, NULL);
   graphics_setPosition(-1, -1);
+
+  //Init all callbacks required for input
   mouse_setcallback(); //glfw only
+  keyboard_setcallback(); //glfw only
+
   if (!moduleData.window){
       printf("%s \n", "Error: Could not create window");
       glfwTerminate();
@@ -223,18 +230,15 @@ void graphics_swap(void) {
       glfwTerminate();
     }
 #endif
-  //Update love.mousepressed / released(x,y,button)
+  // Update love.mousepressed / released(x,y,button)
   mouse_mousepressed(mouse_getX(), mouse_getY(), mouseButton);
   mouse_mousereleased(mouse_getX(), mouse_getY(), mouseButton);
+  // Update love.keypressed / released (b)
+  keyboard_keypressed(keyboardButton);
+  keyboard_keyreleased(keyboardButton);
 
   glfwSwapBuffers(moduleData.window);
   glfwPollEvents();
-#endif
-}
-
-void graphics_free(void) {
-#ifdef WINDOWS
-  glfwDestroyWindow(moduleData.window);
 #endif
 }
 
@@ -511,8 +515,9 @@ bool graphics_getScissor(int *x, int *y, int *w, int *h) {
 
 int graphics_stop_windows(void) {
 #ifdef WINDOWS
-  if(glfwWindowShouldClose(moduleData.window))
+  if(glfwWindowShouldClose(moduleData.window)) 
     return 0;
+
 #endif
   return 1;
 }
