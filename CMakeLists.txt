@@ -1,5 +1,5 @@
 #
-#   love
+#   clove
 #
 #   Copyright (C) 2016 Muresan Vlad
 #
@@ -9,7 +9,7 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(love)
+project(clove)
 
 if (UNIX)
     add_definitions(-std=gnu99 -O3)
@@ -106,12 +106,12 @@ FILE(
     src/3rdparty/slre/*.h
     )
 
-set(love_package "love")
-set(love_creator "Muresan Vlad")
-set(love_copyright "Copyright (c) 2015-2016, ${love_creator}.")
+set(clove_package "clove")
+set(clove_creator "Muresan Vlad")
+set(clove_copyright "Copyright (c) 2015-2016, ${clove_creator}.")
 
 add_executable(
-    love
+    clove
     ${SOURCE_FILES}
     )
 INCLUDE_DIRECTORIES(src/3rdparty/stb)
@@ -170,7 +170,7 @@ if(UNIX)
 endif()
 
 if(MINGW)
-    target_link_libraries(love ws2_32.lib glfw
+    target_link_libraries(clove ws2_32.lib glfw
         ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}
         ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
@@ -178,7 +178,7 @@ if(MINGW)
 endif()
 
 if(APPLE)
-    target_link_libraries(love
+    target_link_libraries(clove
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
         ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}
@@ -186,7 +186,7 @@ if(APPLE)
 endif()
 
 if(UNIX)
-    target_link_libraries(love
+    target_link_libraries(clove
         ${SDL_LIBRARIES} ${GLEW_LIBRARIES}
         ${CHIPMUNK_LIBRARIES}
         ${OPENGL_LIBRARIES} ${OPENAL_LIBRARIES}

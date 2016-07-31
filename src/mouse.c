@@ -121,14 +121,21 @@ int mouse_isDown(const char *str) {
 }
 
 void mouse_mousereleased(int x, int y, int button) {
-  mouse_mousemoved(x, y);
 #ifdef UNIX
   moduleData.buttons[button] = 0;
   l_mouse_released(x, y, button);
+  mouse_mousemoved(x, y);
 #endif
 #ifdef WINDOWS
-  if (mouse_getmousereleasedGLFW(button)){
+  //_Note_: Mouse release on GLFW is a bit trick than with SDL because after you release the mouse button
+  //it keeps tracking your last mouse button value and assumes it's released so because of that it will tell you
+  //every frame that the mouse has been released so that had to be fixed.
+  //printf("%i %s %i \n",mouseButton," ",mouse_getmousereleasedGLFW(button));
+  if (mouse_getmousereleasedGLFW(button) && mouseButton == button){
       l_mouse_released(x, y, button);
+      mouse_mousemoved(x, y);
+      mouseButton = -1;
+      button = 0;
     }
 #endif
 }
@@ -148,6 +155,7 @@ void mouse_mousepressed(int x, int y, int button) {
   if (mouse_getmousepressedGLFW(button)){
       l_mouse_pressed(x, y, button);
       mouse_mousemoved(x, y);
+      button = 0;
     }
 #endif
 
