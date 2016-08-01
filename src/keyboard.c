@@ -207,8 +207,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   keyboardAction = action;
 }
 
+
+void charmods_callback(GLFWwindow* window, unsigned int codepoint, int mods)
+{
+  keyboardCodepoint = codepoint;
+}
+
 void keyboard_setcallback(void) {
   glfwSetKeyCallback(graphics_getWindow(), key_callback);
+  glfwSetCharModsCallback(graphics_getWindow(), charmods_callback);
 }
 
 int keyboard_getDownKeyGLFW(int key)
@@ -216,7 +223,7 @@ int keyboard_getDownKeyGLFW(int key)
   if(key <= MAX_KEYS)
     return DownKey[key];
   else
-    printf("%s \n","Error down key: You're trying to get an unknow key");
+    printf("%s \n %i","Error down key: You're trying to get an unknow key: ", key);
   return 0;
 }
 
@@ -225,7 +232,7 @@ int keyboard_getUpKeyGLFW(int key)
   if(key <= MAX_KEYS)
     return UpKey[key];
   else
-    printf("%s \n","Error key up: You're trying to get an unknow key");
+    printf("%s \n %i","Error key up: You're trying to get an unknow key: ", key);
   return 0;
 }
 
@@ -337,10 +344,10 @@ const char* returnGLFWKey(int key) {
   if (key == GLFW_KEY_KP_8)   return      "kp8";
   if (key == GLFW_KEY_KP_9)   return      "kp9";
   if (key == GLFW_KEY_KP_0)   return      "kp0";
-  return "unknown";
+  return "";
 }
 
-//translate the key code number into actual keys
+//translate the key code string into actual keys
 int returnGLFWStringToKey(const char* key) {
   //NOTE: Lots of key tokens are missing on Windows because of GLFW, do not blame me! ^_^
   if (strncmp(key,"unknown",7) == 0)  return GLFW_KEY_UNKNOWN;
@@ -554,6 +561,7 @@ bool keyboard_isTextEnabled(void) {
   return moduleData.textActive;
 }
 
-void keyboard_textInput(char const* text) {
-  l_keyboard_textInput(text);
+void keyboard_textInput(const char* text) {
+ l_keyboard_textInput(text);
+ keyboardCodepoint = 0;
 }

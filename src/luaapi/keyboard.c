@@ -120,7 +120,7 @@ void l_keyboard_keyreleased(SDL_Keycode key) {
 }
 #endif
 
-void l_keyboard_textInput(char const* text) {
+void l_keyboard_textInput(const char* text) {
   lua_getglobal(moduleData.luaState, "love");
   lua_pushstring(moduleData.luaState, "textinput");
   lua_rawget(moduleData.luaState, -2);

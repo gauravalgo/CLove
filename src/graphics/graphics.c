@@ -236,6 +236,7 @@ void graphics_swap(void) {
   // Update love.keypressed / released (b)
   keyboard_keypressed(keyboardButton);
   keyboard_keyreleased(keyboardButton);
+  keyboard_textInput(returnGLFWKey(keyboardCodepoint - 32));
 
   glfwSwapBuffers(moduleData.window);
   glfwPollEvents();

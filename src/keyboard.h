@@ -29,6 +29,7 @@ bool DownKey[MAX_KEYS];
 bool UpKey[MAX_KEYS];
 int keyboardButton; // the current key that has been pressed
 int keyboardAction; // is the key pressed,released or continu/repeatly pressed?
+int keyboardCodepoint;
 #endif
 
 void keyboard_init(void);
@@ -46,6 +47,7 @@ int returnGLFWStringToKey(const char* key);
 void keyboard_keypressed(int key);
 void keyboard_keyreleased(int key);
 bool keyboard_ispressed(int key);
+const char* returnGLFWKey(int key);
 #endif
 
 void keyboard_startText(void);

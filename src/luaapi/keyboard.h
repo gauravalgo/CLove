@@ -34,4 +34,4 @@ void l_keyboard_keypressed(const char *key, bool repeat);
 void l_keyboard_keyreleased(const char *key);
 #endif
 
-void l_keyboard_textInput(char const* text);
+void l_keyboard_textInput(const char* text);
