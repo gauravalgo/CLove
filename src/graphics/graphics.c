@@ -230,10 +230,12 @@ void graphics_swap(void) {
       glfwTerminate();
     }
 #endif
-  // Update love.mousepressed / released(x,y,button)
+  // Update love.mousepressed / released(x,y,button) / wheel
   mouse_mousepressed(mouse_getX(), mouse_getY(), mouseButton);
   mouse_mousereleased(mouse_getX(), mouse_getY(), mouseButton);
-  // Update love.keypressed / released (b)
+  mouse_mousewheel(mouseScrollY);
+
+  // Update love.keypressed / released (b) / textinput
   keyboard_keypressed(keyboardButton);
   keyboard_keyreleased(keyboardButton);
   keyboard_textInput(returnGLFWKey(keyboardCodepoint - 32));

@@ -27,7 +27,7 @@ void mouse_setcallback();
 static bool mousePressed[MAX_MOUSE];
 static bool mouseRelased[MAX_MOUSE];
 static int mouseButton;
-
+double mouseScrollY;
 #endif
 
 void mouse_mousemoved(int x, int y);

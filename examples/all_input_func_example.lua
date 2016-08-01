@@ -46,3 +46,7 @@ function love.keyreleased(k)
 		print("bye")
 	end
 end
+
+function love.wheelmoved(w)
+	if w ~= 0 then print("WHEEL HAS BEEN MOVED: " .. w) end
+end

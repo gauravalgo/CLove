@@ -52,11 +52,6 @@ static int buttonEnum(const char *str) {
   return 0;
 }
 
-void mouse_mousewheel(int y) {
-  moduleData.wheel = y;
-  moduleData.buttons[y] = 1;
-  l_mouse_wheelmoved(moduleData.wheel);
-}
 
 int mouse_getwheel() {
   return moduleData.wheel;
@@ -73,6 +68,14 @@ void mouse_mousemoved(int x, int y) {
   moduleData.y = y;
 }
 
+void mouse_mousewheel(int y) {
+  moduleData.wheel = y;
+  moduleData.buttons[y] = 1;
+  l_mouse_wheelmoved(moduleData.wheel);
+#ifdef WINDOWS
+  mouseScrollY = 0;
+#endif
+}
 
 #ifdef WINDOWS
 
@@ -83,8 +86,14 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
   mouseButton = button;
 }
 
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  mouseScrollY = yoffset;
+}
+
 void mouse_setcallback() {
   glfwSetMouseButtonCallback(graphics_getWindow(), mouse_button_callback);
+  glfwSetScrollCallback(graphics_getWindow(), scroll_callback);
 }
 
 int mouse_getmousepressedGLFW(int v)

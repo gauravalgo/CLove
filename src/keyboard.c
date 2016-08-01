@@ -563,5 +563,7 @@ bool keyboard_isTextEnabled(void) {
 
 void keyboard_textInput(const char* text) {
  l_keyboard_textInput(text);
+#ifdef WINDOWS
  keyboardCodepoint = 0;
+#endif
 }
